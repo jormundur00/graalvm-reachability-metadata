@@ -9,8 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     if: github.actor == 'dependabot[bot]'
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout PR branch
+        uses: actions/checkout@v3
         with:
+          ref: ${{ github.head_ref }}  # checkout the Dependabot PR branch
           fetch-depth: 0
 
       - name: "Replace Docker image tags everywhere"
@@ -34,18 +36,17 @@ jobs:
           paste <(echo "$OLD_LINES") <(echo "$NEW_LINES") | while read OLD NEW; do
             if [[ -n "$OLD" && -n "$NEW" && "$OLD" != "$NEW" ]]; then
               echo "Replacing $OLD → $NEW"
-              # find all occurrences of the old image tag and replace with the new one
               grep -rl "$OLD" . | xargs sed -i "s|$OLD|$NEW|g" || true
             fi
           done
 
-          # commit and push back to Dependabot branch if there are changes
+          # commit and push changes
           git config --local user.name "github-actions"
           git config --local user.email "github-actions@github.com"
           git add .
           if ! git diff --cached --quiet; then
-            git commit -m "Sync Docker image tags across repo"
-            git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/jormundur00/graalvm-reachability-metadata HEAD
+            git commit -m "[dependabot skip] Sync Docker image tags across repo"
+            git push origin "${GITHUB_HEAD_REF}"
           else
             echo "No changes to commit"
           fi
