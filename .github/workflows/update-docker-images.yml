@@ -11,18 +11,20 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # fetch full history to access master
 
       - name: "Replace Docker image tags everywhere"
         run: |
-          # fetch main so we can get the old FROM lines
-          git fetch origin main
+          set -euo pipefail
 
-          # get old FROM lines from main branch in Dockerfiles inside allowed directory
-          OLD_LINES=$(git grep '^FROM ' origin/main -- tests/tck-build-logic/src/main/resources/allowed-docker-images | sed 's/^FROM //')
+          # fetch master so we can get the old FROM lines
+          git fetch origin master
+
+          # get old FROM lines from master branch in Dockerfiles inside allowed directory
+          OLD_LINES=$(git grep '^FROM ' origin/master -- tests/tck-build-logic/src/main/resources/allowed-docker-images | sed 's/.*:FROM //')
           
           # get new FROM lines from PR branch
-          NEW_LINES=$(git grep '^FROM ' HEAD -- tests/tck-build-logic/src/main/resources/allowed-docker-images | sed 's/^FROM //')
+          NEW_LINES=$(git grep '^FROM ' HEAD -- tests/tck-build-logic/src/main/resources/allowed-docker-images | sed 's/.*:FROM //')
 
           # debug
           echo "OLD_LINES=$OLD_LINES"
@@ -30,8 +32,9 @@ jobs:
 
           # replace all occurrences across repo
           paste <(echo "$OLD_LINES") <(echo "$NEW_LINES") | while read OLD NEW; do
-            if [[ -n "$OLD" && -n "$NEW" ]]; then
+            if [[ -n "$OLD" && -n "$NEW" && "$OLD" != "$NEW" ]]; then
               echo "Replacing $OLD → $NEW"
+              # find all occurrences of the old image tag and replace with the new one
               grep -rl "$OLD" . | xargs sed -i "s|$OLD|$NEW|g" || true
             fi
           done
