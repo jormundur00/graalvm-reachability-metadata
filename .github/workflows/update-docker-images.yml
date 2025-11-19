@@ -1,4 +1,4 @@
-name: Sync Docker Image Tags
+name: "Sync Docker Image Tags"
 
 on:
   pull_request:
@@ -16,8 +16,8 @@ jobs:
       - name: "Replace Docker image tags everywhere"
         run: |
           # get old and new FROM lines from the last commit
-          OLD_LINES=$(git diff origin/main...HEAD --unified=0 | grep '^-FROM ' | sed 's/^-FROM //')
-          NEW_LINES=$(git diff origin/main...HEAD --unified=0 | grep '^+FROM ' | sed 's/^+FROM //')
+          OLD_LINES=$(git show HEAD --pretty=format: --diff-filter=AM | grep '^-FROM ' | sed 's/^-FROM //')
+          NEW_LINES=$(git show HEAD --pretty=format: --diff-filter=AM | grep '^+FROM ' | sed 's/^+FROM //')
 
           # replace all occurrences across repo
           paste <(echo "$OLD_LINES") <(echo "$NEW_LINES") | while read OLD NEW; do
