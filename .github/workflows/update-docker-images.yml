@@ -4,6 +4,9 @@ on:
   pull_request:
     types: [opened, synchronize]
 
+permissions:
+  contents: write  # allows push to PR branch
+
 jobs:
   update-images:
     runs-on: ubuntu-latest
