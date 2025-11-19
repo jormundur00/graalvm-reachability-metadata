@@ -15,14 +15,25 @@ jobs:
 
       - name: "Replace Docker image tags everywhere"
         run: |
-          # get old and new FROM lines from the last commit
-          OLD_LINES=$(git show HEAD --pretty=format: --diff-filter=AM | grep '^-FROM ' | sed 's/^-FROM //')
-          NEW_LINES=$(git show HEAD --pretty=format: --diff-filter=AM | grep '^+FROM ' | sed 's/^+FROM //')
+          # fetch main so we can get the old FROM lines
+          git fetch origin main
+
+          # get old FROM lines from main branch in Dockerfiles inside allowed directory
+          OLD_LINES=$(git grep '^FROM ' origin/main -- tests/tck-build-logic/src/main/resources/allowed-docker-images | sed 's/^FROM //')
+          
+          # get new FROM lines from PR branch
+          NEW_LINES=$(git grep '^FROM ' HEAD -- tests/tck-build-logic/src/main/resources/allowed-docker-images | sed 's/^FROM //')
+
+          # debug
+          echo "OLD_LINES=$OLD_LINES"
+          echo "NEW_LINES=$NEW_LINES"
 
           # replace all occurrences across repo
           paste <(echo "$OLD_LINES") <(echo "$NEW_LINES") | while read OLD NEW; do
-            echo "Replacing $OLD → $NEW"
-            grep -rl "$OLD" . | xargs sed -i "s|$OLD|$NEW|g" || true
+            if [[ -n "$OLD" && -n "$NEW" ]]; then
+              echo "Replacing $OLD → $NEW"
+              grep -rl "$OLD" . | xargs sed -i "s|$OLD|$NEW|g" || true
+            fi
           done
 
           # commit and push back to Dependabot branch if there are changes
