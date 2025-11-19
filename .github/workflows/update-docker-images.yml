@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize]
 
 permissions:
-  contents: write  # allows push to PR branch
+  contents: write
 
 jobs:
   update-images:
@@ -15,7 +15,7 @@ jobs:
       - name: Checkout PR branch
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.head_ref }}  # checkout the Dependabot PR branch
+          ref: ${{ github.head_ref }}
           fetch-depth: 0
 
       - name: "Replace Docker image tags everywhere"
@@ -27,10 +27,6 @@ jobs:
           
           # get new FROM lines from PR branch
           NEW_LINES=$(git grep '^FROM ' HEAD -- tests/tck-build-logic/src/main/resources/allowed-docker-images | sed 's/.*:FROM //')
-
-          # debug
-          echo "OLD_LINES=$OLD_LINES"
-          echo "NEW_LINES=$NEW_LINES"
 
           # replace all occurrences across repo
           paste <(echo "$OLD_LINES") <(echo "$NEW_LINES") | while read OLD NEW; do
@@ -45,7 +41,7 @@ jobs:
           git config --local user.email "github-actions@github.com"
           git add .
           if ! git diff --cached --quiet; then
-            git commit -m "[dependabot skip] Sync Docker image tags across repo"
+            git commit -m "Sync Docker image tags across repo"
             git push origin "${GITHUB_HEAD_REF}"
           else
             echo "No changes to commit"
