@@ -1,0 +1,37 @@
+name: Sync Docker Image Tags
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  update-images:
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: "Replace Docker image tags everywhere"
+        run: |
+          # get old and new FROM lines from the last commit
+          OLD_LINES=$(git diff origin/main...HEAD --unified=0 | grep '^-FROM ' | sed 's/^-FROM //')
+          NEW_LINES=$(git diff origin/main...HEAD --unified=0 | grep '^+FROM ' | sed 's/^+FROM //')
+
+          # replace all occurrences across repo
+          paste <(echo "$OLD_LINES") <(echo "$NEW_LINES") | while read OLD NEW; do
+            echo "Replacing $OLD → $NEW"
+            grep -rl "$OLD" . | xargs sed -i "s|$OLD|$NEW|g" || true
+          done
+
+          # commit and push back to Dependabot branch if there are changes
+          git config --local user.name "github-actions"
+          git config --local user.email "github-actions@github.com"
+          git add .
+          if ! git diff --cached --quiet; then
+            git commit -m "Sync Docker image tags across repo"
+            git push origin HEAD
+          else
+            echo "No changes to commit"
+          fi
