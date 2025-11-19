@@ -22,9 +22,6 @@ jobs:
         run: |
           set -euo pipefail
 
-          # fetch master so we can get the old FROM lines
-          git fetch origin master
-
           # get old FROM lines from master branch in Dockerfiles inside allowed directory
           OLD_LINES=$(git grep '^FROM ' origin/master -- tests/tck-build-logic/src/main/resources/allowed-docker-images | sed 's/.*:FROM //')
           
