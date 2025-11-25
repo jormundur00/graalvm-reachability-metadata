@@ -329,7 +329,9 @@ jobs:
               echo "Closing pre-release issues for $GROUP:$ARTIFACT base version $BASE_VERSION:"
               for ISSUE in $PRE_RELEASE_ISSUES; do
                 echo "Closing issue #$ISSUE"
-                gh issue close "$ISSUE" --repo "$REPO"
+                gh issue close "$ISSUE" --repo "$REPO" \
+                  -c "Closing this pre-release issue because a full release is now available and/or builds successfully." \
+                  -r "not planned"
               done
             else
               echo "No pre-release issues found for $GROUP:$ARTIFACT base version $BASE_VERSION"
