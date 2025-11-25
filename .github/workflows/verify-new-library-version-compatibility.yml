@@ -315,13 +315,15 @@ jobs:
             PRE_RELEASE_SUFFIX="(alpha[0-9]*|beta[0-9]*|rc[0-9]*|cr[0-9]*|m[0-9]+|ea[0-9]*|b[0-9]+|[0-9]+|preview)"
             PRE_RELEASE_REGEX="$BASE_VERSION[-.]$PRE_RELEASE_SUFFIX"
           
+            TITLE_END_VERSIONLESS="${{ env.ISSUE_TITLE_MIDDLE }}${{ matrix.item.name }}
+          
             # Find all open pre-release issues for this library and base version
             PRE_RELEASE_ISSUES=$(gh issue list \
               --repo "$REPO" \
               --state open \
-              --search "\"fails for $GROUP:$ARTIFACT\" in:title" \
+              --search "\"$TITLE_END_VERSIONLESS\" in:title" \
               --json number,title \
-              --jq ".[] | select(.title | test(\"fails for $GROUP:$ARTIFACT:$PRE_RELEASE_REGEX\"; \"i\")) | .number")
+              --jq ".[] | select(.title | startswith(\"${{ env.ISSUE_TITLE_PREFIX }}\") and test(\"$TITLE_END_VERSIONLESS:$PRE_RELEASE_REGEX\"; \"i\")) | .number")
           
             if [[ -n "$PRE_RELEASE_ISSUES" ]]; then
               echo "Closing pre-release issues for $GROUP:$ARTIFACT base version $BASE_VERSION:"
