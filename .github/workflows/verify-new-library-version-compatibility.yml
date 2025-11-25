@@ -315,7 +315,7 @@ jobs:
             PRE_RELEASE_SUFFIX="(alpha[0-9]*|beta[0-9]*|rc[0-9]*|cr[0-9]*|m[0-9]+|ea[0-9]*|b[0-9]+|[0-9]+|preview)"
             PRE_RELEASE_REGEX="$BASE_VERSION[-.]$PRE_RELEASE_SUFFIX"
           
-            TITLE_END_VERSIONLESS="${{ env.ISSUE_TITLE_MIDDLE }}${{ matrix.item.name }}
+            TITLE_END_VERSIONLESS="${{ env.ISSUE_TITLE_MIDDLE }}${{ matrix.item.name }}"
           
             # Find all open pre-release issues for this library and base version
             PRE_RELEASE_ISSUES=$(gh issue list \
