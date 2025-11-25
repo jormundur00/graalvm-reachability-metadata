@@ -291,10 +291,10 @@ jobs:
           if [[ -n "${{ steps.runtests.outputs.failed_version }}" ]]; then
             echo "${{ steps.runtests.outputs.failed_version }}" >> "$VERSIONS_FILE"
           fi
-          
+
           while read -r VERSION; do
             if [[ -z "$VERSION" ]]; then continue; fi
-          
+
             # Parse version
             VERSION_REGEX="^([0-9]+(\.[0-9]+)*)(\.Final)?([-.](alpha[0-9]*|beta[0-9]*|rc[0-9]*|cr[0-9]*|m[0-9]+|ea[0-9]*|b[0-9]+|[0-9]+|preview)([-.].*)?)?$"
             if [[ "$VERSION" =~ $VERSION_REGEX ]]; then
@@ -304,19 +304,17 @@ jobs:
               echo "Skipping invalid version: $VERSION"
               continue
             fi
-          
+
             # Only full releases trigger closing pre-release issues
             if [[ -n "$PRE_RELEASE_TAG" ]]; then
               echo "$VERSION is a pre-release, skipping issue closing."
               continue
             fi
-          
-            IFS=':' read -r GROUP ARTIFACT <<< "${{ matrix.item.name }}"
+
             PRE_RELEASE_SUFFIX="(alpha[0-9]*|beta[0-9]*|rc[0-9]*|cr[0-9]*|m[0-9]+|ea[0-9]*|b[0-9]+|[0-9]+|preview)"
             PRE_RELEASE_REGEX="$BASE_VERSION[-.]$PRE_RELEASE_SUFFIX"
-          
             TITLE_END_VERSIONLESS="${{ env.ISSUE_TITLE_MIDDLE }}${{ matrix.item.name }}"
-          
+
             # Find all open pre-release issues for this library and base version
             PRE_RELEASE_ISSUES=$(gh issue list \
               --repo "$REPO" \
@@ -324,9 +322,9 @@ jobs:
               --search "\"$TITLE_END_VERSIONLESS\" in:title" \
               --json number,title \
               --jq ".[] | select(.title | startswith(\"${{ env.ISSUE_TITLE_PREFIX }}\") and test(\"$TITLE_END_VERSIONLESS:$PRE_RELEASE_REGEX\"; \"i\")) | .number")
-          
+
             if [[ -n "$PRE_RELEASE_ISSUES" ]]; then
-              echo "Closing pre-release issues for $GROUP:$ARTIFACT base version $BASE_VERSION:"
+              echo "Closing pre-release issues for ${{ matrix.item.name }} version $BASE_VERSION:"
               for ISSUE in $PRE_RELEASE_ISSUES; do
                 echo "Closing issue #$ISSUE"
                 gh issue close "$ISSUE" --repo "$REPO" \
@@ -334,12 +332,13 @@ jobs:
                   -r "not planned"
               done
             else
-              echo "No pre-release issues found for $GROUP:$ARTIFACT base version $BASE_VERSION"
+              echo "No pre-release issues found for ${{ matrix.item.name }} version $BASE_VERSION"
             fi
           done < "$VERSIONS_FILE"
-          
-          rm "$VERSIONS_FILE"
 
+          rm "$VERSIONS_FILE"
+  
+  
 
   process-results:
     name: "🧪 Process results"
