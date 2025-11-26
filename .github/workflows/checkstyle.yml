@@ -25,6 +25,7 @@ jobs:
               - '!docs/**'
               - '!**.md'
               - '!library-and-framework-list*.json'
+              - '!.github/**'
 
       - uses: actions/setup-python@v4
         if: steps.filter.outputs.code == 'true'
@@ -40,6 +41,6 @@ jobs:
         if: steps.filter.outputs.code == 'true'
         run: ./gradlew checkstyle
 
-      - name: "⏭️ No relevant changes → skipping"
+      - name: "⏭️ No relevant changes, skip style check"
         if: steps.filter.outputs.code != 'true'
         run: echo "No build required."
