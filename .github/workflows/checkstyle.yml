@@ -21,7 +21,6 @@ jobs:
               - '!docs/**'
               - '!**.md'
               - '!library-and-framework-list*.json'
-              - '!.github/**'
           predicate-quantifier: 'every'
 
       - uses: actions/setup-python@v4
@@ -37,7 +36,3 @@ jobs:
       - name: "🧾 Run Checkstyle"
         if: steps.filter.outputs.code == 'true'
         run: ./gradlew checkstyle
-
-      - name: "⏭️ No relevant changes, skip style check"
-        if: steps.filter.outputs.code != 'true'
-        run: echo "No build required."
