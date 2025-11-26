@@ -9,7 +9,7 @@ on:
     - cron: "0 0 * * 6"
 
 jobs:
-  detect-image-changes:
+  detect-file-changes:
     name: "🔎 Detect relevant file changes"
     runs-on: "ubuntu-22.04"
     outputs:
@@ -31,7 +31,7 @@ jobs:
     name: "🔎 Scan docker images"
     runs-on: "ubuntu-22.04"
     needs: detect-file-changes
-    if: github.event_name == 'schedule' || needs.detect-image-changes.outputs.relevant-files-changed == 'true'
+    if: github.event_name == 'schedule' || needs.detect-file-changes.outputs.relevant-files-changed == 'true'
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
