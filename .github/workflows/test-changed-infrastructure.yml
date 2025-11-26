@@ -9,7 +9,7 @@ concurrency:
 
 jobs:
   detect-file-changes:
-    name: "🔎 Detect relevant build-logic changes"
+    name: "🔎 Detect relevant file changes"
     runs-on: "ubuntu-22.04"
     outputs:
       relevant-files-changed: ${{ steps.filter.outputs.relevant_files_changed }}
@@ -57,7 +57,7 @@ jobs:
 
   test-changed-infrastructure:
     name: "🧪 ${{ matrix.coordinates }} (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
-    if: needs.get-changed-infrastructure.result == 'success' && needs.get-changed-infrastructure.outputs.none-found != 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
+    if: needs.get-changed-infrastructure.result == 'success' && needs.get-changed-infrastructure.outputs.none-found != 'true' && github.repository == 'jormundur00/graalvm-reachability-metadata'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     needs: get-changed-infrastructure
