@@ -4,11 +4,11 @@ on:
   pull_request:
 
 jobs:
-  detect-json-changes:
+  detect-file-changes:
     name: "🔎 Detect relevant file changes"
     runs-on: "ubuntu-22.04"
     outputs:
-      run-validation: ${{ steps.filter.outputs.relevant_files_changed }}
+      relevant-files-changed: ${{ steps.filter.outputs.relevant_files_changed }}
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
@@ -25,8 +25,8 @@ jobs:
     name: "📋 Validate the JSON file"
     runs-on: "ubuntu-22.04"
     timeout-minutes: 5
-    needs: detect-json-changes
-    if: needs.detect-json-changes.outputs.run-validation == 'true'
+    needs: detect-file-changes
+    if: needs.detect-file-changes.outputs.relevant-files-changed == 'true'
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4

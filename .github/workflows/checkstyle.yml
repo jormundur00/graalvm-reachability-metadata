@@ -4,11 +4,11 @@ on:
   pull_request:
 
 jobs:
-  detect-checkstyle-changes:
+  detect-file-changes:
     name: "🔎 Detect relevant file changes"
     runs-on: "ubuntu-22.04"
     outputs:
-      run-checkstyle: ${{ steps.filter.outputs.relevant_files_changed }}
+      relevant-files-changed: ${{ steps.filter.outputs.relevant_files_changed }}
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
@@ -22,15 +22,14 @@ jobs:
               - '!docs/**'
               - '!**.md'
               - '!library-and-framework-list*.json'
-              - '!.github/**'
           predicate-quantifier: 'every'
 
   checkstyle:
     name: "📋 Check style according to checkstyle.xml"
     runs-on: "ubuntu-22.04"
     timeout-minutes: 15
-    needs: detect-checkstyle-changes
-    if: needs.detect-checkstyle-changes.outputs.run-checkstyle == 'true'
+    needs: detect-file-changes
+    if: needs.detect-file-changes.outputs.relevant-files-changed == 'true'
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
