@@ -4,15 +4,16 @@ on:
   pull_request:
 
 jobs:
-  validate-library-and-framework-list-json:
-    name: "📋 Validate the JSON file"
+  detect-json-changes:
+    name: "🔎 Detect relevant file changes"
     runs-on: "ubuntu-22.04"
-    timeout-minutes: 5
+    outputs:
+      run-validation: ${{ steps.filter.outputs.relevant_files_changed }}
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
 
-      - name: "🔎 Check for relevant changes"
+      - name: "Check for relevant changes"
         id: filter
         uses: dorny/paths-filter@v3
         with:
@@ -20,13 +21,21 @@ jobs:
             relevant_files_changed:
               - 'library-and-framework-list*.json'
 
+  validate-library-and-framework-list-json:
+    name: "📋 Validate the JSON file"
+    runs-on: "ubuntu-22.04"
+    timeout-minutes: 5
+    needs: detect-json-changes
+    if: needs.detect-json-changes.outputs.run-validation == 'true'
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v4
+
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-        if: steps.filter.outputs.relevant_files_changed == 'true'
 
       - name: Check that the JSON file is well-formatted and sorted by artifact
-        if: steps.filter.outputs.relevant_files_changed == 'true'
         run: |
           JSON="library-and-framework-list.json"
           if ! jq -e . "${JSON}" >/dev/null; then
@@ -40,7 +49,6 @@ jobs:
           fi
 
       - name: Check that the JSON file conforms to the schema
-        if: steps.filter.outputs.relevant_files_changed == 'true'
         run: |
           pip install check-jsonschema
           check-jsonschema --schemafile library-and-framework-list-schema.json library-and-framework-list.json
