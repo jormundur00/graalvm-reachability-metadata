@@ -16,12 +16,12 @@ jobs:
       relevant-files-changed: ${{ steps.filter.outputs.relevant_files_changed }}
     steps:
       - name: "☁️ Checkout repository"
-        if: github.event_name == 'schedule'
+        if: github.event_name == 'pull_request'
         uses: actions/checkout@v4
 
       - name: "Check for relevant changes"
         id: filter
-        if: github.event_name == 'schedule'
+        if: github.event_name == 'pull_request'
         uses: dorny/paths-filter@v3
         with:
           filters: |
@@ -32,7 +32,7 @@ jobs:
     name: "🔎 Scan docker images"
     runs-on: "ubuntu-22.04"
     needs: detect-file-changes
-    if: github.event_name == 'pull_request' || needs.detect-file-changes.outputs.relevant-files-changed == 'true'
+    if: github.event_name == 'schedule' || needs.detect-file-changes.outputs.relevant-files-changed == 'true'
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
