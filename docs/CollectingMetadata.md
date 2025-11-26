@@ -23,7 +23,7 @@ inputTaskNames.add("test")
 }
 ```
 
-This part is added to test checkstyle-skip.yml.
+This part is added to test checkstyle-skip.yml. again.
 
 To run the test task with the agent, run `./gradlew -Pagent` test. This will generate metadata in the build output directory of the project (under `build/native/agent/test`).
 
