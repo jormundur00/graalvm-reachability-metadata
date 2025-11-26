@@ -12,27 +12,28 @@ jobs:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
 
-      - name: "🔎 Determine if code needs style check"
+      - name: "🔎 Check for relevant changes"
         id: filter
         uses: dorny/paths-filter@v3
         with:
           filters: |
-            code:
+            relevant_files_changed:
               - '!docs/**'
               - '!**.md'
               - '!library-and-framework-list*.json'
+              - '!.github/**'
           predicate-quantifier: 'every'
 
       - uses: actions/setup-python@v4
-        if: steps.filter.outputs.code == 'true'
+        if: steps.filter.outputs.relevant_files_changed == 'true'
 
       - name: "🔧 Setup java"
-        if: steps.filter.outputs.code == 'true'
+        if: steps.filter.outputs.relevant_files_changed == 'true'
         uses: actions/setup-java@v4
         with:
           distribution: 'graalvm'
           java-version: '21'
 
       - name: "🧾 Run Checkstyle"
-        if: steps.filter.outputs.code == 'true'
+        if: steps.filter.outputs.relevant_files_changed == 'true'
         run: ./gradlew checkstyle
