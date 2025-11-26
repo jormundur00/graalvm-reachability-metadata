@@ -18,11 +18,11 @@ jobs:
         with:
           filters: |
             code:
-              - '**'
               - '!docs/**'
               - '!**.md'
               - '!library-and-framework-list*.json'
               - '!.github/**'
+          predicate-quantifier: 'every'
 
       - uses: actions/setup-python@v4
         if: steps.filter.outputs.code == 'true'
