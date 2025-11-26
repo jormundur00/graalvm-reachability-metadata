@@ -23,7 +23,7 @@ jobs:
         id: filter
         uses: dorny/paths-filter@v3
         with:
-          filters: |
+          filter: |
             relevant_files_changed:
               - 'tests/tck-build-logic/src/main/resources/allowed-docker-images/**'
 
