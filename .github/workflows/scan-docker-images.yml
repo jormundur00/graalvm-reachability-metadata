@@ -23,14 +23,14 @@ jobs:
         id: filter
         uses: dorny/paths-filter@v3
         with:
-          filter: |
+          filters: |
             relevant_files_changed:
               - 'tests/tck-build-logic/src/main/resources/allowed-docker-images/**'
 
   scan-images:
     name: "🔎 Scan docker images"
     runs-on: "ubuntu-22.04"
-    needs: detect-file-changes
+    needs: [detect-file-changes]
     if: github.event_name == 'schedule' || needs.detect-file-changes.outputs.relevant-files-changed == 'true'
     steps:
       - name: "☁️ Checkout repository"
