@@ -16,12 +16,30 @@ jobs:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
 
+      - name: "🔎 Determine if code needs style check"
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            code:
+              - '!docs/**'
+              - '!**.md'
+              - '!library-and-framework-list*.json'
+
       - uses: actions/setup-python@v4
+        if: steps.filter.outputs.code == 'true'
 
       - name: "🔧 Setup java"
+        if: steps.filter.outputs.code == 'true'
         uses: actions/setup-java@v4
         with:
           distribution: 'graalvm'
           java-version: '21'
 
-      - run: ./gradlew checkstyle
+      - name: "🧾 Run Checkstyle"
+        if: steps.filter.outputs.code == 'true'
+        run: ./gradlew checkstyle
+
+      - name: "⏭️ No relevant changes → skipping"
+        if: steps.filter.outputs.code != 'true'
+        run: echo "No build required."
