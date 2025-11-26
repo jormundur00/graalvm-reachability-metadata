@@ -28,7 +28,6 @@ jobs:
               - "build.gradle"
               - "settings.gradle"
               - "gradle.properties"
-              - ".github/**"
 
   get-changed-infrastructure:
     name: "📋 Get a list of libraries to test for build-logic changes"
