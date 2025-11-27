@@ -51,7 +51,7 @@ jobs:
 
   test-changed-infrastructure:
     name: "🧪 ${{ matrix.coordinates }} (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
-    if: needs.get-changed-infrastructure.outputs.relevant-files-changed == 'true' && needs.get-changed-infrastructure.result == 'success' && needs.get-changed-infrastructure.outputs.none-found != 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
+    if: needs.get-changed-infrastructure.outputs.relevant-files-changed == 'true' && needs.get-changed-infrastructure.result == 'success' && needs.get-changed-infrastructure.outputs.none-found != 'true' && github.repository == 'jormundur00/graalvm-reachability-metadata'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     needs: get-changed-infrastructure
@@ -98,10 +98,11 @@ jobs:
     name: "🧪 All build-logic triggered tests have passed"
     runs-on: "ubuntu-22.04"
     timeout-minutes: 1
-    needs: test-changed-infrastructure
+    needs: [ get-changed-infrastructure, test-changed-infrastructure ]
+    if: always()
     steps:
       - name: "All tests passed"
-        if: needs.test-changed-infrastructure.result == 'success'
+        if: needs.test-changed-infrastructure.result == 'success' || needs.get-changed-infrastructure.outputs.relevant-files-changed == 'false'
         run: exit 0
 
       - name: "Some tests failed"
