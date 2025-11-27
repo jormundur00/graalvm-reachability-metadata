@@ -98,12 +98,8 @@ jobs:
     needs: [get-changed-metadata, test-changed-metadata]
     if: always()
     steps:
-      - name: "No metadata changed"
-        if: needs.get-changed-metadata.outputs.relevant-files-changed == 'false'
-        run: exit 0
-
       - name: "All tests passed"
-        if: needs.test-changed-metadata.result == 'success'
+        if: needs.test-changed-metadata.result == 'success' || needs.get-changed-metadata.outputs.relevant-files-changed == 'false'
         run: exit 0
 
       - name: "Some tests failed"
