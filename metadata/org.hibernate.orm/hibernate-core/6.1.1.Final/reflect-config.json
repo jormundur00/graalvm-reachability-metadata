@@ -48,6 +48,12 @@
     }
   },
   {
+    "name": "[Lorg.hibernate.event.spi.PreCollectionRemoveEventListenerz;",
+    "condition": {
+      "typeReachable": "org.hibernate.event.service.internal.EventListenerGroupImpls"
+    }
+  },
+  {
     "name": "[Lorg.hibernate.event.spi.PostCollectionRemoveEventListener;",
     "condition": {
       "typeReachable": "org.hibernate.event.service.internal.EventListenerGroupImpl"
