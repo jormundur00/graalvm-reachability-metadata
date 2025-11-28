@@ -1,4 +1,4 @@
-// In-repo file change filter used for GitHub pull request workflows.
+// In-repo file change filter for GitHub pull request workflows.
 //
 // Responsibilities:
 //   - Accepts an input string ('filters') describing filter names mapped
@@ -6,8 +6,8 @@
 //     *, **, ?).
 //   - Fetches the list of changed files for the current pull request
 //     using the GitHub REST API (only runs on PR events).
-//   - Evaluates whether changed files satisfy each filter using either
-//     'some' (default) or 'every' quantifier semantics.
+//   - Determines, for each filter, whether any changed file matches its
+//     pattern set, taking negations into account.
 //   - Emits each filter result as a separate GitHub Action output.
 
 const fs = require('fs');
