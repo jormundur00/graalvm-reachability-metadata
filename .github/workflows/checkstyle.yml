@@ -21,6 +21,7 @@ jobs:
               - '!docs/**'
               - '!**.md'
               - '!library-and-framework-list*.json'
+              - '!.github/**'
 
       - uses: actions/setup-python@v4
         if: steps.filter.outputs.relevant_files_changed == 'true'
