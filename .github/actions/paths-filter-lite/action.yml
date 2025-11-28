@@ -10,7 +10,8 @@ inputs:
     required: false
     default: "some"
   github_token:
-    description: "GitHub token used to read PR changed files via the GitHub API. Recommended: ${{ secrets.GITHUB_TOKEN }}"
+    description: "GitHub token used to read PR changed files via the GitHub API."
     required: false
 runs:
   using: "node20"
+  main: "dist/index.js"
