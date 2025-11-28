@@ -11,7 +11,7 @@ runs:
     - name: Detect file changes
       shell: bash
       run: |
-        bash ${{ github.action_path }}/scripts/detect.sh "${{ inputs.base_ref }}" "${{ inputs.filters }}"
+        bash ${{ github.action_path }}/detect.sh "${{ inputs.base_ref }}" "${{ inputs.filters }}"
       env:
         GITHUB_OUTPUT: $GITHUB_OUTPUT
 
@@ -19,7 +19,7 @@ inputs:
   base_ref:
     description: 'The base branch to compare changes against'
     required: false
-    default: 'origin/main'
+    default: 'origin/master'
   filters:
     description: |
       YAML-style multiline filters. Example:
