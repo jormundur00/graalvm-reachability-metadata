@@ -12,7 +12,7 @@
       {
         "pattern": "\\QMETA-INF/services/jakarta.xml.bind.JAXBContext\\E",
         "condition": {
-          "typeReachable": "org.hibernate.boot.jaxb.internal.MappingBinders"
+          "typeReachable": "org.hibernate.boot.jaxb.internal.MappingBinder"
         }
       },
       {
