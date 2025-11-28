@@ -12,6 +12,7 @@ inputs:
   github_token:
     description: "GitHub token used to read PR changed files via the GitHub API."
     required: false
+    default: ${{ github.token }}
 runs:
   using: "node20"
   main: "index.js"
