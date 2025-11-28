@@ -23,6 +23,7 @@ jobs:
         id: filter
         uses: ./.github/actions/paths-filter
         with:
+          base_ref: ${{ github.event.pull_request.base.sha }}
           filters: |
             relevant_files_changed:
               - 'library-and-framework-list*.json'
