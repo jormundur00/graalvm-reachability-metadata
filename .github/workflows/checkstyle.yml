@@ -14,9 +14,9 @@ jobs:
 
       - name: "🔎 Detect relevant file changes"
         id: filter
-        uses: ./.github/actions/paths-filter-lite
+        uses: ./.github/actions/detect-file-changes
         with:
-          patterns: |
+          file-patterns: |
             - '!docs/**'
             - '!**.md'
             - '!library-and-framework-list*.json'

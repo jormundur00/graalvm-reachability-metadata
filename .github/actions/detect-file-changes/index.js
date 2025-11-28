@@ -156,7 +156,7 @@ function fileMatches(file, compiled) {
 
 (async function main() {
   try {
-    const patternsInput = getInput('patterns', true);
+    const patternsInput = getInput('file-patterns', true);
     const patterns = parsePatterns(patternsInput);
     const compiled = compilePatterns(patterns);
 
