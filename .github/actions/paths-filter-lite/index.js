@@ -1,14 +1,11 @@
 // In-repo file change filter for GitHub pull request workflows.
 //
 // Responsibilities:
-//   - Accepts an input string ('filters') describing filter names mapped
-//     to lists of glob patterns (supports negation via '!' and wildcards
-//     *, **, ?).
-//   - Fetches the list of changed files for the current pull request
-//     using the GitHub REST API (only runs on PR events).
-//   - Determines, for each filter, whether any changed file matches its
-//     pattern set, taking negations into account.
-//   - Emits each filter result as a separate GitHub Action output.
+//   - Accepts a YAML-like input ('patterns') listing glob patterns
+//     (supports negation via '!' and wildcards *, **, ?).
+//   - Fetches changed files for the current pull request using the GitHub REST API.
+//   - Determines if any changed file matches the pattern set (negations are respected).
+//   - Emits a single GitHub Action output: 'changed=true' if any match, otherwise 'false'.
 
 const fs = require('fs');
 const https = require('https');
@@ -60,99 +57,55 @@ function httpJson(options) {
 
 async function getChangedFilesFromPR() {
   const eventName = process.env.GITHUB_EVENT_NAME || '';
-  if (eventName !== 'pull_request' && eventName !== 'pull_request_target') {
-    return [];
-  }
+  if (!['pull_request', 'pull_request_target'].includes(eventName)) return [];
+
   const eventPath = process.env.GITHUB_EVENT_PATH;
-  if (!eventPath || !fs.existsSync(eventPath)) {
-    return [];
-  }
+  if (!eventPath || !fs.existsSync(eventPath)) return [];
+
   const payload = JSON.parse(fs.readFileSync(eventPath, 'utf8'));
   const pr = payload.pull_request;
-  if (!pr || !pr.number) {
-    return [];
-  }
-  const number = pr.number;
-  const repoFull = process.env.GITHUB_REPOSITORY || '';
-  const [owner, repo] = repoFull.split('/');
-  const token =
-    process.env.GITHUB_TOKEN || process.env.GH_TOKEN || process.env.INPUT_GITHUB_TOKEN;
+  if (!pr || !pr.number) return [];
 
-  if (!owner || !repo) {
-    throw new Error(`GITHUB_REPOSITORY is not set or invalid: '${repoFull}'`);
-  }
-
-  if (!token) {
-    logInfo('GITHUB_TOKEN not available; returning empty changed files set.');
-    return [];
-  }
+  const [owner, repo] = (process.env.GITHUB_REPOSITORY || '').split('/');
+  const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || process.env.INPUT_GITHUB_TOKEN;
+  if (!owner || !repo || !token) return [];
 
   const files = [];
   let page = 1;
   const perPage = 100;
 
   while (true) {
-    const path = `/repos/${owner}/${repo}/pulls/${number}/files?per_page=${perPage}&page=${page}`;
+    const path = `/repos/${owner}/${repo}/pulls/${pr.number}/files?per_page=${perPage}&page=${page}`;
     const headers = {
       'User-Agent': 'paths-filter-lite',
       Authorization: `token ${token}`,
       Accept: 'application/vnd.github+json',
     };
     const res = await httpJson({ hostname: 'api.github.com', path, headers });
-    if (!Array.isArray(res) || res.length === 0) {
-      break;
-    }
-    for (const f of res) {
-      if (f && typeof f.filename === 'string') {
-        files.push(f.filename);
-      }
-    }
-    if (res.length < perPage) {
-      break;
-    }
+    if (!Array.isArray(res) || res.length === 0) break;
+    files.push(...res.map(f => f.filename).filter(Boolean));
+    if (res.length < perPage) break;
     page += 1;
   }
 
   return files;
 }
 
-function parseFilters(yamlLike) {
-  // Very small YAML subset parser suitable for inputs used in this repo:
-  // filterName:
-  //   - 'pattern'
-  //   - "!negated"
-  //
-  // Supports multiple filters, but only one is used here.
-  const result = {};
-  let current = null;
-
+function parsePatterns(yamlLike) {
   const lines = (yamlLike || '').split(/\r?\n/);
-  for (let raw of lines) {
-    const line = raw.trim();
-    if (!line) continue;
-
-    const filterMatch = /^([A-Za-z0-9_.-]+):\s*$/.exec(line);
-    if (filterMatch) {
-      current = filterMatch[1];
-      if (!result[current]) result[current] = [];
-      continue;
-    }
-
-    const itemMatch = /^-\s*(.+?)\s*$/.exec(line);
-    if (itemMatch && current) {
-      let pat = itemMatch[1].trim();
-      // strip quotes if present
-      if (
-        (pat.startsWith("'") && pat.endsWith("'")) ||
-        (pat.startsWith('"') && pat.endsWith('"'))
-      ) {
+  const patterns = [];
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    if (trimmed.startsWith('-')) {
+      let pat = trimmed.slice(1).trim();
+      if ((pat.startsWith("'") && pat.endsWith("'")) || (pat.startsWith('"') && pat.endsWith('"'))) {
         pat = pat.slice(1, -1);
       }
-      result[current].push(pat);
+      patterns.push(pat);
     }
   }
-
-  return result;
+  return patterns;
 }
 
 function escapeRegexChar(ch) {
@@ -160,18 +113,11 @@ function escapeRegexChar(ch) {
 }
 
 function globToRegex(glob) {
-  // Convert a Unix-style glob to a RegExp string
-  // - '**' matches across path separators
-  // - '*' matches any number of non-separator characters
-  // - '?' matches a single non-separator character
-  // - '/' is path separator
   let re = '';
   for (let i = 0; i < glob.length; i++) {
     const ch = glob[i];
     if (ch === '*') {
-      const next = glob[i + 1];
-      if (next === '*') {
-        // '**'
+      if (glob[i + 1] === '*') {
         re += '.*';
         i++;
       } else {
@@ -187,61 +133,42 @@ function globToRegex(glob) {
 }
 
 function compilePatterns(patternsRaw) {
-  const patterns = (patternsRaw || []).map((raw) => {
-    let s = String(raw || '').trim();
+  const patterns = (patternsRaw || []).map(s => {
     let negative = false;
+    s = s.trim();
     if (s.startsWith('!')) {
       negative = true;
       s = s.slice(1).trim();
     }
-    const rx = new RegExp(globToRegex(s));
-    return { negative, rx, raw };
+    return { negative, rx: new RegExp(globToRegex(s)) };
   });
-  const hasPositive = patterns.some((p) => !p.negative);
+  const hasPositive = patterns.some(p => !p.negative);
   return { patterns, hasPositive };
 }
 
-function fileMatchesFilter(file, compiled) {
-  const { patterns, hasPositive } = compiled;
-  // If we have at least one positive pattern, default to not included until a positive matches.
-  // If we have only negative patterns, default to included until a negative excludes.
-  let included = hasPositive ? false : true;
-
-  for (const p of patterns) {
-    if (p.rx.test(file)) {
-      if (p.negative) {
-        included = false;
-      } else {
-        included = true;
-      }
-    }
+function fileMatches(file, compiled) {
+  let included = compiled.hasPositive ? false : true;
+  for (const p of compiled.patterns) {
+    if (p.rx.test(file)) included = p.negative ? false : true;
   }
   return included;
 }
 
 (async function main() {
   try {
-    const filtersInput = getInput('filters', true);
-    const filtersMap = parseFilters(filtersInput);
-    const filterNames = Object.keys(filtersMap);
-    if (filterNames.length === 0) {
-      throw new Error('No filters defined in input "filters".');
-    }
+    const patternsInput = getInput('patterns', true);
+    const patterns = parsePatterns(patternsInput);
+    const compiled = compilePatterns(patterns);
 
     const changedFiles = await getChangedFilesFromPR();
     logInfo(`Changed files detected (${changedFiles.length}):`);
-    for (const f of changedFiles) console.log(`- ${f}`);
+    changedFiles.forEach(f => console.log(`- ${f}`));
 
-    for (const name of filterNames) {
-      const compiled = compilePatterns(filtersMap[name]);
-      const result = changedFiles.some((f) => fileMatchesFilter(f, compiled));
-      setOutput(name, result ? 'true' : 'false');
-      logInfo(`Filter '${name}' -> ${result ? 'true' : 'false'}`);
-    }
+    const matched = changedFiles.some(f => fileMatches(f, compiled));
+    setOutput('changed', matched ? 'true' : 'false');
+    logInfo(`Files match filter -> ${matched}`);
   } catch (err) {
-    // Fail-safe: don't fail the job. Output nothing, but log error and exit success.
-    // Aligns with using OR conditions in workflows (e.g., schedule events).
-    console.log(`paths-filter-lite encountered an error: ${err && err.message ? err.message : err}`);
+    console.log(`paths-filter-lite encountered an error: ${err?.message || err}`);
     process.exit(0);
   }
 })();
