@@ -16,23 +16,22 @@ jobs:
         id: filter
         uses: ./.github/actions/paths-filter-lite
         with:
-          filters: |
-            relevant_files_changed:
-              - '!docs/**'
-              - '!**.md'
-              - '!library-and-framework-list*.json'
-              - '!.github/**'
+          patterns: |
+            - '!docs/**'
+            - '!**.md'
+            - '!library-and-framework-list*.json'
+            - '!.github/**'
 
       - uses: actions/setup-python@v4
-        if: steps.filter.outputs.relevant_files_changed == 'true'
+        if: steps.filter.outputs.changed == 'true'
 
       - name: "🔧 Setup java"
-        if: steps.filter.outputs.relevant_files_changed == 'true'
+        if: steps.filter.outputs.changed == 'true'
         uses: actions/setup-java@v4
         with:
           distribution: 'graalvm'
           java-version: '21'
 
       - name: "Run Checkstyle"
-        if: steps.filter.outputs.relevant_files_changed == 'true'
+        if: steps.filter.outputs.changed == 'true'
         run: ./gradlew checkstyle
