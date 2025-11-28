@@ -20,7 +20,6 @@ jobs:
             relevant_files_changed:
               - '!docs/**'
               - '!**.md'
-              - '!library-and-framework-list*.json'
               - '!.github/**'
 
       - uses: actions/setup-python@v4
