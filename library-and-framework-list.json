@@ -52,7 +52,7 @@
     "description": "HTTP client supporting SSL, cookies, WebSockets, and HTTP/2. Requires an adapter to be used.",
     "details": [
       {
-        "minimum_version": "4.0.0",
+        "minimum_version": "4.0.1",
         "test_level": "fully-tested",
         "metadata_locations": [],
         "tests_locations": [
