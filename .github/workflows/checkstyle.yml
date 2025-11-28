@@ -20,7 +20,7 @@ jobs:
             relevant_files_changed:
               - '!docs/**'
               - '!**.md'
-              - '!.github/**'
+              - '!library-and-framework-list*.json'
 
       - uses: actions/setup-python@v4
         if: steps.filter.outputs.relevant_files_changed == 'true'
