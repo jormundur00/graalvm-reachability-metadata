@@ -1,10 +1,14 @@
-// Minimal in-repo replacement for dorny/paths-filter tailored to this repo's usage.
-// - Supports a YAML-like 'filters' string input mapping filterName -> list of glob patterns
-// - Supports '!' negation in patterns
-// - Supports '*', '**', '?' wildcards (Unix-style, '/' as path separator)
-// - Quantifiers: 'some' (default) or 'every'
-// - For pull_request events: fetches changed files via GitHub API using GITHUB_TOKEN
-// - For non-PR events: produces 'false' for all filters without failing
+// In-repo file change filter used for GitHub pull request workflows.
+//
+// Responsibilities:
+//   - Accepts an input string ('filters') describing filter names mapped
+//     to lists of glob patterns (supports negation via '!' and wildcards
+//     *, **, ?).
+//   - Fetches the list of changed files for the current pull request
+//     using the GitHub REST API (only runs on PR events).
+//   - Evaluates whether changed files satisfy each filter using either
+//     'some' (default) or 'every' quantifier semantics.
+//   - Emits each filter result as a separate GitHub Action output.
 
 const fs = require('fs');
 const https = require('https');
@@ -215,26 +219,9 @@ function fileMatchesFilter(file, compiled) {
   return included;
 }
 
-function evaluateFilter(changedFiles, compiled, quantifier) {
-  const files = changedFiles || [];
-  if (quantifier === 'every') {
-    return files.length > 0 && files.every((f) => fileMatchesFilter(f, compiled));
-  }
-  // default: 'some'
-  return files.some((f) => fileMatchesFilter(f, compiled));
-}
-
 (async function main() {
   try {
     const filtersInput = getInput('filters', true);
-    const quantifier = (getInput('predicate-quantifier') || 'some')
-      .trim()
-      .toLowerCase();
-
-    if (quantifier !== 'some' && quantifier !== 'every') {
-      throw new Error(`Unsupported predicate-quantifier '${quantifier}'. Use 'some' or 'every'.`);
-    }
-
     const filtersMap = parseFilters(filtersInput);
     const filterNames = Object.keys(filtersMap);
     if (filterNames.length === 0) {
@@ -247,9 +234,9 @@ function evaluateFilter(changedFiles, compiled, quantifier) {
 
     for (const name of filterNames) {
       const compiled = compilePatterns(filtersMap[name]);
-      const result = evaluateFilter(changedFiles, compiled, quantifier);
+      const result = changedFiles.some((f) => fileMatchesFilter(f, compiled));
       setOutput(name, result ? 'true' : 'false');
-      logInfo(`Filter '${name}' -> ${result ? 'true' : 'false'} (quantifier=${quantifier})`);
+      logInfo(`Filter '${name}' -> ${result ? 'true' : 'false'}`);
     }
   } catch (err) {
     // Fail-safe: don't fail the job. Output nothing, but log error and exit success.
