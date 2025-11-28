@@ -12,18 +12,11 @@ jobs:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
 
-#      - name: "🔎 Detect relevant file changes"
-#        id: filter
-#        uses: dorny/paths-filter@v3
-#        with:
-#          filters: |
-#            relevant_files_changed:
-#              - 'library-and-framework-list*.json'
       - name: "🔎 Detect relevant file changes"
         id: filter
-        uses: ./.github/actions/paths-filter
+        uses: ./.github/actions/paths-filter-lite
         with:
-          base_ref: ${{ github.event.pull_request.base.sha }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           filters: |
             relevant_files_changed:
               - 'library-and-framework-list*.json'

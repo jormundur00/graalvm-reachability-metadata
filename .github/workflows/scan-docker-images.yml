@@ -20,8 +20,9 @@ jobs:
 
       - name: "🔎 Detect relevant file changes"
         id: filter
-        uses: dorny/paths-filter@v3
+        uses: ./.github/actions/paths-filter-lite
         with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           filters: |
             relevant_files_changed:
               - 'tests/tck-build-logic/src/main/resources/allowed-docker-images/**'

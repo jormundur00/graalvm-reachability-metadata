@@ -1,0 +1,16 @@
+name: "paths-filter-lite"
+description: "Minimal in-repo replacement for dorny/paths-filter tailored to this repo"
+author: "Repo maintainers"
+inputs:
+  filters:
+    description: "YAML mapping from filter names to arrays of glob patterns. Supports ! for negation, and *, **, ? wildcards."
+    required: true
+  predicate-quantifier:
+    description: "'some' (default) or 'every'. 'every' returns true only if all changed files match the filter (and at least one file changed)."
+    required: false
+    default: "some"
+  github_token:
+    description: "GitHub token used to read PR changed files via the GitHub API. Recommended: ${{ secrets.GITHUB_TOKEN }}"
+    required: false
+runs:
+  using: "node20"
