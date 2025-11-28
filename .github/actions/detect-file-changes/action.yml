@@ -5,7 +5,7 @@ inputs:
   file-patterns:
     description: "Glob pattern or list of glob patterns to check (supports '!' for negation, and *, **, ? wildcards)."
     required: true
-  token:
+  github_token:
     description: "GitHub token used to read PR changed files via the GitHub API."
     required: false
     default: ${{ github.token }}
