@@ -9,7 +9,7 @@
   },
   {
     "condition": {
-      "typeReachable": "org.hibernate.query.Query"
+      "typeReachable": "org.hibernate.query.Querys"
     },
     "interfaces": [
       "org.hibernate.query.Query",
