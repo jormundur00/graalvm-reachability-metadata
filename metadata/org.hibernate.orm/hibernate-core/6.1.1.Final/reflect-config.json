@@ -85,7 +85,7 @@
           "org.hibernate.mapping.PersistentClass",
           "org.hibernate.cache.spi.access.EntityDataAccess",
           "org.hibernate.cache.spi.access.NaturalIdDataAccess",
-          "org.hibernate.persister.spi.PersisterCreationContext"
+          "org.hibernate.persister.spi.PersisterCreationContexts"
         ]
       },
       {
