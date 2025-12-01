@@ -29,8 +29,8 @@ import org.gradle.util.internal.VersionNumber
 import org.graalvm.internal.tck.harness.tasks.ComputeAndPullAllowedDockerImagesTask
 import org.graalvm.internal.tck.utils.CoordinateUtils
 
-
 import static org.graalvm.internal.tck.Utils.generateTaskName
+import static org.graalvm.internal.tck.Utils.readIndexFile;
 
 logger.lifecycle("GraalVM Reachability Metadata TCK")
 logger.lifecycle("---------------------------------")
@@ -220,23 +220,58 @@ Provider<Task> generateMatrixBatchedCoordinates = tasks.register("generateMatrix
 Provider<Task> generateChangedCoordinatesMatrix = tasks.register("generateChangedCoordinatesMatrix", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with coordinates of changed libraries")
     task.setGroup(METADATA_GROUP)
+
     task.doFirst {
         if (!project.hasProperty("baseCommit")) {
             throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
         }
 
         boolean noneFound = diffCoordinates.isEmpty()
+        def expandedCoordinates = []
+
+        if (!noneFound) {
+            diffCoordinates.each { coord ->
+                // coord = "groupId:artifactId:metadata-version"
+                def parts = coord.split(":")
+                def groupId = parts[0]
+                def artifactId = parts[1]
+
+                // Path to index.json
+                def indexDir = file("metadata/${groupId}/${artifactId}").toPath()
+                println indexDir
+                if (!indexDir.toFile().exists()) {
+                    println "FAIL"
+                    expandedCoordinates << coord
+                } else {
+                    // read index.json
+                    def index = readIndexFile(indexDir)
+                    index.each { entry ->
+                        entry["tested-versions"].each { version ->
+                            // skip versions that are explicitly skipped
+                            def skipped = entry["skipped-versions"]?.find { it.version == version }
+                            if (skipped == null) {
+                                expandedCoordinates << "${groupId}:${artifactId}:${version}"
+                            } else {
+                                println "Skipping ${groupId}:${artifactId}:${version} — reason: ${skipped.reason}"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         def matrix = [
-                "coordinates": noneFound ? [] : diffCoordinates
+                "coordinates": expandedCoordinates
         ]
-        matrix.putAll(matrixDefaultsFor("generateChangedCoordinatesMatrix"))
-        if (noneFound) {
+        matrix.putAll(matrixDefaultsFor("generateChangedCoordinatesMatrix") as Map<? extends String, ? extends ArrayList>)
+
+        if (expandedCoordinates.isEmpty()) {
             println "No changed coordinates were found!"
         }
 
-
+        // Write outputs for GitHub Actions
         writeGithubOutput("matrix", JsonOutput.toJson(matrix))
-        writeGithubOutput("none-found", noneFound.toString())
+        writeGithubOutput("none-found", expandedCoordinates.isEmpty().toString())
     }
 }
 
