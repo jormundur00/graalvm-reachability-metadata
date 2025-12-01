@@ -19,19 +19,6 @@ function getInput(name, required = false) {
   return val || '';
 }
 
-function setOutput(name, value) {
-  const outputPath = process.env.GITHUB_OUTPUT;
-  if (!outputPath) {
-    console.log(`::set-output name=${name}::${value}`); // legacy fallback
-    return;
-  }
-  fs.appendFileSync(outputPath, `${name}=${value}\n`);
-}
-
-function logInfo(msg) {
-  console.log(msg);
-}
-
 function httpJson(options) {
   return new Promise((resolve, reject) => {
     const req = https.request({ method: 'GET', ...options }, (res) => {
@@ -161,12 +148,12 @@ function fileMatches(file, compiled) {
     const compiled = compilePatterns(patterns);
 
     const changedFiles = await getChangedFilesFromPR();
-    logInfo(`Changed files detected (${changedFiles.length}):`);
+    console.log(`Changed files detected (${changedFiles.length}):`);
     changedFiles.forEach(f => console.log(`- ${f}`));
 
     const matched = changedFiles.some(f => fileMatches(f, compiled));
-    setOutput('changed', matched ? 'true' : 'false');
-    logInfo(`Files match filter -> ${matched}`);
+    fs.appendFileSync(process.env.GITHUB_OUTPUT, `changed=${matched ? 'true' : 'false'}\n`);
+    console.log(`Files match filter -> ${matched}`);
   } catch (err) {
     console.log(`paths-filter-lite encountered an error: ${err?.message || err}`);
     process.exit(0);

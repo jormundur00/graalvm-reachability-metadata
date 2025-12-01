@@ -1,6 +1,6 @@
-name: "detect-file-changes"
+name: "Detect file changes"
 description: "Detects if any files matching given patterns changed in the current pull request."
-author: "Repo maintainers"
+author: "GraalVM Reachability Metadata repository maintainers"
 inputs:
   file-patterns:
     description: "Glob pattern or list of glob patterns to check (supports '!' for negation, and *, **, ? wildcards)."
