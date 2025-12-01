@@ -44,6 +44,8 @@ jobs:
         if: steps.filter.outputs.changed == 'true'
         run: |
           ./gradlew generateChangedCoordinatesMatrix -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
+          echo "Matrix:"
+          echo "${{ steps.set-matrix.outputs.matrix }}"
 
   test-changed-metadata:
     name: "🧪 ${{ matrix.coordinates }} (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
@@ -88,6 +90,7 @@ jobs:
       - name: "🧪 Run '${{ matrix.coordinates }}' tests"
         run: |
           ./gradlew test -Pcoordinates=${{ matrix.coordinates }}
+          
 
   all-metadata-passed:
     name: "🧪 All metadata tests have passed"
