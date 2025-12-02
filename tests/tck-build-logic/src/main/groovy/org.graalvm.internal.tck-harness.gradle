@@ -29,7 +29,6 @@ import org.gradle.util.internal.VersionNumber
 import org.graalvm.internal.tck.harness.tasks.ComputeAndPullAllowedDockerImagesTask
 import org.graalvm.internal.tck.utils.CoordinateUtils
 
-
 import static org.graalvm.internal.tck.Utils.generateTaskName
 
 logger.lifecycle("GraalVM Reachability Metadata TCK")
@@ -233,7 +232,6 @@ Provider<Task> generateChangedCoordinatesMatrix = tasks.register("generateChange
         if (noneFound) {
             println "No changed coordinates were found!"
         }
-
 
         writeGithubOutput("matrix", JsonOutput.toJson(matrix))
         writeGithubOutput("none-found", noneFound.toString())
