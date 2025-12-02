@@ -115,19 +115,5 @@
                 ]
             }
         ]
-    },
-    {
-      "name": "org.apache.activemq.transport.vm.VMTransportFactorys",
-      "condition": {
-        "typeReachable": "org.apache.activemq.transport.TransportFactorys"
-      },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-
-          ]
-        }
-      ]
     }
 ]
