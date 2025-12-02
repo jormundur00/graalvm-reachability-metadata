@@ -90,6 +90,13 @@ jobs:
           VERSIONS_JSON=$(jq -r --arg mv "$METADATA_VERSION" '.[] | select(.["metadata-version"]==$mv) | ."tested-versions"' "$INDEX_FILE")
           
           bash ./.github/workflows/scripts/run-consecutive-tests.sh "$GAV_COORDINATES" "$VERSIONS_JSON" 2>&1 | tee test_results.txt || true
+          
+          # Check if any version tested-version failed tests
+          if grep -q "^FAILED" test_results.txt; then
+            FAILED_VERSION=$(grep "^FAILED" test_results.txt | head -n 1 | awk -F'[][]' '{print $4}')
+            echo "Tests failed for version $FAILED_VERSION"
+            exit 1
+          fi
 
   all-metadata-passed:
     name: "🧪 All metadata tests have passed"
