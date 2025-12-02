@@ -103,6 +103,7 @@ jobs:
     runs-on: "ubuntu-22.04"
     timeout-minutes: 1
     needs: test-changed-metadata
+    if: always()
     steps:
       - name: "All tests passed"
         if: needs.test-changed-metadata.result == 'success'
