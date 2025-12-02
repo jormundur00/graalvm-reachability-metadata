@@ -87,7 +87,7 @@ jobs:
           INDEX_FILE="metadata/$GROUP_ID/$ARTIFACT_ID/index.json"
           
           # Build JSON array of tested-version for the metadata-version
-          VERSIONS_JSON=$(jq -r --arg mv "$METADATA_VERSION" '.[] | select(.["metadata-version"]==$mv) | ."tested-version"' "$INDEX_FILE")
+          VERSIONS_JSON=$(jq -r --arg mv "$METADATA_VERSION" '.[] | select(.["metadata-version"]==$mv) | ."tested-versions"' "$INDEX_FILE")
           
           bash ./.github/workflows/scripts/run-consecutive-tests.sh "$TEST_COORDINATES" "$VERSIONS_JSON" 2>&1 | tee test_results.txt || true
 
