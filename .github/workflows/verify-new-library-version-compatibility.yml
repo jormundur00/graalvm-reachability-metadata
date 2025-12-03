@@ -46,8 +46,6 @@ jobs:
           echo "matrix=$(./gradlew fetchExistingLibrariesWithNewerVersions --quiet | sed -n '/\[/,$p')" >> $GITHUB_OUTPUT
 
       - name: "🔨 Create branch"
-        env:
-          GH_TOKEN: ${{ secrets.REPO_PAT }}
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "Github Actions"
