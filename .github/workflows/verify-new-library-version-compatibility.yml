@@ -46,6 +46,8 @@ jobs:
           echo "matrix=$(./gradlew fetchExistingLibrariesWithNewerVersions --quiet | sed -n '/\[/,$p')" >> $GITHUB_OUTPUT
 
       - name: "🔨 Create branch"
+        env:
+          GH_TOKEN: ${{ secrets.REPO_PAT }}
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "Github Actions"
@@ -344,7 +346,7 @@ jobs:
     runs-on: ubuntu-22.04
     permissions: write-all
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.REPO_PAT }}
     needs:
       - get-all-libraries
       - test-all-metadata
@@ -360,4 +362,4 @@ jobs:
           git checkout ${{ needs.get-all-libraries.outputs.branch }}
           gh pr create \
             --title "[Automation] Update supported library versions $(date '+%Y-%m-%dT%H:%M')" \
-            --body "This pull request updates supported versions of the existing libraries in the repo" \
+            --body "This pull request updates supported versions of the existing libraries in the repo"
