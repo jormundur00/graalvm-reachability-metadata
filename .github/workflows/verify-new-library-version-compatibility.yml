@@ -240,9 +240,8 @@ jobs:
               --jq ".[] | select(.title | (startswith(\"${{ env.ISSUE_TITLE_PREFIX }}\") and endswith(\"$TITLE_END\"))) | .number"
           )
           if [ -n "$ISSUE_NUMBER" ]; then
-            echo "Must not reach here as the issue already exists: $ISSUE_NUMBER"
-            echo "The previous stage should of failed before."
-            exit 1
+            echo "Issue already exists: $ISSUE_NUMBER. Skipping creation."
+            exit 0
           fi
 
           BODY_FILE=$(mktemp)
@@ -345,7 +344,7 @@ jobs:
     runs-on: ubuntu-22.04
     permissions: write-all
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.REPO_PAT }}
     needs:
       - get-all-libraries
       - test-all-metadata
@@ -359,6 +358,7 @@ jobs:
           git config --local user.name "Github Actions"
           git fetch origin ${{ needs.get-all-libraries.outputs.branch }}
           git checkout ${{ needs.get-all-libraries.outputs.branch }}
+      
           gh pr create \
             --title "[Automation] Update supported library versions $(date '+%Y-%m-%dT%H:%M')" \
-            --body "This pull request updates supported versions of the existing libraries in the repo" \
+            --body "This pull request updates supported versions of the existing libraries in the repo"
