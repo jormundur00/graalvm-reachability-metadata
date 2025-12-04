@@ -58,7 +58,7 @@ if (CoordinateUtils.isFractionalBatch(coordinateFilter)) {
     matchingCoordinates = tck.getMatchingCoordinates(coordinateFilter)
 }
 matchingCoordinates = matchingCoordinates.findAll { !it.startsWith("samples:") }
-
+// Test
 
 // gradle checkstyle -Pcoordinates=<maven-coordinates>
 Provider<Task> checkstyle = tasks.register("checkstyle") { task ->
