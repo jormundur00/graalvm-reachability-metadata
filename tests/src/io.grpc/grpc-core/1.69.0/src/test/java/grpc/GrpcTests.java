@@ -44,5 +44,6 @@ class SimpleService extends SimpleGrpc.SimpleImplBase {
                 .build();
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
+        // asdf
     }
 }
