@@ -47,7 +47,7 @@ jobs:
       - name: "✏️ Create PR (using custom PAT)"
         # Note: We pass the CUSTOM_PR_TOKEN as GH_TOKEN for this step only
         env:
-          GH_TOKEN: ${{ env.CUSTOM_PR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # The gh pr create command prints the new PR's URL to stdout.
           # We capture that URL using the 'tail' command to get the last line of output.
