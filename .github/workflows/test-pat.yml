@@ -1,57 +1,75 @@
-name: "Minimal PAT Permission Test"
+name: "Hybrid PAT/GITHUB_TOKEN Test"
 
 on:
   workflow_dispatch:
 
 jobs:
-  test_pat_pr_creation:
+  test_hybrid_pr_creation:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write       # Needed for push/checkout
-      pull-requests: write  # Needed for gh pr create/close
 
+    # 1. GITHUB_TOKEN permissions (for git push)
+    permissions:
+      contents: write       # Essential for git push
+      pull-requests: write  # Needed for gh pr create/close
+      issues: write         # Needed for labels/assignees
+
+    # Define the custom PAT token for the 'gh' CLI only
     env:
-      # Exposes your PAT to the run step via the GH_TOKEN environment variable
-      GH_TOKEN: ${{ secrets.REPO_PAT }}
+      CUSTOM_PR_TOKEN: ${{ secrets.REPO_PAT }}
 
     steps:
-      # 1. Checkout the repository (Essential to make the directory a Git repo)
-      - name: "☁️ Checkout repository"
+      # 1. Checkout using the default GITHUB_TOKEN (Secure and easy)
+      - name: "☁️ Checkout repository (using GITHUB_TOKEN)"
         uses: actions/checkout@v4
         with:
-          # Use the PAT for HTTPS authentication during checkout
-          token: ${{ secrets.REPO_PAT }}
-          fetch-depth: 0 # Required for git push later
+          # Use the default token which is implicitly authorized by the 'permissions' block
+          fetch-depth: 0
 
-      - name: "✏️ Create and Clean Up PR"
+      # 2. Commit and Push using the default GITHUB_TOKEN authentication
+      - name: "Git Commit and Push Branch (as github-actions[bot])"
         run: |
-          # Use a unique branch name to prevent conflicts
-          BRANCH_NAME="test-pat-branch-$(date +%s)"
-          git config --local user.email "jormundur00@gmail.com"
-          git config --local user.name "jormundur00"          
-          echo "--- Testing PR creation with REPO_PAT ---"
+          BRANCH_NAME="test-hybrid-branch-$(date +%s)"
           
-          # A. Create a dummy change and commit it locally
+          # Configure identity as the default GitHub Actions bot
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+
+          # Create and commit the change
           git checkout -b $BRANCH_NAME
-          echo "Test commit for $BRANCH_NAME" > test_pat_file.txt
-          git add test_pat_file.txt
-          git commit -m "Test commit: PAT check"
+          echo "Hybrid commit for $BRANCH_NAME" > test_hybrid_file.txt
+          git add test_hybrid_file.txt
+          git commit -m "Hybrid commit: Push by default bot"
           
-          # B. Push the new branch using the authenticated token
+          # Push the new branch. Uses GITHUB_TOKEN for authentication.
           git push -u origin $BRANCH_NAME
           
-          # C. Create the Pull Request (This verifies the token's pull-requests:write permission)
+          echo "Created and pushed branch: $BRANCH_NAME" >> $GITHUB_ENV
+
+      # 3. Create PR using the custom PAT
+      - name: "✏️ Create PR (using custom PAT)"
+        # Note: We pass the CUSTOM_PR_TOKEN as GH_TOKEN for this step only
+        env:
+          GH_TOKEN: ${{ env.CUSTOM_PR_TOKEN }}
+        run: |
           PR_URL=$(gh pr create \
-            --title "[PAT Test] Successful Token Check" \
-            --body "PR created successfully by token." \
+            --title "[Hybrid Test] PR by Custom Bot" \
+            --body "Branch pushed by default bot, PR created by custom token." \
             --base ${{ github.ref_name }} \
-            --head $BRANCH_NAME \
+            --head ${{ env.BRANCH_NAME }} \
+            --label "hybrid-test" \
             --json url -q ".url")
 
-          echo "✅ Successfully created PR: $PR_URL"
+          echo "✅ Successfully created PR by custom token: $PR_URL" >> $GITHUB_STEP_SUMMARY
+          echo "PR_URL=$PR_URL" >> $GITHUB_ENV
 
-          # D. Clean up
+      # 4. Clean up (Optional, but good)
+      - name: "D. Clean up"
+        # Use the custom token for closing the PR and deleting the branch
+        env:
+          GH_TOKEN: ${{ env.CUSTOM_PR_TOKEN }}
+        if: always()
+        run: |
           echo "--- Cleaning up ---"
-          gh pr close $BRANCH_NAME
-          git push origin --delete $BRANCH_NAME
-          echo "Cleanup complete. PR closed and branch deleted."
+          gh pr close ${{ env.BRANCH_NAME }}
+          git push origin --delete ${{ env.BRANCH_NAME }}
+          echo "Cleanup complete."
