@@ -51,7 +51,7 @@ jobs:
         run: |
           # The gh pr create command prints the new PR's URL to stdout.
           # We capture that URL using the 'tail' command to get the last line of output.
-          PR_URL=$(gh pr create \
+          PR_URL=$(gh pr create --force \
             --title "[Hybrid Test] PR by Custom Bot (Manual Review Required)" \
             --body "Branch pushed by default bot, PR created by custom token." \
             --base ${{ github.ref_name }} \
