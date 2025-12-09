@@ -1,61 +1,57 @@
-name: "PAT Permission Test"
+name: "Minimal PAT Permission Test"
 
 on:
-  workflow_dispatch: # Allows manual triggering from the Actions tab
+  workflow_dispatch:
 
 jobs:
-  test_permissions:
+  test_pat_pr_creation:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Needed for checkout and git push
-      pull-requests: write # Needed for gh pr create
-      issues: write # Needed for labels/assignees (if testing that)
+      contents: write       # Needed for push/checkout
+      pull-requests: write  # Needed for gh pr create/close
 
     env:
-      # Use the secret name that holds your PAT
+      # Exposes your PAT to the run step via the GH_TOKEN environment variable
       GH_TOKEN: ${{ secrets.REPO_PAT }}
 
     steps:
-      - name: Install GitHub CLI
-        run: |
-          # The runner has 'gh' installed, but this ensures it's available
-          sudo apt-get update && sudo apt-get install -y gh
+      # 1. Checkout the repository (Essential to make the directory a Git repo)
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v4
+        with:
+          # Use the PAT for HTTPS authentication during checkout
+          token: ${{ secrets.REPO_PAT }}
+          fetch-depth: 0 # Required for git push later
 
-      - name: Verify Token Permissions
+      - name: "✏️ Create and Clean Up PR"
         run: |
-          # 1. Test basic repository access (equivalent to 'git clone/push')
-          # This command attempts to fetch the repo using the token.
-          echo "--- Testing Repository Access ---"
-          git clone https://x-oauth-basic:${GH_TOKEN}@github.com/${{ github.repository }} temp_repo
-          rm -rf temp_repo
-
-          # 2. Test Pull Request creation capability
-          # This is the crucial test. It tries to create a PR without any complex dependencies.
-          echo "--- Testing gh pr create ---"
+          # Use a unique branch name to prevent conflicts
+          BRANCH_NAME="test-pat-branch-$(date +%s)"
+          git config --local user.email "jormundur00@gmail.com"
+          git config --local user.name "jormundur00"          
+          echo "--- Testing PR creation with REPO_PAT ---"
           
-          # Create a dummy branch and commit
-          git checkout -b test-pat-branch
-          echo "Test commit $(date)" > TEST_FILE
-          git add TEST_FILE
-          git commit -m "Test commit for PAT permission check"
+          # A. Create a dummy change and commit it locally
+          git checkout -b $BRANCH_NAME
+          echo "Test commit for $BRANCH_NAME" > test_pat_file.txt
+          git add test_pat_file.txt
+          git commit -m "Test commit: PAT check"
           
-          # Push the new branch using the token
-          git push -u origin test-pat-branch
+          # B. Push the new branch using the authenticated token
+          git push -u origin $BRANCH_NAME
           
-          # Create a dummy PR
+          # C. Create the Pull Request (This verifies the token's pull-requests:write permission)
           PR_URL=$(gh pr create \
-            --title "[PAT Test] PR from token" \
-            --body "This PR tests the permissions of the REPO_PAT" \
-            --base main \
-            --head test-pat-branch \
-            --label "test-pat-check" \
-            --assignee ${{ github.actor }} \
-            --draft \
+            --title "[PAT Test] Successful Token Check" \
+            --body "PR created successfully by token." \
+            --base ${{ github.ref_name }} \
+            --head $BRANCH_NAME \
             --json url -q ".url")
 
-          echo "Successfully created dummy PR: $PR_URL"
+          echo "✅ Successfully created PR: $PR_URL"
 
-          # 3. Clean up (Optional, but recommended)
+          # D. Clean up
           echo "--- Cleaning up ---"
-          gh pr close test-pat-branch
-          git push origin --delete test-pat-branch
+          gh pr close $BRANCH_NAME
+          git push origin --delete $BRANCH_NAME
+          echo "Cleanup complete. PR closed and branch deleted."
