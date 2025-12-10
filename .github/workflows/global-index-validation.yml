@@ -1,0 +1,41 @@
+name: "Validate metadata/index.json"
+
+on:
+  pull_request:
+
+jobs:
+  validate-global-index-json:
+    name: "📋 Validate the metadata index JSON file"
+    runs-on: "ubuntu-22.04"
+    timeout-minutes: 5
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v4
+
+      - name: "🔎 Detect relevant file changes"
+        id: filter
+        uses: ./.github/actions/detect-file-changes
+        with:
+          file-patterns: |
+            - 'metadata/index.json'
+            - 'schemas/metadata-root-index-schema-*.json'
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+        if: steps.filter.outputs.changed == 'true'
+
+      - name: Check that metadata/index.json is well-formatted
+        if: steps.filter.outputs.changed == 'true'
+        run: |
+          JSON="metadata/index.json"
+          if ! jq -e . "${JSON}" >/dev/null; then
+            echo "'${JSON}' fails to parse. Please make sure it is a valid JSON file."
+            exit 6
+          fi
+
+      - name: Check that the JSON file conforms to the schema
+        if: steps.filter.outputs.changed == 'true'
+        run: |
+          pip install check-jsonschema
+          check-jsonschema --schemafile schemas/metadata-root-index-schema-v1.0.0.json metadata/index.json
