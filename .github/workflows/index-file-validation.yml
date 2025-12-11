@@ -21,6 +21,7 @@ jobs:
             - 'metadata/index.json'
             - 'metadata/*/*/index.json'
             - 'tests/src/index.json'
+            - 'tests/src/*/*/*/*/index.json'
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Setup Python"
@@ -55,7 +56,7 @@ jobs:
               SCHEMA="schemas/metadata-library-index-schema-v1.0.0.json"
             elif [[ "$FILE" == "tests/src/index.json" ]]; then
               SCHEMA="schemas/tests-root-index-schema-v1.0.0.json"
-            elif [[ "$FILE" == tests/src/*/index.json ]]; then
+            elif [[ "$FILE" == tests/src/*/*/*/*/index.json ]]; then
               SCHEMA="schemas/tests-project-index-schema-v1.0.0.json"
             else
               echo "ℹ️ Skipping: $FILE (no schema mapping)"
