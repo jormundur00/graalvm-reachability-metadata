@@ -318,7 +318,7 @@
   "directory" : "org.jctools/jctools-core",
   "module" : "org.jctools:jctools-core"
 }, {
-  "allowed-packages" : [ "kotlin" ],
+  "allowed-packages" : [ "kotlins" ],
   "directory" : "org.jetbrains.kotlin/kotlin-reflect",
   "module" : "org.jetbrains.kotlin:kotlin-reflect"
 }, {
