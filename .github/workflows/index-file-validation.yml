@@ -71,11 +71,11 @@ jobs:
         
           # Step 1: Check JSON well-formedness
           jq -e . "$FILE" >/dev/null || {
-          echo "❌ $FILE is not valid JSON"
-          exit 1
-        }
+            echo "❌ $FILE is not valid JSON"
+            exit 1
+          }
 
-        # Step 2: Validate against schema
+          # Step 2: Validate against schema
           check-jsonschema --schemafile "$SCHEMA" "$FILE"
         
           echo "✅ $FILE validated successfully"
