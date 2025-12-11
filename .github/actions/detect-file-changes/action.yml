@@ -15,5 +15,5 @@ runs:
 outputs:
   changed:
     description: "Returns `true` if any changed file matches the specified patterns, `false` otherwise."
-  changed-files:
+  changed_files:
     description: "Returns a list of all changed files that match the specified patterns, or an empty list otherwise."
