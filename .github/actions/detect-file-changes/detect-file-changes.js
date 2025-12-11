@@ -244,7 +244,7 @@ function fileMatches(file, compiled) {
     // Write the list of matched files as a multiline output
     fs.appendFileSync(
       process.env.GITHUB_OUTPUT,
-      `changed_files<<EOF\n${matchedFiles.join('\n')}\nEOF\n`
+      `changed_files=${matchedFiles.join(' ')}\n`
     );
 
     console.log(`Files matching filter (${matchedFiles.length}):`);
