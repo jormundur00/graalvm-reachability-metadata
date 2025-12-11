@@ -39,44 +39,44 @@ jobs:
         if: steps.filter.outputs.changed == 'true'
         run: |
           set -e
-
+  
           echo "::group::Changed JSON files"
           echo "${{ steps.filter.outputs.changed_files }}"
           echo "::endgroup::"
-
-          # Split changed_files into array
-          IFS=$'\n' read -r -d '' -a FILES <<< "${{ steps.filter.outputs.changed_files }}"
-
+          
+          # Treat changed_files as a proper array
+          FILES=(${{ steps.filter.outputs.changed_files }})
+          
           for FILE in "${FILES[@]}"; do
+        
+          # Determine schema for each file
+          if [[ "$FILE" == "metadata/index.json" ]]; then
+          SCHEMA="schemas/metadata-root-index-schema-v1.0.0.json"
+          elif [[ "$FILE" == metadata/*/*/index.json ]]; then
+          SCHEMA="schemas/metadata-library-index-schema-v1.0.0.json"
+          elif [[ "$FILE" == metadata/*/*/*/index.json ]]; then
+          SCHEMA="schemas/metadata-version-index-schema-v1.0.0.json"
+          elif [[ "$FILE" == "tests/src/index.json" ]]; then
+          SCHEMA="schemas/tests-root-index-schema-v1.0.0.json"
+          elif [[ "$FILE" == tests/src/*/index.json ]]; then
+          SCHEMA="schemas/tests-project-index-schema-v1.0.0.json"
+          elif [[ "$FILE" == "library-and-framework-list.json" ]]; then
+          SCHEMA="schemas/library-and-framework-list-schema-v1.0.0.json"
+          else
+        echo "ℹ️ Skipping: $FILE (no schema mapping)"
+          continue
+          fi
+        
+          echo "🔍 Validating $FILE using $SCHEMA"
+        
+          # Step 1: Check JSON well-formedness
+          jq -e . "$FILE" >/dev/null || {
+          echo "❌ $FILE is not valid JSON"
+          exit 1
+        }
 
-            # Determine schema for each file
-            if [[ "$FILE" == "metadata/index.json" ]]; then
-              SCHEMA="schemas/metadata-root-index-schema-v1.0.0.json"
-            elif [[ "$FILE" == metadata/*/*/index.json ]]; then
-              SCHEMA="schemas/metadata-library-index-schema-v1.0.0.json"
-            elif [[ "$FILE" == metadata/*/*/*/index.json ]]; then
-              SCHEMA="schemas/metadata-version-index-schema-v1.0.0.json"
-            elif [[ "$FILE" == "tests/src/index.json" ]]; then
-              SCHEMA="schemas/tests-root-index-schema-v1.0.0.json"
-            elif [[ "$FILE" == tests/src/*/index.json ]]; then
-              SCHEMA="schemas/tests-project-index-schema-v1.0.0.json"
-            elif [[ "$FILE" == "library-and-framework-list.json" ]]; then
-              SCHEMA="schemas/library-and-framework-list-schema-v1.0.0.json"
-            else
-              echo "ℹ️ Skipping: $FILE (no schema mapping)"
-              continue
-            fi
-
-            echo "🔍 Validating $FILE using $SCHEMA"
-
-            # Step 1: Check JSON well-formedness
-            jq -e . "$FILE" >/dev/null || {
-              echo "❌ $FILE is not valid JSON"
-              exit 1
-            }
-
-            # Step 2: Validate against schema
-            check-jsonschema --schemafile "$SCHEMA" "$FILE"
-
-            echo "✅ $FILE validated successfully"
+        # Step 2: Validate against schema
+          check-jsonschema --schemafile "$SCHEMA" "$FILE"
+        
+          echo "✅ $FILE validated successfully"
           done
