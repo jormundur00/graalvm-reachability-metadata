@@ -40,10 +40,6 @@ jobs:
         run: |
           set -e
           
-          echo "::group::Changed JSON files"
-          echo "${{ steps.filter.outputs.changed_files }}"
-          echo "::endgroup::"
-          
           # Treat changed_files as a proper array
           FILES=(${{ steps.filter.outputs.changed_files }})
           
