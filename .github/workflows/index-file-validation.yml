@@ -30,12 +30,15 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: "Validate JSON files"
+      - name: "Install validation tools"
+        if: steps.filter.outputs.changed == 'true'
+        run: |
+          pip install jq check-jsonschema
+
+      - name: "Check that the changed index.json files conform to their schemas"
         if: steps.filter.outputs.changed == 'true'
         run: |
           set -e
-  
-          pip install jq check-jsonschema
           
           echo "::group::Changed JSON files"
           echo "${{ steps.filter.outputs.changed_files }}"
