@@ -1160,6 +1160,7 @@
     "libraries" : [
       {
         "name" : "org.jctools:jctools-core",
+        "something-else": "adf",
         "versions" : [
           "2.1.2"
         ]
