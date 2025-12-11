@@ -1,4 +1,4 @@
-name: "Validate metadata JSON files"
+name: "Validate index.json files"
 
 on:
   pull_request:
@@ -21,7 +21,6 @@ jobs:
             - 'metadata/index.json'
             - 'metadata/*/*/index.json'
             - 'tests/src/**/index.json'
-            - 'library-and-framework-list.json'
             - 'schemas/*.json'
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -31,16 +30,13 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: "Install validation tools"
-        if: steps.filter.outputs.changed == 'true'
-        run: |
-          pip install jq check-jsonschema
-
       - name: "Validate JSON files"
         if: steps.filter.outputs.changed == 'true'
         run: |
           set -e
   
+          pip install jq check-jsonschema
+          
           echo "::group::Changed JSON files"
           echo "${{ steps.filter.outputs.changed_files }}"
           echo "::endgroup::"
@@ -48,36 +44,52 @@ jobs:
           # Treat changed_files as a proper array
           FILES=(${{ steps.filter.outputs.changed_files }})
           
+          # Track failures
+          FAILURES=()
+          
           for FILE in "${FILES[@]}"; do
         
-          # Determine schema for each file
-          if [[ "$FILE" == "metadata/index.json" ]]; then
-            SCHEMA="schemas/metadata-root-index-schema-v1.0.0.json"
-          elif [[ "$FILE" == metadata/*/*/index.json ]]; then
-            SCHEMA="schemas/metadata-library-index-schema-v1.0.0.json"
-          elif [[ "$FILE" == metadata/*/*/*/index.json ]]; then
-            SCHEMA="schemas/metadata-version-index-schema-v1.0.0.json"
-          elif [[ "$FILE" == "tests/src/index.json" ]]; then
-            SCHEMA="schemas/tests-root-index-schema-v1.0.0.json"
-          elif [[ "$FILE" == tests/src/*/index.json ]]; then
-            SCHEMA="schemas/tests-project-index-schema-v1.0.0.json"
-          elif [[ "$FILE" == "library-and-framework-list.json" ]]; then
-            SCHEMA="schemas/library-and-framework-list-schema-v1.0.0.json"
-          else
-            echo "ℹ️ Skipping: $FILE (no schema mapping)"
-            continue
-          fi
-        
-          echo "🔍 Validating $FILE using $SCHEMA"
-        
-          # Step 1: Check JSON well-formedness
-          jq -e . "$FILE" >/dev/null || {
-            echo "❌ $FILE is not valid JSON"
-            exit 1
-          }
-
-          # Step 2: Validate against schema
-          check-jsonschema --schemafile "$SCHEMA" "$FILE"
-        
-          echo "✅ $FILE validated successfully"
+            # Determine schema for each file
+            if [[ "$FILE" == "metadata/index.json" ]]; then
+              SCHEMA="schemas/metadata-root-index-schema-v1.0.0.json"
+            elif [[ "$FILE" == metadata/*/*/index.json ]]; then
+              SCHEMA="schemas/metadata-library-index-schema-v1.0.0.json"
+            elif [[ "$FILE" == metadata/*/*/*/index.json ]]; then
+              SCHEMA="schemas/metadata-version-index-schema-v1.0.0.json"
+            elif [[ "$FILE" == "tests/src/index.json" ]]; then
+              SCHEMA="schemas/tests-root-index-schema-v1.0.0.json"
+            elif [[ "$FILE" == tests/src/*/index.json ]]; then
+              SCHEMA="schemas/tests-project-index-schema-v1.0.0.json"
+            elif [[ "$FILE" == "library-and-framework-list.json" ]]; then
+              SCHEMA="schemas/library-and-framework-list-schema-v1.0.0.json"
+            else
+              echo "ℹ️ Skipping: $FILE (no schema mapping)"
+              continue
+            fi
+          
+            echo "🔍 Validating $FILE using $SCHEMA"
+          
+            # Step 1: Check JSON well-formedness
+            if ! jq -e . "$FILE" >/dev/null; then
+              echo "❌ $FILE is not valid JSON"
+              FAILURES+=("$FILE (invalid JSON)")
+              continue
+            fi
+          
+            # Step 2: Validate against schema
+            if ! check-jsonschema --schemafile "$SCHEMA" "$FILE"; then
+              FAILURES+=("$FILE (schema validation failed)")
+              continue
+            fi
+          
+            echo "✅ $FILE validated successfully"
           done
+          
+          # Fail at the end if any errors occurred
+          if [ ${#FAILURES[@]} -ne 0 ]; then
+            echo "::error ::Some files failed validation:"
+          for f in "${FAILURES[@]}"; do
+            echo "::error ::  $f"
+          done
+            exit 1
+          fi
