@@ -53,14 +53,10 @@ jobs:
               SCHEMA="schemas/metadata-root-index-schema-v1.0.0.json"
             elif [[ "$FILE" == metadata/*/*/index.json ]]; then
               SCHEMA="schemas/metadata-library-index-schema-v1.0.0.json"
-            elif [[ "$FILE" == metadata/*/*/*/index.json ]]; then
-              SCHEMA="schemas/metadata-version-index-schema-v1.0.0.json"
             elif [[ "$FILE" == "tests/src/index.json" ]]; then
               SCHEMA="schemas/tests-root-index-schema-v1.0.0.json"
             elif [[ "$FILE" == tests/src/*/index.json ]]; then
               SCHEMA="schemas/tests-project-index-schema-v1.0.0.json"
-            elif [[ "$FILE" == "library-and-framework-list.json" ]]; then
-              SCHEMA="schemas/library-and-framework-list-schema-v1.0.0.json"
             else
               echo "ℹ️ Skipping: $FILE (no schema mapping)"
               continue
