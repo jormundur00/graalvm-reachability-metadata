@@ -1,0 +1,84 @@
+name: "Validate metadata/index.json"
+
+on:
+  pull_request:
+
+jobs:
+  validate-global-index-json:
+    name: "📋 Validate metadata JSON files"
+    runs-on: "ubuntu-22.04"
+    timeout-minutes: 5
+
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v4
+
+      - name: "🔎 Detect relevant file changes"
+        id: filter
+        uses: ./.github/actions/detect-file-changes
+        with:
+          file-patterns: |
+            - 'metadata/**/index.json'
+            - 'tests/src/**/index.json'
+            - 'library-and-framework-list.json'
+            - 'schemas/*.json'
+
+      - uses: actions/setup-python@v4
+        if: steps.filter.outputs.changed == 'true'
+        with:
+          python-version: '3.10'
+
+      - name: Install validation tools
+        if: steps.filter.outputs.changed == 'true'
+        run: |
+          pip install jq check-jsonschema
+
+      - name: Validate changed JSON files
+        if: steps.filter.outputs.changed == 'true'
+        run: |
+          set -e
+
+          echo "::group::Changed JSON files"
+          echo "${{ steps.filter.outputs.changed_files }}"
+          echo "::endgroup::"
+
+          for FILE in ${{ steps.filter.outputs.changed_files }}; do
+
+            # Determine schema based on the path
+            if [[ "$FILE" == "metadata/index.json" ]]; then
+              SCHEMA="schemas/metadata-root-index-schema-v1.0.0.json"
+
+            elif [[ "$FILE" == metadata/*/*/index.json ]]; then
+              SCHEMA="schemas/metadata-library-index-schema-v1.0.0.json"
+
+            elif [[ "$FILE" == metadata/*/*/*/index.json ]]; then
+              SCHEMA="schemas/metadata-version-index-schema-v1.0.0.json"
+
+            elif [[ "$FILE" == "tests/src/index.json" ]]; then
+              SCHEMA="schemas/tests-root-index-schema-v1.0.0.json"
+
+            elif [[ "$FILE" == tests/src/*/index.json ]]; then
+              SCHEMA="schemas/tests-project-index-schema-v1.0.0.json"
+
+            elif [[ "$FILE" == "library-and-framework-list.json" ]]; then
+              SCHEMA="schemas/library-and-framework-list-schema-v1.0.0.json"
+
+            else
+              # Not a JSON file we validate with schemas
+              echo "ℹ️ Skipping: $FILE"
+              continue
+            fi
+
+            echo "🔍 Validating $FILE using $SCHEMA"
+
+            # Check JSON well-formedness
+            jq -e . "$FILE" >/dev/null || {
+              echo "❌ $FILE is not valid JSON"
+              exit 1
+            }
+
+            # Validate against schema
+            check-jsonschema --schemafile "$SCHEMA" "$FILE"
+
+            echo "✅ $FILE validated successfully"
+          done
