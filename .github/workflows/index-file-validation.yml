@@ -1,13 +1,13 @@
-name: "Validate metadata/index.json"
+name: "Validate metadata JSON files"
 
 on:
   pull_request:
 
 jobs:
-  validate-global-index-json:
-    name: "📋 Validate metadata JSON files"
-    runs-on: "ubuntu-22.04"
-    timeout-minutes: 5
+  validate-json:
+    name: "📋 Validate changed JSON files"
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
 
     steps:
       - name: "☁️ Checkout repository"
@@ -22,18 +22,20 @@ jobs:
             - 'tests/src/**/index.json'
             - 'library-and-framework-list.json'
             - 'schemas/*.json'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/setup-python@v4
+      - name: "Setup Python"
         if: steps.filter.outputs.changed == 'true'
+        uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: Install validation tools
+      - name: "Install validation tools"
         if: steps.filter.outputs.changed == 'true'
         run: |
           pip install jq check-jsonschema
 
-      - name: Validate changed JSON files
+      - name: "Validate JSON files"
         if: steps.filter.outputs.changed == 'true'
         run: |
           set -e
@@ -42,42 +44,38 @@ jobs:
           echo "${{ steps.filter.outputs.changed_files }}"
           echo "::endgroup::"
 
-          for FILE in ${{ steps.filter.outputs.changed_files }}; do
+          # Split changed_files into array
+          IFS=$'\n' read -r -d '' -a FILES <<< "${{ steps.filter.outputs.changed_files }}"
 
-            # Determine schema based on the path
+          for FILE in "${FILES[@]}"; do
+
+            # Determine schema for each file
             if [[ "$FILE" == "metadata/index.json" ]]; then
               SCHEMA="schemas/metadata-root-index-schema-v1.0.0.json"
-
             elif [[ "$FILE" == metadata/*/*/index.json ]]; then
               SCHEMA="schemas/metadata-library-index-schema-v1.0.0.json"
-
             elif [[ "$FILE" == metadata/*/*/*/index.json ]]; then
               SCHEMA="schemas/metadata-version-index-schema-v1.0.0.json"
-
             elif [[ "$FILE" == "tests/src/index.json" ]]; then
               SCHEMA="schemas/tests-root-index-schema-v1.0.0.json"
-
             elif [[ "$FILE" == tests/src/*/index.json ]]; then
               SCHEMA="schemas/tests-project-index-schema-v1.0.0.json"
-
             elif [[ "$FILE" == "library-and-framework-list.json" ]]; then
               SCHEMA="schemas/library-and-framework-list-schema-v1.0.0.json"
-
             else
-              # Not a JSON file we validate with schemas
-              echo "ℹ️ Skipping: $FILE"
+              echo "ℹ️ Skipping: $FILE (no schema mapping)"
               continue
             fi
 
             echo "🔍 Validating $FILE using $SCHEMA"
 
-            # Check JSON well-formedness
+            # Step 1: Check JSON well-formedness
             jq -e . "$FILE" >/dev/null || {
               echo "❌ $FILE is not valid JSON"
               exit 1
             }
 
-            # Validate against schema
+            # Step 2: Validate against schema
             check-jsonschema --schemafile "$SCHEMA" "$FILE"
 
             echo "✅ $FILE validated successfully"
