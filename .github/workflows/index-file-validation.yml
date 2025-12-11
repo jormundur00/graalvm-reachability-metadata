@@ -18,7 +18,8 @@ jobs:
         uses: ./.github/actions/detect-file-changes
         with:
           file-patterns: |
-            - 'metadata/**/index.json'
+            - 'metadata/index.json'
+            - 'metadata/*/*/index.json'
             - 'tests/src/**/index.json'
             - 'library-and-framework-list.json'
             - 'schemas/*.json'
