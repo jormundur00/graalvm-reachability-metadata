@@ -25,13 +25,6 @@ jobs:
             - 'tests/src/index.json'
             - 'tests/src/*/*/*/index.json'
 
-      - name: "🔧 Setup Java"
-        if: steps.filter.outputs.changed == 'true'
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'graalvm'
-          java-version: '21'
-
       - name: "🕸️ Populate matrix"
         id: set-matrix
         if: steps.filter.outputs.changed == 'true'
