@@ -97,7 +97,6 @@ jobs:
           
             # Step 2: Validate against schema
             if ! check-jsonschema --schemafile "$SCHEMA" "$FILE"; then
-              echo "❌ Schema validation failed: $FILE"
               FAILURES+=("$FILE (schema failure)")
               continue
             fi
