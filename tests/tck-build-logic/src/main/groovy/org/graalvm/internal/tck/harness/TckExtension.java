@@ -184,6 +184,24 @@ public abstract class TckExtension {
         return changedCoordinates;
     }
 
+    public List<String> diffIndexFiles(String baseCommit, String newCommit) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        getExecOperations().exec(spec -> {
+            spec.setStandardOutput(baos);
+            spec.commandLine("git", "diff", "--name-only", "--diff-filter=ACMRT",
+                    baseCommit, newCommit);
+        });
+
+        String output = baos.toString(StandardCharsets.UTF_8);
+        List<String> diffFiles = Arrays.asList(output.split("\\r?\\n"));
+
+        return diffFiles.stream()
+                .filter(f -> f.endsWith("index.json"))
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+
     private boolean metadataIndexContainsChangedEntries(Set<String> changedCoordinates, List<String> changedEntries) {
         boolean containsAll = true;
         for (var n : changedEntries) {
