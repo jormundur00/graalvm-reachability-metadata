@@ -13,5 +13,7 @@ runs:
   using: "node20"
   main: "detect-file-changes.js"
 outputs:
-  changes_detected:
+  changed:
     description: "Returns `true` if any changed file matches the specified patterns, `false` otherwise."
+  changed_files:
+    description: "Returns a list of all changed files that match the specified patterns, or an empty list otherwise."

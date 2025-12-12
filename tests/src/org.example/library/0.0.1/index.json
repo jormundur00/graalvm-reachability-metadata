@@ -4,5 +4,6 @@
     "nativeTest",
     "-Pmetadata.dir=<metadata_dir>",
     "-Plibrary.version=<version>"
-  ]
+  ],
+  "additional-field": "asdf"
 }
