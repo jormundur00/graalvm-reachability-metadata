@@ -115,10 +115,7 @@ jobs:
       - name: "🧮 Discover impacted smoke tests for ${{ matrix.coordinates }}"
         id: impact
         run: |
-          ./gradlew generateAffectedSpringAotTestList \
-            -Pcoordinates='${{ matrix.coordinates }}' \
-            -PspringAotPath='${{ github.workspace }}/spring-aot-smoke-tests'
-
+          ./gradlew generateAffectedSpringAotTestList -Pcoordinates='${{ matrix.coordinates }}' -PspringAotPath='${{ github.workspace }}/spring-aot-smoke-tests'
           echo "Impacted tests: '${{ steps.impact.outputs.impacted_tests || '' }}'"
 
       - name: "🔎 Check if there are impacted tests"
