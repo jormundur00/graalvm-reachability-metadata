@@ -183,6 +183,16 @@ Map<String, List<String>> matrixDefaultsFor(String section) {
     ]
 }
 
+Map<String, Object> springAotMatrixConfig() {
+    def ci = loadCi()
+    def sec = ci["generateAffectedSpringTestMatrix"]
+    if (sec == null) throw new GradleException("Missing 'generateAffectedSpringTestMatrix' in ci.json")
+    [
+        "java-branch-mapping": (sec["java-branch-mapping"] as Map<String, String>),
+        "os": sec["os"]
+    ]
+}
+
 // gradle generateMatrixMatchingCoordinates -Pcoordinates=<maven-coordinates>
 Provider<Task> generateMatrixMatchingCoordinates = tasks.register("generateMatrixMatchingCoordinates", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with all matching coordinates")
@@ -237,6 +247,61 @@ Provider<Task> generateChangedCoordinatesMatrix = tasks.register("generateChange
         writeGithubOutput("none-found", noneFound.toString())
     }
 }
+
+/**
+ * gradle generateAffectedSpringTestMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit> -PspringAotBranch=<branch>
+ * Returns changed versionless GA coordinates and runner defaults for a single Spring AOT branch.
+ */
+Provider<Task> generateAffectedSpringTestMatrix = tasks.register("generateAffectedSpringTestMatrix", DefaultTask) { task ->
+    task.setDescription("Returns changed versionless GA coordinates and runner defaults for a single Spring AOT branch")
+    task.setGroup(METADATA_GROUP)
+    task.doFirst {
+        if (!project.hasProperty("baseCommit")) {
+            throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
+        }
+
+        // Read branch→java mapping and default OS from ci.json
+        def springAotCfg = springAotMatrixConfig()
+        def javaBranchMapping = (springAotCfg["java-branch-mapping"] as Map<String, String>)
+        def osEntry = springAotCfg["os"]
+        def osList = (osEntry instanceof List) ? (osEntry as List) : [osEntry]
+
+        String branch = project.hasProperty("springAotBranch") ? project.findProperty("springAotBranch").toString() : null
+        if (branch == null || branch.trim().isEmpty()) {
+            throw new GradleException("Missing 'springAotBranch' property! Rerun Gradle with '-PspringAotBranch=<branch>'")
+        }
+        String javaVersion = javaBranchMapping.get(branch)
+        if (javaVersion == null) {
+            throw new GradleException("Unknown springAotBranch '${branch}' in ci.json mapping")
+        }
+
+        boolean noneFound = diffCoordinates.isEmpty()
+
+        List<String> versionless = []
+        if (!noneFound) {
+            versionless = diffCoordinates.collect { c ->
+                def parts = c.split(":", 3)
+                "${parts[0]}:${parts[1]}"
+            }.unique()
+            noneFound = versionless.isEmpty()
+        }
+
+        if (noneFound) {
+            println "No changed coordinates were found for Spring AOT branch '${branch}'!"
+        }
+
+        def matrix = [
+            "coordinates": versionless,
+            "os": osList,
+            "java": [javaVersion]
+        ]
+
+        writeGithubOutput("matrix", JsonOutput.toJson(matrix))
+        writeGithubOutput("coordinates_csv", versionless.join(','))
+        writeGithubOutput("java", javaVersion)
+        writeGithubOutput("none-found", noneFound.toString())
+    }
+} as Provider<Task>
 
 // gradle generateChangedIndexFileCoordinatesList -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
 tasks.register("generateChangedIndexFileCoordinatesList", DefaultTask) { task ->
@@ -438,4 +503,86 @@ tasks.register("extractLibraryTestParams", DefaultTask) { task ->
         writeGithubEnv("TEST_PATH", testPath)
         writeGithubEnv("TEST_COORDINATES", testCoordinates)
     }
+}
+
+// gradle generateAffectedSpringTestList -Pcoordinates=<ga,ga,...> -PspringAotPath=/path/to/spring-aot-smoke-tests
+tasks.register("generateAffectedSpringTestList") { task ->
+   task.setDescription("Scans an external Spring AOT repo for tests impacted by changes in one or more versionless coordinates (comma-separated).")
+   task.setGroup(METADATA_GROUP)
+
+   doLast {
+       if (!project.hasProperty("coordinates")) {
+           throw new GradleException("Missing 'coordinates' property! Rerun Gradle with -Pcoordinates=<group:artifact[,group:artifact,...]>")
+       }
+       if (!project.hasProperty("springAotPath")) {
+           throw new GradleException("Missing 'springAotPath' property! Rerun Gradle with -PspringAotPath=<spring-aot-smoke-tests-path>")
+       }
+
+       def springPath = project.findProperty("springAotPath") ?: "../spring-aot-smoke-tests"
+       def coordsProp = project.findProperty("coordinates").toString()
+       List<String> targets = coordsProp
+               .split(",")
+               .collect { it.trim() }
+               .findAll { !it.isEmpty() }
+               .unique()
+
+       if (targets.isEmpty()) {
+           logger.lifecycle("No coordinates provided after parsing -Pcoordinates")
+           return
+       }
+
+       def springDir = project.file(springPath)
+       if (!springDir.exists()) {
+           throw new GradleException("Spring AOT path does not exist: ${springDir.absolutePath}")
+       }
+
+       // Use a reusable init script instead of generating a temp file
+       File initScript = project.file("tests/tck-build-logic/init-scripts/spring-aot-impact-scan.gradle")
+       if (!initScript.exists()) {
+           throw new GradleException("Missing init script: ${initScript.absolutePath}")
+       }
+
+       logger.lifecycle("Scanning Spring AOT repo at: ${springDir.absolutePath}")
+       ByteArrayOutputStream stdout = new ByteArrayOutputStream()
+
+       // Use ExecOperations service instead of project.exec
+       def execOps = project.services.get(ExecOperations)
+
+       execOps.exec {
+           workingDir = springDir
+           executable = "${springDir.absolutePath}/gradlew"
+
+           // Pass the init script and the impact coordinates LIST to the Spring AOT build
+           // Add flags to avoid potential daemon stalls and ensure both streams are consumed
+           args = [
+               "-I", initScript.absolutePath,
+               "-PimpactCoordinatesList=${targets.join(',')}",
+               "__internalImpactScan",
+               "-q",
+               "--no-daemon",
+               "--console=plain",
+               "--warning-mode=none"
+           ]
+
+           standardOutput = stdout
+           errorOutput = stdout
+           ignoreExitValue = true
+       }
+
+       def results = stdout.toString().split("\n")
+               .findAll { it.startsWith("IMPACT_MATCH:") }
+               .collect { it.replace("IMPACT_MATCH:", "") }
+               .unique()
+
+       logger.lifecycle("\n--- IMPACTED SPRING SMOKE TESTS ---")
+       if (results.isEmpty()) {
+           logger.lifecycle("No matching smoke tests found for: ${targets.join(', ')}")
+       } else {
+           results.sort().each { logger.lifecycle(it) }
+       }
+
+       if (!results.isEmpty()) {
+           writeGithubOutput("impacted_tests", results.join(','))
+       }
+   }
 }
