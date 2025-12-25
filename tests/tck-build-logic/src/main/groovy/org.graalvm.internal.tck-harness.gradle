@@ -223,6 +223,58 @@ Provider<Task> generateChangedCoordinatesMatrix = tasks.register("generateChange
     }
 }
 
+/**
+ * gradle generateAffectedSpringAotMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+ * Produces a GitHub Actions matrix using 'include' that maps versionless changed GA coordinates
+ * to Spring AOT smoke tests branches with the proper Java version per branch.
+ */
+Provider<Task> generateAffectedSpringAotMatrix = tasks.register("generateAffectedSpringAotMatrix", DefaultTask) { task ->
+    task.setDescription("Returns matrix definition populated with versionless changed libraries mapped to Spring AOT branches")
+    task.setGroup(METADATA_GROUP)
+    task.doFirst {
+        if (!project.hasProperty("baseCommit")) {
+            throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
+        }
+
+        boolean noneFound = diffCoordinates.isEmpty()
+
+        List<String> versionless = []
+        if (!noneFound) {
+            versionless = diffCoordinates.collect { c ->
+                def parts = c.split(":", 3)
+                return "${parts[0]}:${parts[1]}"
+            }.unique()
+            noneFound = versionless.isEmpty()
+        }
+
+        if (noneFound) {
+            println "No changed coordinates were found for Spring AOT matrix!"
+        }
+
+        def branches = [
+            [branch: "main",  java: "25"],
+            [branch: "3.4.x", java: "17"],
+            [branch: "3.5.x", java: "17"]
+        ]
+
+        def includeEntries = []
+        versionless.each { ga ->
+            branches.each { b ->
+                includeEntries.add([
+                    "coordinates": ga,
+                    "spring_branch": b.branch,
+                    "java": b.java,
+                    "os": "ubuntu-22.04"
+                ])
+            }
+        }
+
+        def matrix = ["include": includeEntries]
+        writeGithubOutput("matrix", JsonOutput.toJson(matrix))
+        writeGithubOutput("none-found", noneFound.toString())
+    }
+}
+
 // gradle generateInfrastructureChangedCoordinatesMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
 Provider<Task> generateInfrastructureChangedCoordinatesMatrix = tasks.register("generateInfrastructureChangedCoordinatesMatrix", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with pre-selected coordinates when test infrastructure has changed")
@@ -328,5 +380,87 @@ tasks.register("addLibraryAsLatestMetadataIndexJson", DefaultTask) { task ->
         def coords = CoordinateUtils.fromString(coordsStr)
         def testVersion = project.hasProperty("testVersion") ? project.findProperty("testVersion").toString() : null
         MetadataGenerationUtils.makeVersionLatestInIndexJson(project.layout, coords, testVersion)
+    }
+}
+
+// gradle generateAffectedSpringAotTestList -Pcoordinates=<maven-coordinates> -PspringAotPath=/home/jovan/Work/spring-aot-smoke-tests
+tasks.register("generateAffectedSpringAotTestList") { task ->
+    task.setDescription("Scans an external Spring AOT repo for tests impacted by changes in a specific library given its versionless coordinates.")
+    task.setGroup(METADATA_GROUP)
+
+    doLast {
+        if (!project.hasProperty("coordinates")) {
+            throw new GradleException("Missing 'coordinates' property! Rerun Gradle with -Pcoordinates=<group:artifact>")
+        }
+        if (!project.hasProperty("springAotPath")) {
+            throw new GradleException("Missing 'springAotPath' property! Rerun Gradle with -PspringAotPath=<spring-aot-smoke-tests-path>")
+        }
+        def springPath = project.findProperty("springAotPath") ?: "../spring-aot-smoke-tests"
+        def target = project.findProperty("coordinates") ?: "org.flywaydb:flyway-core"
+        def springDir = project.file(springPath)
+
+        if (!springDir.exists()) {
+            throw new GradleException("Spring AOT path does not exist: ${springDir.absolutePath}")
+        }
+
+        def initScriptContent = """
+            allprojects {
+                task __internalImpactScan {
+                    doLast {
+                        if (!project.tasks.findByName('nativeTest') || !project.tasks.findByName('nativeAppTest')) return
+                        def coordinates = '$target'
+                        def match = project.configurations.findAll { it.canBeResolved }.any { conf ->
+                            try {
+                                return conf.incoming.resolutionResult.allComponents.any { comp ->
+                                    def m = comp.moduleVersion
+                                    return m != null && "\${m.group}:\${m.name}" == coordinates
+                                }
+                            } catch (e) { return false }
+                        }
+                        if (match) println "IMPACT_MATCH:\${project.path}"
+                    }
+                }
+            }
+        """.stripIndent()
+
+        File tempInit = File.createTempFile("impact-scan", ".gradle")
+        tempInit.write(initScriptContent)
+
+        try {
+            logger.lifecycle("Scanning Spring AOT repo at: ${springDir.absolutePath}")
+            ByteArrayOutputStream stdout = new ByteArrayOutputStream()
+
+            // Use ExecOperations service instead of project.exec
+            def execOps = project.services.get(ExecOperations)
+
+            execOps.exec {
+                workingDir = springDir
+                executable = "${springDir.absolutePath}/gradlew"
+
+                // Assignment syntax avoids the 'cannot be applied to' signature warning
+                args = ["-I", tempInit.absolutePath, "__internalImpactScan", "-q"]
+
+                standardOutput = stdout
+                ignoreExitValue = true
+            }
+
+            def results = stdout.toString().split("\n")
+                    .findAll { it.startsWith("IMPACT_MATCH:") }
+                    .collect { it.replace("IMPACT_MATCH:", "") }
+
+            logger.lifecycle("\n--- IMPACTED SPRING SMOKE TESTS ---")
+            if (results.isEmpty()) {
+                logger.lifecycle("No matching smoke tests found for '$target'.")
+            } else {
+                results.sort().each { logger.lifecycle(it) }
+            }
+
+            if (!results.isEmpty()) {
+                writeGithubOutput("impacted_tests", results.join(','))
+            }
+
+        } finally {
+            tempInit.delete()
+        }
     }
 }
