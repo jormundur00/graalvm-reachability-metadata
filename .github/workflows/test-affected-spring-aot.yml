@@ -1,0 +1,172 @@
+name: "Test affected Spring AOT smoke tests"
+
+on:
+  pull_request:
+    branches:
+      - master
+
+concurrency:
+  group: "workflow = ${{ github.workflow }}, ref = ${{ github.event.ref }}, pr = ${{ github.event.pull_request.id }}"
+  cancel-in-progress: true
+
+jobs:
+  get-affected-tests:
+    name: "📋 Compute affected Spring AOT tests matrix"
+    runs-on: "ubuntu-22.04"
+    timeout-minutes: 10
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      none-found: ${{ steps.set-matrix.outputs['none-found'] }}
+      relevant-files-changed: ${{ steps.filter.outputs.changed }}
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: "🔎 Detect relevant file changes"
+        id: filter
+        uses: ./.github/actions/detect-file-changes
+        with:
+          file-patterns: |
+            - 'metadata/**'
+            - 'tests/src/**'
+
+      - name: "🔧 Setup Java (GraalVM 21 for harness)"
+        if: steps.filter.outputs.changed == 'true'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'graalvm'
+          java-version: '21'
+
+      - name: "🕸️ Populate matrix (versionless GA × spring-aot branches)"
+        id: set-matrix
+        if: steps.filter.outputs.changed == 'true'
+        run: |
+          ./gradlew generateAffectedSpringAotMatrix -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
+          echo "Matrix:"
+          echo "${{ steps.set-matrix.outputs.matrix }}"
+
+  test-affected-spring-aot:
+    name: "🧪 ${{ matrix.coordinates }} @ spring-aot:${{ matrix.spring_branch }} (GraalVM JDK ${{ matrix.java }})"
+    if: needs.get-affected-tests.outputs.relevant-files-changed == 'true' && needs.get-affected-tests.result == 'success' && needs.get-affected-tests.outputs.none-found != 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 480
+    needs: get-affected-tests
+
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.get-affected-tests.outputs.matrix) }}
+
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v4
+
+      - name: "🔧 Setup Java (GraalVM 21 for harness)"
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'graalvm'
+          java-version: '21'
+
+      - name: "🔧 Install GraalVM for smoke tests"
+        uses: graalvm/setup-graalvm@v1
+        with:
+          distribution: 'graalvm'
+          java-version: ${{ matrix.java }}   # 25 for main, 17 for 3.4.x/3.5.x
+          set-java-home: 'true'
+          native-image-job-reports: 'true'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "☁️ Checkout spring-aot-smoke-tests (${{ matrix.spring_branch }})"
+        uses: actions/checkout@v4
+        with:
+          repository: spring-projects/spring-aot-smoke-tests
+          ref: ${{ matrix.spring_branch }}
+          path: spring-aot-smoke-tests
+          fetch-depth: 0
+
+      - name: "🔧 Point spring-aot-smoke-tests to local reachability metadata"
+        run: |
+          set -euo pipefail
+          SPRING_DIR="${{ github.workspace }}/spring-aot-smoke-tests"
+          META_DIR="${{ github.workspace }}/metadata"
+          META_URL="file://${META_DIR}"
+
+          GP="${SPRING_DIR}/gradle.properties"
+
+          if [ ! -f "$GP" ]; then
+            echo "gradle.properties not found at $GP"
+            exit 1
+          fi
+
+          # Comment out version pin
+          sed -i -E 's|^reachabilityMetadataVersion=.*|#reachabilityMetadataVersion=|' "$GP"
+
+          # Set or add reachabilityMetadataUrl to local path
+          if grep -Eq '^[#]*reachabilityMetadataUrl=' "$GP"; then
+            sed -i -E "s|^[#]*reachabilityMetadataUrl=.*|reachabilityMetadataUrl=${META_URL}|" "$GP"
+          else
+            printf "\nreachabilityMetadataUrl=%s\n" "$META_URL" >> "$GP"
+          fi
+
+          echo "----- gradle.properties (reachability metadata overrides) -----"
+          grep -E 'reachabilityMetadata(Url|Version)=' -n "$GP" || true
+
+      - name: "🧮 Discover impacted smoke tests for ${{ matrix.coordinates }}"
+        id: impact
+        run: |
+          ./gradlew generateAffectedSpringAotTestList \
+            -Pcoordinates='${{ matrix.coordinates }}' \
+            -PspringAotPath='${{ github.workspace }}/spring-aot-smoke-tests'
+
+          echo "Impacted tests: '${{ steps.impact.outputs.impacted_tests || '' }}'"
+
+      - name: "🔎 Check if there are impacted tests"
+        id: check
+        run: |
+          if [ -z "${{ steps.impact.outputs.impacted_tests }}" ]; then
+            echo "has-tests=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has-tests=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: "🧪 Run nativeTest and nativeAppTest on impacted projects"
+        if: steps.check.outputs.has-tests == 'true'
+        run: |
+          set -euo pipefail
+          SPRING_DIR='${{ github.workspace }}/spring-aot-smoke-tests'
+          IFS=',' read -r -a projects <<< '${{ steps.impact.outputs.impacted_tests }}'
+
+          if [ ${#projects[@]} -eq 0 ]; then
+            echo "No impacted projects to test."
+            exit 0
+          fi
+
+          # Build task list: for each project path, run nativeTest and nativeAppTest
+          TASKS=()
+          for p in "${projects[@]}"; do
+            p="$(echo "$p" | xargs)"   # trim
+            [ -z "$p" ] && continue
+            TASKS+=("${p}:nativeTest")
+            TASKS+=("${p}:nativeAppTest")
+          done
+
+          echo "Running tasks: ${TASKS[*]}"
+
+          cd "$SPRING_DIR"
+          ./gradlew --no-daemon --continue "${TASKS[@]}"
+
+  all-affected-passed:
+    name: "🧪 All affected Spring AOT smoke tests passed"
+    runs-on: "ubuntu-22.04"
+    timeout-minutes: 5
+    needs: [get-affected-tests, test-affected-spring-aot]
+    if: always()
+    steps:
+      - name: "All tests passed"
+        if: needs.test-affected-spring-aot.result == 'success' || needs.get-affected-tests.outputs.relevant-files-changed == 'false' || needs.get-affected-tests.outputs.none-found == 'true'
+        run: exit 0
+
+      - name: "Some tests failed"
+        if: needs.test-affected-spring-aot.result == 'failure'
+        run: exit 1
