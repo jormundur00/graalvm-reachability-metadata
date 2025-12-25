@@ -1024,5 +1024,9 @@
 {
   "condition":{"typeReachable":"org.hibernate.engine.transaction.jta.platform.internal.StandardJtaPlatformResolver"},
   "name":"org.wildfly.transaction.client.ContextTransactionManager"
+},
+{
+  "condition":{"typeReachable":"org.hibernate.engine.transaction.jta.platform.internal.StandardJtaPlatformResolvers"},
+  "name":"org.wildfly.transaction.client.ContextTransactionManagers"
 }
 ]
