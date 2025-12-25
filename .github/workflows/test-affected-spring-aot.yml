@@ -49,7 +49,7 @@ jobs:
 
   test-affected-spring-aot:
     name: "🧪 ${{ matrix.coordinates }} @ spring-aot:${{ matrix.spring_branch }} (GraalVM JDK ${{ matrix.java }})"
-    if: needs.get-affected-tests.outputs.relevant-files-changed == 'true' && needs.get-affected-tests.result == 'success' && needs.get-affected-tests.outputs.none-found != 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
+    if: needs.get-affected-tests.outputs.relevant-files-changed == 'true' && needs.get-affected-tests.result == 'success' && needs.get-affected-tests.outputs.none-found != 'true' && github.repository == 'jormundur00/graalvm-reachability-metadata'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 480
     needs: get-affected-tests
