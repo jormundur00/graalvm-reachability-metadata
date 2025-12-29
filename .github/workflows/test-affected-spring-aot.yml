@@ -62,12 +62,6 @@ jobs:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
 
-      - name: "🔧 Setup Java (GraalVM 21 for harness)"
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'graalvm'
-          java-version: '21'
-
       - name: "🔧 Install GraalVM for smoke tests"
         uses: graalvm/setup-graalvm@v1
         with:
