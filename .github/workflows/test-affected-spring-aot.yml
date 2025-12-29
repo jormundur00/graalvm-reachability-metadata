@@ -73,7 +73,7 @@ jobs:
         with:
           distribution: 'graalvm'
           java-version: ${{ matrix.java }}   # 25 for main, 17 for 3.4.x/3.5.x
-          set-java-home: 'true'
+          set-java-home: 'false'
           native-image-job-reports: 'true'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
