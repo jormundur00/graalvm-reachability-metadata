@@ -1,0 +1,58 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+import org.gradle.api.Project
+
+allprojects {
+    tasks.register('__internalImpactScan') {
+        doLast {
+            // Only consider projects that actually have native tests
+            if (!(tasks.names.contains('nativeTest') || tasks.names.contains('nativeAppTest'))) {
+                return
+            }
+
+            // Read impact coordinates passed from caller (-PimpactCoordinates=group:artifact)
+            def coordinates = gradle.startParameter.projectProperties.get('impactCoordinates')
+            if (coordinates == null || coordinates.toString().trim().isEmpty()) {
+                return
+            }
+
+            // Resolve only selected classpath configurations to keep the scan fast
+            def candidateConfNames = [
+                'runtimeClasspath',
+                'testRuntimeClasspath',
+                'nativeTestRuntimeClasspath',
+                'nativeAppTestRuntimeClasspath'
+            ]
+            def existingConfNames = candidateConfNames.findAll { configurations.names.contains(it) }
+            def configs = existingConfNames
+                    .collect { configurations.named(it).get() }
+                    .findAll { it.canBeResolved }
+
+            // Use resolutionResult to check resolved components (transitives included), like the original implementation,
+            // but limit to a small set of classpath configurations to keep it fast.
+            boolean match = false
+            try {
+                match = configs.any { conf ->
+                    try {
+                        return conf.incoming.resolutionResult.allComponents.any { comp ->
+                            def m = comp.moduleVersion
+                            return m != null && "${m.group}:${m.name}" == coordinates
+                        }
+                    } catch (Throwable ignored) {
+                        return false
+                    }
+                }
+            } catch (Throwable ignored) {
+                match = false
+            }
+
+            if (match) {
+                println "IMPACT_MATCH:${project.path}"
+            }
+        }
+    }
+}
