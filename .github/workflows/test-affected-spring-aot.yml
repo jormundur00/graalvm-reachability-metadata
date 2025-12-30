@@ -43,7 +43,7 @@ jobs:
         id: set-matrix
         if: steps.filter.outputs.changed == 'true'
         run: |
-          ./gradlew generateAffectedSpringAotMatrix -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
+          ./gradlew generateAffectedSpringTestMatrix -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
           echo "Matrix:"
           echo "${{ steps.set-matrix.outputs.matrix }}"
 
@@ -115,7 +115,7 @@ jobs:
       - name: "🧮 Discover impacted smoke tests for ${{ matrix.coordinates }}"
         id: impact
         run: |
-          ./gradlew generateAffectedSpringAotTestList -Pcoordinates='${{ matrix.coordinates }}' -PspringAotPath='${{ github.workspace }}/spring-aot-smoke-tests'
+          ./gradlew generateAffectedSpringTestList -Pcoordinates='${{ matrix.coordinates }}' -PspringAotPath='${{ github.workspace }}/spring-aot-smoke-tests'
           echo "Impacted tests: '${{ steps.impact.outputs.impacted_tests || '' }}'"
 
       - name: "🔎 Check if there are impacted tests"
