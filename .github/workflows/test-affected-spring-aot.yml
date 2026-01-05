@@ -16,6 +16,7 @@ jobs:
     timeout-minutes: 10
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+      java_map: ${{ steps.set-matrix.outputs.java_map }}
       none-found: ${{ steps.set-matrix.outputs['none-found'] }}
       relevant-files-changed: ${{ steps.filter.outputs.changed }}
     steps:
@@ -48,7 +49,7 @@ jobs:
           echo "${{ steps.set-matrix.outputs.matrix }}"
 
   test-affected-spring-aot:
-    name: "🧪 ${{ matrix.coordinates }} @ spring-aot:${{ matrix.spring_branch }} (GraalVM JDK ${{ matrix.java }})"
+    name: "🧪 ${{ matrix.coordinates }} @ spring-aot:${{ matrix.spring_branch }} (GraalVM JDK ${{ fromJson(needs.get-affected-tests.outputs.java_map)[matrix.spring_branch] }})"
     if: needs.get-affected-tests.outputs.relevant-files-changed == 'true' && needs.get-affected-tests.result == 'success' && needs.get-affected-tests.outputs.none-found != 'true' && github.repository == 'jormundur00/graalvm-reachability-metadata'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 480
@@ -72,7 +73,7 @@ jobs:
         uses: graalvm/setup-graalvm@v1
         with:
           distribution: 'graalvm'
-          java-version: ${{ matrix.java }}   # 25 for main, 17 for 3.4.x/3.5.x
+          java-version: ${{ fromJson(needs.get-affected-tests.outputs.java_map)[matrix.spring_branch] }}   # 25 for main, 17 for 3.4.x/3.5.x
           set-java-home: 'false'
           native-image-job-reports: 'true'
           github-token: ${{ secrets.GITHUB_TOKEN }}

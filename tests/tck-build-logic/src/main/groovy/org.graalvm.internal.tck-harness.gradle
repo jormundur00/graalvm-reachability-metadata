@@ -246,12 +246,13 @@ Provider<Task> generateAffectedSpringTestMatrix = tasks.register("generateAffect
             throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
         }
 
-        // Read branch→java mapping and default OS from ci.json
-        def springAotCfg = springAotMatrixConfig()
-        def javaBranchMapping = springAotCfg["java-branch-mapping"]
-        def os = springAotCfg["os"]
-
-        boolean noneFound = diffCoordinates.isEmpty()
+                // Read branch→java mapping and default OS from ci.json
+                def springAotCfg = springAotMatrixConfig()
+                def javaBranchMapping = (springAotCfg["java-branch-mapping"] as Map<String, String>)
+                def osEntry = springAotCfg["os"]
+                def osList = (osEntry instanceof List) ? (osEntry as List) : [osEntry]
+        
+                boolean noneFound = diffCoordinates.isEmpty()
 
         List<String> versionless = []
         if (!noneFound) {
@@ -266,21 +267,26 @@ Provider<Task> generateAffectedSpringTestMatrix = tasks.register("generateAffect
             println "No changed coordinates were found for Spring AOT matrix!"
         }
 
-        def includeEntries = []
-        versionless.each { ga ->
-            javaBranchMapping.each { branch, javaVer ->
-                includeEntries.add([
-                    "coordinates": ga,
-                    "spring_branch": branch,
-                    "java": javaVer,
-                    "os": os
-                ])
+        // Build axes with exclude rules to preserve branch→java mapping without using 'include'
+        List<String> springBranches = new ArrayList<>((javaBranchMapping.keySet() as Set<String>))
+        List<String> javaList = new ArrayList<>(((javaBranchMapping.values() as Collection<String>).toSet()))
+        List<Map<String, String>> excludes = []
+        springBranches.each { br ->
+            javaList.each { jv ->
+                if (jv != javaBranchMapping[br]) {
+                    excludes.add(["spring_branch": br, "java": jv])
+                }
             }
         }
 
-        def matrix = ["include": includeEntries]
-        writeGithubOutput("matrix", JsonOutput.toJson(matrix))
-        writeGithubOutput("none-found", noneFound.toString())
+                def matrix = [
+                    "coordinates": versionless,
+                    "spring_branch": springBranches,
+                    "os": osList
+                ]
+                writeGithubOutput("matrix", JsonOutput.toJson(matrix))
+                writeGithubOutput("java_map", JsonOutput.toJson(javaBranchMapping))
+                writeGithubOutput("none-found", noneFound.toString())
     }
 } as Provider<Task>
 
