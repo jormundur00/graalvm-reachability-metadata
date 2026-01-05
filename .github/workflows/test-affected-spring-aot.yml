@@ -54,9 +54,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 480
     needs: get-affected-tests
-
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix: ${{ fromJson(needs.get-affected-tests.outputs.matrix) }}
 
     steps:
