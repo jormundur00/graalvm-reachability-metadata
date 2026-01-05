@@ -289,7 +289,7 @@
   "condition":{"typeReachable":"org.hibernate.engine.jdbc.dialect.internal.DialectFactoryImpl"},
   "name":"org.hibernate.dialect.H2Dialect",
   "methods":[
-    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"<init>","parameterTypes":[] },
     {"name":"<init>","parameterTypes":["org.hibernate.engine.jdbc.dialect.spi.DialectResolutionInfo"] }
   ]
 },
@@ -310,7 +310,7 @@
   "condition":{"typeReachable":"org.hibernate.engine.jdbc.dialect.internal.DialectFactoryImpl"},
   "name":"org.hibernate.dialect.MariaDBDialect",
   "methods":[
-    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"<init>","parameterTypes":[] },
     {"name":"<init>","parameterTypes":["org.hibernate.engine.jdbc.dialect.spi.DialectResolutionInfo"] }
   ]
 },
@@ -331,7 +331,7 @@
   "condition":{"typeReachable":"org.hibernate.engine.jdbc.dialect.internal.DialectFactoryImpl"},
   "name":"org.hibernate.dialect.MySQLDialect",
   "methods":[
-    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"<init>","parameterTypes":[] },
     {"name":"<init>","parameterTypes":["org.hibernate.engine.jdbc.dialect.spi.DialectResolutionInfo"] }
   ]
 },
@@ -348,7 +348,7 @@
   "condition":{"typeReachable":"org.hibernate.engine.jdbc.dialect.internal.DialectFactoryImpl"},
   "name":"org.hibernate.dialect.OracleDialect",
   "methods":[
-    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"<init>","parameterTypes":[] },
     {"name":"<init>","parameterTypes":["org.hibernate.engine.jdbc.dialect.spi.DialectResolutionInfo"] }
   ]
 },
@@ -370,7 +370,7 @@
   "condition":{"typeReachable":"org.hibernate.engine.jdbc.dialect.internal.DialectFactoryImpl"},
   "name":"org.hibernate.dialect.PostgreSQLDialect",
   "methods":[
-    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"<init>","parameterTypes":[] },
     {"name":"<init>","parameterTypes":["org.hibernate.engine.jdbc.dialect.spi.DialectResolutionInfo"] }
   ]
 },
@@ -429,7 +429,7 @@
   "condition":{"typeReachable":"org.hibernate.engine.jdbc.dialect.internal.DialectFactoryImpl"},
   "name":"org.hibernate.dialect.SQLServerDialect",
   "methods":[
-    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"<init>","parameterTypes":[] },
     {"name":"<init>","parameterTypes":["org.hibernate.engine.jdbc.dialect.spi.DialectResolutionInfo"] }
   ]
 },
@@ -523,8 +523,8 @@
   "name":"org.hibernate.generator.internal.CurrentTimestampGeneration",
   "queryAllDeclaredConstructors":true,
   "methods":[
-    {"name":"<init>","parameterTypes":["org.hibernate.annotations.CreationTimestamp","java.lang.reflect.Member","org.hibernate.generator.GeneratorCreationContext"] }, 
-    {"name":"<init>","parameterTypes":["org.hibernate.annotations.CurrentTimestamp","java.lang.reflect.Member","org.hibernate.generator.GeneratorCreationContext"] }, 
+    {"name":"<init>","parameterTypes":["org.hibernate.annotations.CreationTimestamp","java.lang.reflect.Member","org.hibernate.generator.GeneratorCreationContext"] },
+    {"name":"<init>","parameterTypes":["org.hibernate.annotations.CurrentTimestamp","java.lang.reflect.Member","org.hibernate.generator.GeneratorCreationContext"] },
     {"name":"<init>","parameterTypes":["org.hibernate.annotations.UpdateTimestamp","java.lang.reflect.Member","org.hibernate.generator.GeneratorCreationContext"] }
   ]
 },
@@ -539,7 +539,7 @@
   "name":"org.hibernate.generator.internal.GeneratedGeneration",
   "queryAllDeclaredConstructors":true,
   "methods":[
-    {"name":"<init>","parameterTypes":["org.hibernate.annotations.Generated"] }, 
+    {"name":"<init>","parameterTypes":["org.hibernate.annotations.Generated"] },
     {"name":"<init>","parameterTypes":["org.hibernate.annotations.GenerationTime"] }
   ]
 },
@@ -548,7 +548,7 @@
   "name":"org.hibernate.generator.internal.SourceGeneration",
   "queryAllDeclaredConstructors":true,
   "methods":[
-    {"name":"<init>","parameterTypes":["org.hibernate.annotations.Source","java.lang.reflect.Member","org.hibernate.generator.GeneratorCreationContext"] }, 
+    {"name":"<init>","parameterTypes":["org.hibernate.annotations.Source","java.lang.reflect.Member","org.hibernate.generator.GeneratorCreationContext"] },
     {"name":"<init>","parameterTypes":["org.hibernate.annotations.SourceType","java.lang.Class","org.hibernate.generator.GeneratorCreationContext"] }
   ]
 },
@@ -1024,5 +1024,9 @@
 {
   "condition":{"typeReachable":"org.hibernate.engine.transaction.jta.platform.internal.StandardJtaPlatformResolver"},
   "name":"org.wildfly.transaction.client.ContextTransactionManager"
+},
+{
+  "condition":{"typeReachable":"org.hibernate.engine.transaction.jta.platform.internal.StandardJtaPlatformResolvers"},
+  "name":"org.wildfly.transaction.client.ContextTransactionManagers"
 }
 ]
