@@ -60,15 +60,8 @@ run_multiple_attempts() {
     attempt=$((attempt + 1))
   done
 
-  # If we are here, all attempts failed or timed out.
-  local failure_label="$stage"
-  if [ "$result" -eq 124 ]; then
-    failure_label="timeout-$stage"
-  fi
-
-  # This formatted string is what your YAML's AWK command looks for
-  echo "FAILED[$failure_label][$VERSION][$gradle_command]"
-  return 1
+  echo "FAILED[$stage][$VERSION][$gradle_command]"
+  return $result
 }
 
 for VERSION in "${VERSIONS[@]}"; do
