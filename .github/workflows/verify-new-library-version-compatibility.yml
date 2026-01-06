@@ -129,7 +129,8 @@ jobs:
             HIGHEST_VERSION=$(jq -r '.[]."metadata-version"' "$INDEX_PATH" | sort -V | tail -1)
             
             # Now get the JSON entry for that specific version
-            TARGET_ENTRY=$(jq -c ".[] | select(.\"metadata-version\" == \"$HIGHEST_VERSION\")" "$INDEX_PATH")          fi
+            TARGET_ENTRY=$(jq -c ".[] | select(.\"metadata-version\" == \"$HIGHEST_VERSION\")" "$INDEX_PATH")          
+          fi
 
           # 2. Extract versions from the selected entry
           if [ -n "$TARGET_ENTRY" ]; then
