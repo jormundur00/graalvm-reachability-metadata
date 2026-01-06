@@ -3,7 +3,7 @@
     "latest" : true,
     "module" : "org.flywaydb:flyway-sqlserver",
     "metadata-version" : "10.13.0",
-    "test-version": "10.10.0",
+    "test-version" : "10.10.0",
     "tested-versions" : [
       "10.13.0"
     ]
@@ -15,7 +15,8 @@
       "10.10.0",
       "10.11.0",
       "10.11.1",
-      "10.12.0"
+      "10.12.0",
+      "10.14.0"
     ]
   }
 ]
