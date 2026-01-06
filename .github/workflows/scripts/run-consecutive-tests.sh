@@ -6,6 +6,8 @@
 
 set -u
 
+TIMEOUT="5m"
+
 if [ $# -ne 2 ]; then
   echo "Usage: $0 <test-coordinates> <versions-json-array>"
   exit 1
@@ -41,10 +43,7 @@ run_multiple_attempts() {
       echo "Re-running stage '$stage' (attempt $((attempt + 1))/$max_attempts)"
     fi
 
-    # --- INDIVIDUAL TEST TIMEOUT ---
-    # This only limits this specific gradle execution to 10 minutes.
-    # It does NOT limit the whole script.
-    timeout 5m bash -c "$cmd_str"
+    timeout "$TIMEOUT" bash -c "$cmd_str"
     result=$?
 
     if [ "$result" -eq 0 ]; then
@@ -52,7 +51,7 @@ run_multiple_attempts() {
     fi
 
     if [ "$result" -eq 124 ]; then
-      echo "⚠️  TIMEOUT: '$stage' for $VERSION took longer than 10 minutes."
+      echo "⚠️  TIMEOUT: '$stage' for $VERSION took longer than $TIMEOUT."
     else
       echo "❌ ERROR: '$stage' for $VERSION failed with exit code $result."
     fi
