@@ -1,10 +1,11 @@
 [
   {
-    "latest": true,
-    "metadata-version": "1.0.0",
-    "module": "org.eclipse.angus:jakarta.mail",
-    "tested-versions": [
-      "1.0.0"
+    "latest" : true,
+    "module" : "org.eclipse.angus:jakarta.mail",
+    "metadata-version" : "1.0.0",
+    "tested-versions" : [
+      "1.0.0",
+      "1.1.0"
     ]
   }
 ]
