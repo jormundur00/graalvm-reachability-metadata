@@ -346,7 +346,7 @@ jobs:
     runs-on: ubuntu-22.04
     permissions: write-all
     env:
-      GH_TOKEN: ${{ secrets.GRAALBOT_PR_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     needs:
       - get-all-libraries
       - test-all-metadata
