@@ -51,7 +51,7 @@ run_multiple_attempts() {
     fi
 
     if [ "$result" -eq 124 ] || [ "$result" -eq 131 ] || [ "$result" -eq 137 ]; then
-      echo "⚠️  TIMEOUT: '$stage' for $VERSION took longer than $TIMEOUT."
+      echo "⚠️  TIMEOUT: '$stage' for $VERSION took longer than $TIMEOUT (exit code $result)."
     else
       echo "❌ ERROR: '$stage' for $VERSION failed with exit code $result."
     fi
