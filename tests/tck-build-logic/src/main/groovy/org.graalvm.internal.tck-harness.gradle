@@ -50,6 +50,15 @@ def writeGithubOutput(String key, String value) {
     }
 }
 
+def writeGithubEnv(String key, String value) {
+    def path = System.getenv("GITHUB_ENV")
+    if (path == null || path.trim().isEmpty()) {
+        println "${key}=${value}"
+    } else {
+        new File(path).append("${key}=${value}\n")
+    }
+}
+
 String coordinateFilter = Objects.requireNonNullElse(project.findProperty("coordinates"), "")
 
 
@@ -350,15 +359,83 @@ tasks.register("fixTestNativeImageRun", FixTestNativeImageRun.class) { task ->
 
 // gradle addLibraryAsLatestMetadataIndexJson -Pcoordinates=<maven-coordinates> [-PtestVersion=<version>]
 tasks.register("addLibraryAsLatestMetadataIndexJson", DefaultTask) { task ->
-    task.setDescription("Marks given coordinates as latest in metadata/group/artifact/index.json")
-    task.setGroup(METADATA_GROUP)
-    task.doFirst {
-        if (!project.hasProperty("coordinates")) {
-            throw new GradleException("Missing 'coordinates' property! Rerun Gradle with -Pcoordinates=<group:artifact:version>")
-        }
-        def coordsStr = project.findProperty("coordinates").toString()
-        def coords = CoordinateUtils.fromString(coordsStr)
-        def testVersion = project.hasProperty("testVersion") ? project.findProperty("testVersion").toString() : null
-        MetadataGenerationUtils.makeVersionLatestInIndexJson(project.layout, coords, testVersion)
-    }
+   task.setDescription("Marks given coordinates as latest in metadata/group/artifact/index.json")
+   task.setGroup(METADATA_GROUP)
+   task.doFirst {
+       if (!project.hasProperty("coordinates")) {
+           throw new GradleException("Missing 'coordinates' property! Rerun Gradle with -Pcoordinates=<group:artifact:version>")
+       }
+       def coordsStr = project.findProperty("coordinates").toString()
+       def coords = CoordinateUtils.fromString(coordsStr)
+       def testVersion = project.hasProperty("testVersion") ? project.findProperty("testVersion").toString() : null
+       MetadataGenerationUtils.makeVersionLatestInIndexJson(project.layout, coords, testVersion)
+   }
+}
+
+// gradle extractLibraryTestParams -Pcoordinates=<group:artifact[:version]>
+tasks.register("extractLibraryTestParams", DefaultTask) { task ->
+  task.setDescription("Extracts TEST_PATH, LATEST_VERSION and TEST_COORDINATES for given coordinates (group:artifact[:version]). Writes them into GITHUB_ENV.")
+  task.setGroup(METADATA_GROUP)
+  task.doFirst {
+      if (!project.hasProperty("coordinates")) {
+          throw new GradleException("Missing 'coordinates' property! Rerun Gradle with -Pcoordinates=<group:artifact[:version]>")
+      }
+      def coordsStr = project.findProperty("coordinates").toString()
+      def parts = coordsStr.split(":")
+      if (parts.length < 2) {
+          throw new GradleException("Invalid 'coordinates' value; expected group:artifact or group:artifact:version, got: ${coordsStr}")
+      }
+      String lib = parts[0] + ":" + parts[1]
+
+      String libPath = lib.replace(":", "/")
+      File indexFile = project.file("metadata/${libPath}/index.json")
+
+      Map latestEntry = null
+      if (indexFile.exists()) {
+          def entries = new JsonSlurper().parse(indexFile) as List<Map>
+          latestEntry = entries.find { e -> Boolean.TRUE.equals(e["latest"]) }
+          if (latestEntry == null && !entries.isEmpty()) {
+              latestEntry = entries.max { e -> VersionNumber.parse((e["metadata-version"] ?: "").toString()) }
+          }
+      }
+
+      String latestVersion = null
+      String testVersionFolder = null
+
+      if (latestEntry != null) {
+          latestVersion = (latestEntry["metadata-version"] ?: "").toString()
+          def tv = latestEntry["test-version"]
+          testVersionFolder = (tv != null && tv.toString().trim()) ? tv.toString() : latestVersion
+      } else {
+          if (!indexFile.exists()) {
+              throw new GradleException("Missing index.json at ${indexFile}. Cannot determine latest metadata version.")
+          }
+          def entries = new JsonSlurper().parse(indexFile) as List<Map>
+          if (entries.isEmpty()) {
+              throw new GradleException("Empty index.json at ${indexFile}.")
+          }
+          latestVersion = entries.collect { it["metadata-version"].toString() }
+                                 .max { v -> VersionNumber.parse(v) }
+      }
+
+      if (testVersionFolder == null || testVersionFolder.trim().isEmpty()) {
+          File testsLibDir = project.file("tests/src/${libPath}")
+          if (!testsLibDir.exists()) {
+              throw new GradleException("No tests directory found for ${lib} at ${testsLibDir}")
+          }
+          File[] dirs = testsLibDir.listFiles()
+          List<File> versionDirs = dirs == null ? [] : dirs.findAll { it.isDirectory() }
+          if (versionDirs.isEmpty()) {
+              throw new GradleException("No version subdirectories found in ${testsLibDir}")
+          }
+          testVersionFolder = versionDirs.max { d -> VersionNumber.parse(d.name) }.name
+      }
+
+      String testPath = "${libPath}/${testVersionFolder}"
+      String testCoordinates = testPath.replace("/", ":")
+
+      writeGithubEnv("LATEST_VERSION", latestVersion)
+      writeGithubEnv("TEST_PATH", testPath)
+      writeGithubEnv("TEST_COORDINATES", testCoordinates)
+  }
 }
