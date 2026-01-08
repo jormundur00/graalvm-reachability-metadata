@@ -43,14 +43,14 @@ run_multiple_attempts() {
       echo "Re-running stage '$stage' (attempt $((attempt + 1))/$max_attempts)"
     fi
 
-    timeout "$TIMEOUT" bash -c "$cmd_str"
+    timeout --signal=QUIT --kill-after=20s "$TIMEOUT" bash -c "$cmd_str"
     result=$?
 
     if [ "$result" -eq 0 ]; then
       return 0
     fi
 
-    if [ "$result" -eq 124 ]; then
+    if [ "$result" -eq 124 ] || [ "$result" -eq 131 ]; then
       echo "⚠️  TIMEOUT: '$stage' for $VERSION took longer than $TIMEOUT."
     else
       echo "❌ ERROR: '$stage' for $VERSION failed with exit code $result."
