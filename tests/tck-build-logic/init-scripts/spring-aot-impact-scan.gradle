@@ -10,63 +10,44 @@ allprojects {
     tasks.register('__internalImpactScan') {
         doLast {
             // Only consider projects that actually have native tests
-            if (!(tasks.names.contains('nativeTest') || tasks.names.contains('nativeAppTest'))) {
-                return
-            }
+            def hasNativeTask = project.tasks.findByName('nativeTest') != null ||
+                    project.tasks.findByName('nativeAppTest') != null
+            if (!hasNativeTask) return
 
-            // Accept a comma-separated list of versionless coordinates via -PimpactCoordinatesList,
-            // and keep backward compatibility with single -PimpactCoordinates
+            // Accept coordinates from either property name for compatibility
             def listProp = gradle.startParameter.projectProperties.get('impactCoordinatesList')
             def singleProp = gradle.startParameter.projectProperties.get('impactCoordinates')
 
             Set<String> targets = new LinkedHashSet<>()
-            if (listProp != null) {
-                listProp.toString().split(',').each { s ->
-                    def v = s.trim()
-                    if (!v.isEmpty()) targets.add(v)
-                }
-            }
-            if (singleProp != null) {
-                def v = singleProp.toString().trim()
-                if (!v.isEmpty()) targets.add(v)
-            }
-            if (targets.isEmpty()) {
-                return
-            }
-
-            // Resolve only selected classpath configurations to keep the scan fast
-            def candidateConfNames = [
-                'runtimeClasspath',
-                'testRuntimeClasspath',
-                'nativeTestRuntimeClasspath',
-                'nativeAppTestRuntimeClasspath'
-            ]
-            def existingConfNames = candidateConfNames.findAll { configurations.names.contains(it) }
-            def configs = existingConfNames
-                    .collect { configurations.named(it).get() }
-                    .findAll { it.canBeResolved }
-
-            // Scan resolved components (including transitives) for any GA in the target set
-            boolean match = false
-            try {
-                match = configs.any { conf ->
-                    try {
-                        return conf.incoming.resolutionResult.allComponents.any { comp ->
-                            def m = comp.moduleVersion
-                            if (m == null) return false
-                            def ga = "${m.group}:${m.name}"
-                            return targets.contains(ga)
-                        }
-                    } catch (Throwable ignored) {
-                        return false
+            [listProp, singleProp].each { prop ->
+                if (prop != null) {
+                    prop.toString().split(',').each { s ->
+                        def v = s.trim()
+                        if (!v.isEmpty()) targets.add(v)
                     }
                 }
-            } catch (Throwable ignored) {
-                match = false
             }
 
-            if (match) {
-                println "IMPACT_MATCH:${project.path}"
+            if (targets.isEmpty()) return
+
+            boolean matchFound = false
+            configurations.findAll { it.canBeResolved }.each { conf ->
+                if (matchFound) return
+                try {
+                    conf.incoming.resolutionResult.allComponents.each { comp ->
+                        def m = comp.moduleVersion
+                        if (m != null) {
+                            // Convert GString to String to avoid set matching issues
+                            String ga = "${m.group}:${m.name}".toString()
+                            if (targets.contains(ga)) {
+                                matchFound = true
+                                println "IMPACT_MATCH:${project.path}"
+                            }
+                        }
+                    }
+                } catch (Throwable ignored) {
+                    // Skip configurations that cannot be resolved in this specific subproject
+                }
             }
         }
     }
