@@ -14,7 +14,7 @@ allprojects {
                     project.tasks.findByName('nativeAppTest') != null
             if (!hasNativeTask) return
 
-            if (!project.path.toLowerCase().contains("mockito")) {
+            if (!project.path.toLowerCase().contains("cloud")) {
                 return
             }
 
