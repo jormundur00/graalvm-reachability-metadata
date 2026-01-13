@@ -14,6 +14,10 @@ allprojects {
                     project.tasks.findByName('nativeAppTest') != null
             if (!hasNativeTask) return
 
+            if (!project.path.toLowerCase().contains("mockito")) {
+                return
+            }
+
             // Accept coordinates from either property name for compatibility
             def listProp = gradle.startParameter.projectProperties.get('impactCoordinatesList')
             def singleProp = gradle.startParameter.projectProperties.get('impactCoordinates')
