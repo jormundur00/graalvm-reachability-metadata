@@ -34,18 +34,5 @@
       }
     ],
     "name": "io.netty.channel.socket.nio.NioSocketChannel"
-  },
-  {
-    "condition": {
-      "typeReachable": "io.netty.channel.FakeAddedRandom"
-    },
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      }
-    ],
-    "name": "io.netty.channel.socket.nio.NioSocketChannel"
   }
-
 ]

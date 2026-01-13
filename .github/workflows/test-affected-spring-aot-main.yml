@@ -166,11 +166,29 @@ jobs:
 
       - name: "🧪 Run nativeTest and nativeAppTest for ${{ matrix.project }}"
         run: |
-          set -euo pipefail
           SPRING_DIR='${{ github.workspace }}/spring-aot-smoke-tests'
           P='${{ matrix.project }}'
           cd "$SPRING_DIR"
+
+          set +e
           ./gradlew --no-daemon --continue "${P}:nativeTest" "${P}:nativeAppTest"
+          EXIT_CODE=$?
+          set -e
+
+          if [ $EXIT_CODE -eq 0 ]; then
+            exit 0
+          fi
+
+          # If it failed, check if it's "allowed" to fail
+          REL_PATH=$(echo "${P//:/ /}" | xargs | tr ' ' '/')
+          GRADLE_FILE="${SPRING_DIR}/${REL_PATH}/build.gradle"
+
+          if grep -q "expectedToFail" "$GRADLE_FILE"; then
+            echo "::warning:: Known upstream failure detected. Skipping failure."
+            exit 0
+          else
+            exit 1
+          fi
 
   all-affected-passed:
     name: "🧪 All affected Spring AOT smoke tests passed (main)"
