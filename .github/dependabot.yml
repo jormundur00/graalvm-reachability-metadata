@@ -7,7 +7,7 @@ updates:
   - package-ecosystem: "docker"
     directory: "/tests/tck-build-logic/src/main/resources/allowed-docker-images"
     reviewers:
-      - "matneu"
+      - "jormundur00"
     assignees:
       - "jormundur00"
     schedule:
