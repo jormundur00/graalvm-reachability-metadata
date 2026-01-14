@@ -537,7 +537,7 @@ tasks.register("generateAffectedSpringTestList") { task ->
        }
 
        // Use a reusable init script instead of generating a temp file
-       File initScript = project.file("tests/tck-build-logic/init-scripts/spring-aot-impact-scan.gradle")
+       File initScript = project.file("tests/tck-build-logic/scripts/spring-aot-impact-scan.gradle")
        if (!initScript.exists()) {
            throw new GradleException("Missing init script: ${initScript.absolutePath}")
        }

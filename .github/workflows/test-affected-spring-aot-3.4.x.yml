@@ -76,29 +76,43 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          JAVA="${{ steps.set-matrix.outputs.java }}"
+          SPRING_DIR="${{ github.workspace }}/spring-aot-smoke-tests"
+          DEFAULT_JAVA="${{ steps.set-matrix.outputs.java }}"
           IMPACT="${{ steps.impact.outputs.impacted_tests || '' }}"
-
+          
           if [ -z "${IMPACT}" ]; then
             echo "none-found=true" >> "$GITHUB_OUTPUT"
-            echo 'matrix={"project":[],"os":["ubuntu-latest"],"java":["'"${JAVA}"'"]}' >> "$GITHUB_OUTPUT"
+            echo 'matrix={"include":[]}' >> "$GITHUB_OUTPUT"
             exit 0
           fi
-
+          
           IFS=',' read -r -a projects <<< "${IMPACT}"
-          json='{"project":['
-          first=1
+          JSON_ARRAY="[]"
+          
           for p in "${projects[@]}"; do
             p="$(echo "$p" | xargs)"
             [ -z "$p" ] && continue
-            if [ $first -eq 0 ]; then json+=','; fi
-            json+="\"${p}\""
-            first=0
+          
+            REL_PATH=$(echo "${p//:/ /}" | xargs | tr ' ' '/')
+            GRADLE_FILE="${SPRING_DIR}/${REL_PATH}/build.gradle"
+          
+            CURRENT_JAVA=$DEFAULT_JAVA
+          
+            if [ -f "$GRADLE_FILE" ]; then
+              OVERRIDE_VERSION=$(grep "javaVersion =" "$GRADLE_FILE" | sed -E "s/.*javaVersion = '([0-9]+)'.*/\1/" | tr -d '[:space:]' || echo "")
+          
+              if [[ "$OVERRIDE_VERSION" =~ ^[0-9]+$ ]]; then
+                echo "💡 Project $p overrides Java to: $OVERRIDE_VERSION"
+                CURRENT_JAVA=$OVERRIDE_VERSION
+              fi
+            fi
+          
+            # Append to the JSON array using jq for safety
+            JSON_ARRAY=$(echo "$JSON_ARRAY" | jq -c ". + [{\"project\": \"$p\", \"java\": \"$CURRENT_JAVA\", \"os\": \"ubuntu-latest\"}]")
           done
-          json+='],"os":["ubuntu-latest"],"java":["'"${JAVA}"'"]}'
-
+          
           echo "none-found=false" >> "$GITHUB_OUTPUT"
-          echo "matrix=${json}" >> "$GITHUB_OUTPUT"
+          echo "matrix={\"include\":$JSON_ARRAY}" >> "$GITHUB_OUTPUT"
 
   test-affected-spring-aot:
     name: "🧪 ${{ matrix.project }} @ spring-aot:3.4.x (GraalVM JDK ${{ matrix.java }})"
