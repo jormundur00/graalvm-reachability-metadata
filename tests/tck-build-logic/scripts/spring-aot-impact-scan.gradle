@@ -14,7 +14,8 @@ allprojects {
                     project.tasks.findByName('nativeAppTest') != null
             if (!hasNativeTask) return
 
-            if (!project.path.toLowerCase().contains("cloud")) {
+            // DEBUG FILTER
+            if (!project.path.toLowerCase().contains("mongodb")) {
                 return
             }
 
