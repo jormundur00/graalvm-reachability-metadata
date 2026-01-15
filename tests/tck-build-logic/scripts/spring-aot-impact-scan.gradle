@@ -14,11 +14,6 @@ allprojects {
                     project.tasks.findByName('nativeAppTest') != null
             if (!hasNativeTask) return
 
-            // DEBUG FILTER
-            if (!project.path.toLowerCase().contains("mongodb") && !project.path.toLowerCase().contains("cloud") && !project.path.toLowerCase().contains("kotlin")) {
-                return
-            }
-
             // Accept coordinates from either property name for compatibility
             def listProp = gradle.startParameter.projectProperties.get('impactCoordinatesList')
             def singleProp = gradle.startParameter.projectProperties.get('impactCoordinates')
