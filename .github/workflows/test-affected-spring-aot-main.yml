@@ -188,7 +188,7 @@ jobs:
           cd "$SPRING_DIR"
 
           set +e
-          ./gradlew -Dorg.gradle.java.home="$GRAALVM_HOME" --no-daemon --continue "${P}:nativeTest" "${P}:nativeAppTest"
+          ./gradlew --no-daemon --continue "${P}:nativeTest" "${P}:nativeAppTest"
           EXIT_CODE=$?
           set -e
 
