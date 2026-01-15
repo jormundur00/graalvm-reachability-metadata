@@ -141,7 +141,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'graalvm'
-          java-version: '21'
+          java-version: '17'
 
       - name: "🔧 Install GraalVM for smoke tests"
         uses: graalvm/setup-graalvm@v1
@@ -196,7 +196,7 @@ jobs:
           cd "$SPRING_DIR"
 
           set +e
-          ./gradlew -Dorg.gradle.java.home="$GRAALVM_HOME" --no-daemon --continue "${P}:nativeTest" "${P}:nativeAppTest"
+          ./gradlew --no-daemon --continue "${P}:nativeTest" "${P}:nativeAppTest"
           EXIT_CODE=$?
           set -e
 
