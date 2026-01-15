@@ -24,6 +24,29 @@ fi
 echo "Running native tests for project '$P' in '$SPRING_DIR' (branch=$BRANCH)"
 cd "$SPRING_DIR"
 
+# Point spring-aot-smoke-tests to local reachability metadata
+META_DIR="$(cd "$SPRING_DIR/.." && pwd)/metadata"
+META_URL="file://${META_DIR}"
+GP="${SPRING_DIR}/gradle.properties"
+
+if [ ! -f "$GP" ]; then
+  echo "gradle.properties not found at $GP"
+  exit 1
+fi
+
+# Comment out version pin
+sed -i -E 's|^reachabilityMetadataVersion=.*|#reachabilityMetadataVersion=|' "$GP"
+
+# Set or add reachabilityMetadataUrl to local path
+if grep -Eq '^[#]*reachabilityMetadataUrl=' "$GP"; then
+  sed -i -E "s|^[#]*reachabilityMetadataUrl=.*|reachabilityMetadataUrl=${META_URL}|" "$GP"
+else
+  printf "\nreachabilityMetadataUrl=%s\n" "$META_URL" >> "$GP"
+fi
+
+echo "----- gradle.properties (reachability metadata overrides) -----"
+grep -E 'reachabilityMetadata(Url|Version)=' -n "$GP" || true
+
 set +e
 ./gradlew --no-daemon --continue "${P}:nativeTest" "${P}:nativeAppTest"
 EXIT_CODE=$?
