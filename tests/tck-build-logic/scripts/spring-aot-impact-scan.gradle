@@ -15,7 +15,7 @@ allprojects {
             if (!hasNativeTask) return
 
             // DEBUG FILTER
-            if (!project.path.toLowerCase().contains("mongodb") && !project.path.toLowerCase().contains("cloud")) {
+            if (!project.path.toLowerCase().contains("mongodb") && !project.path.toLowerCase().contains("cloud") && !project.path.toLowerCase().contains("kotlin")) {
                 return
             }
 

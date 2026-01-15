@@ -96,14 +96,22 @@ jobs:
             REL_PATH=$(echo "${p//:/ /}" | xargs | tr ' ' '/')
             GRADLE_FILE="${SPRING_DIR}/${REL_PATH}/build.gradle"
 
-            CURRENT_JAVA=$DEFAULT_JAVA
+            # Initialize variables to avoid 'unbound variable' errors
+            CURRENT_JAVA="$DEFAULT_JAVA"
 
             if [ -f "$GRADLE_FILE" ]; then
-              OVERRIDE_VERSION=$(grep "javaVersion =" "$GRADLE_FILE" | sed -E "s/.*javaVersion = '([0-9]+)'.*/\1/" | tr -d '[:space:]' || echo "")
+              # Extract version; '|| true' ensures grep doesn't exit the script if string isn't found
+              OVERRIDE_VERSION=$(grep "javaVersion =" "$GRADLE_FILE" | sed -E "s/.*javaVersion = '([0-9]+)'.*/\1/" | tr -d '[:space:]' || true)
 
-              if [[ "$OVERRIDE_VERSION" =~ ^[0-9]+$ ]]; then
-                echo "💡 Project $p overrides Java to: $OVERRIDE_VERSION"
-                CURRENT_JAVA=$OVERRIDE_VERSION
+              if [[ -n "$OVERRIDE_VERSION" && "$OVERRIDE_VERSION" =~ ^[0-9]+$ ]]; then
+                # Compare versions and pick the higher one
+                if [ "$OVERRIDE_VERSION" -gt "$DEFAULT_JAVA" ]; then
+                  echo "📈 Project $p: Using override $OVERRIDE_VERSION (higher than default $DEFAULT_JAVA)"
+                  CURRENT_JAVA="$OVERRIDE_VERSION"
+                else
+                  echo "✅ Project $p: Sticking with default $DEFAULT_JAVA (>= override $OVERRIDE_VERSION)"
+                  CURRENT_JAVA="$DEFAULT_JAVA"
+                fi
               fi
             fi
 
