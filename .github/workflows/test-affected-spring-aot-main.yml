@@ -96,7 +96,6 @@ jobs:
             REL_PATH=$(echo "${p//:/ /}" | xargs | tr ' ' '/')
             GRADLE_FILE="${SPRING_DIR}/${REL_PATH}/build.gradle"
 
-            # Initialize variables to avoid 'unbound variable' errors
             CURRENT_JAVA="$DEFAULT_JAVA"
 
             if [ -f "$GRADLE_FILE" ]; then
@@ -191,59 +190,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          SPRING_DIR='${{ github.workspace }}/spring-aot-smoke-tests'
-          P='${{ matrix.project }}'
-          cd "$SPRING_DIR"
-
-          set +e
-          ./gradlew --no-daemon --continue "${P}:nativeTest" "${P}:nativeAppTest"
-          EXIT_CODE=$?
-          set -e
-
-          if [ $EXIT_CODE -eq 0 ]; then
-            echo "✅ Test $P passed!"
-            exit 0
-          fi
-
-          echo "❌ Test $P failed. Triaging..."
-
-          # 1. Check local build.gradle for 'expectedToFail'
-          REL_PATH=$(echo "${P//:/ /}" | xargs | tr ' ' '/')
-          GRADLE_FILE="${SPRING_DIR}/${REL_PATH}/build.gradle"
-
-          if [ -f "$GRADLE_FILE" ] && grep -q "expectedToFail" "$GRADLE_FILE"; then
-            echo "::warning:: Known failure (expectedToFail found in $P/build.gradle). Skipping."
-            exit 0
-          fi
-
-          # 2. Check Upstream CI via API using YAML filename
-          echo "🔍 Checking upstream CI for $P on branch 4.0.x..."
-
-          # Convert :data:data-mongodb to data-data-mongodb
-          CLEAN_PATH=$(echo "$P" | sed 's/^://' | sed 's/:/-/g')
-          WF_FILENAME="4.0.x-${CLEAN_PATH}.yml"
-
-          API_URL="https://api.github.com/repos/spring-projects/spring-aot-smoke-tests/actions/workflows/${WF_FILENAME}/runs?per_page=1"
-
-          # Fetch latest run data
-          RUN_DATA=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" "$API_URL")
-
-          # Check if workflow exists
-          if echo "$RUN_DATA" | jq -e '.message == "Not Found"' > /dev/null; then
-            echo "::error:: Workflow $WF_FILENAME not found upstream. Failing build."
-            exit 1
-          fi
-
-          LATEST_CONCLUSION=$(echo "$RUN_DATA" | jq -r '.workflow_runs[0].conclusion')
-          LATEST_URL=$(echo "$RUN_DATA" | jq -r '.workflow_runs[0].html_url')
-
-          if [ "$LATEST_CONCLUSION" == "failure" ]; then
-            echo "::warning:: Pardon: Upstream is also failing at $LATEST_URL"
-            exit 0
-          else
-            echo "::error:: Test $P failed, but it is PASSING upstream ($LATEST_CONCLUSION). This is a new regression!"
-            exit 1
-          fi
+          bash .github/workflows/scripts/run-spring-aot-triaged-test.sh '${{ github.workspace }}/spring-aot-smoke-tests' '${{ matrix.project }}' 4.0.x
 
   all-affected-passed:
     name: "🧪 All affected Spring AOT smoke tests passed (main)"
