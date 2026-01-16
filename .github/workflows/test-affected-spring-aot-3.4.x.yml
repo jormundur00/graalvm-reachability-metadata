@@ -52,7 +52,7 @@ jobs:
         id: impact
         if: steps.filter.outputs.changed == 'true'
         run: |
-          ./gradlew generateAffectedSpringTestList \
+          ./gradlew generateAffectedSpringTestMatrix \
             -PbaseCommit=${{ github.event.pull_request.base.sha }} \
             -PnewCommit=${{ github.event.pull_request.head.sha }} \
             -PspringAotBranch=3.4.x \

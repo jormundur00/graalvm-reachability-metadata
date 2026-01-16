@@ -450,8 +450,8 @@ tasks.register("extractLibraryTestParams", DefaultTask) { task ->
     }
 }
 
-// gradle generateAffectedSpringTestList -PbaseCommit=<base> -PnewCommit=<head> -PspringAotBranch=<branch> -PspringAotPath=/path/to/spring-aot-smoke-tests
-tasks.register("generateAffectedSpringTestList") { task ->
+// gradle generateAffectedSpringTestMatrix -PbaseCommit=<base> -PnewCommit=<head> -PspringAotBranch=<branch> -PspringAotPath=/path/to/spring-aot-smoke-tests
+tasks.register("generateAffectedSpringTestMatrix") { task ->
    task.setDescription("Computes GA changes from git diff, scans Spring AOT for impacted tests, and emits a ready-to-use GitHub Actions matrix.")
    task.setGroup(METADATA_GROUP)
 
