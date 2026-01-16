@@ -15,9 +15,8 @@ jobs:
     runs-on: "ubuntu-latest"
     timeout-minutes: 20
     outputs:
-      matrix: ${{ steps.finalize.outputs.matrix }}
-      java: ${{ steps.set-matrix.outputs.java }}
-      none-found: ${{ steps.finalize.outputs['none-found'] }}
+      matrix: ${{ steps.impact.outputs.matrix }}
+      none-found: ${{ steps.impact.outputs['none-found'] }}
       relevant-files-changed: ${{ steps.filter.outputs.changed }}
     steps:
       - name: "☁️ Checkout repository"
@@ -40,20 +39,8 @@ jobs:
           distribution: 'graalvm'
           java-version: '21'
 
-      - name: "🕸️ Get changed coordinates for spring-aot:main"
-        id: set-matrix
-        if: steps.filter.outputs.changed == 'true'
-        run: |
-          ./gradlew generateAffectedSpringTestMatrix \
-            -PbaseCommit=${{ github.event.pull_request.base.sha }} \
-            -PnewCommit=${{ github.event.pull_request.head.sha }} \
-            -PspringAotBranch=main
-
-          echo "Changed coordinates (CSV): ${{ steps.set-matrix.outputs.coordinates_csv }}"
-          echo "Java for branch: ${{ steps.set-matrix.outputs.java }}"
-
       - name: "☁️ Checkout spring-aot-smoke-tests (main)"
-        if: steps.filter.outputs.changed == 'true' && steps.set-matrix.outputs['none-found'] != 'true'
+        if: steps.filter.outputs.changed == 'true'
         uses: actions/checkout@v4
         with:
           repository: spring-projects/spring-aot-smoke-tests
@@ -63,64 +50,14 @@ jobs:
 
       - name: "🧮 Discover impacted smoke tests (aggregate for all changed coordinates)"
         id: impact
-        if: steps.filter.outputs.changed == 'true' && steps.set-matrix.outputs['none-found'] != 'true'
+        if: steps.filter.outputs.changed == 'true'
         run: |
           ./gradlew generateAffectedSpringTestList \
-            -Pcoordinates='${{ steps.set-matrix.outputs.coordinates_csv }}' \
+            -PbaseCommit=${{ github.event.pull_request.base.sha }} \
+            -PnewCommit=${{ github.event.pull_request.head.sha }} \
+            -PspringAotBranch=main \
             -PspringAotPath='${{ github.workspace }}/spring-aot-smoke-tests'
           echo "Impacted tests: '${{ steps.impact.outputs.impacted_tests || '' }}'"
-
-      - name: "🧮 Build impacted tests matrix"
-        id: finalize
-        if: steps.filter.outputs.changed == 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
-          SPRING_DIR="${{ github.workspace }}/spring-aot-smoke-tests"
-          DEFAULT_JAVA="${{ steps.set-matrix.outputs.java }}"
-          IMPACT="${{ steps.impact.outputs.impacted_tests || '' }}"
-
-          if [ -z "${IMPACT}" ]; then
-            echo "none-found=true" >> "$GITHUB_OUTPUT"
-            echo 'matrix={"include":[]}' >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          IFS=',' read -r -a projects <<< "${IMPACT}"
-          JSON_ARRAY="[]"
-
-          for p in "${projects[@]}"; do
-            p="$(echo "$p" | xargs)"
-            [ -z "$p" ] && continue
-
-            REL_PATH=$(echo "${p//:/ /}" | xargs | tr ' ' '/')
-            GRADLE_FILE="${SPRING_DIR}/${REL_PATH}/build.gradle"
-
-            CURRENT_JAVA="$DEFAULT_JAVA"
-
-            if [ -f "$GRADLE_FILE" ]; then
-              # Extract version; '|| true' ensures grep doesn't exit the script if string isn't found
-              OVERRIDE_VERSION=$(grep "javaVersion =" "$GRADLE_FILE" | sed -E "s/.*javaVersion = '([0-9]+)'.*/\1/" | tr -d '[:space:]' || true)
-
-              if [[ -n "$OVERRIDE_VERSION" && "$OVERRIDE_VERSION" =~ ^[0-9]+$ ]]; then
-                # Compare versions and pick the higher one
-                if [ "$OVERRIDE_VERSION" -gt "$DEFAULT_JAVA" ]; then
-                  echo "📈 Project $p: Using override $OVERRIDE_VERSION (higher than default $DEFAULT_JAVA)"
-                  CURRENT_JAVA="$OVERRIDE_VERSION"
-                else
-                  echo "✅ Project $p: Sticking with default $DEFAULT_JAVA (>= override $OVERRIDE_VERSION)"
-                  CURRENT_JAVA="$DEFAULT_JAVA"
-                fi
-              fi
-            fi
-
-            # Append to the JSON array using jq for safety
-            JSON_ARRAY=$(echo "$JSON_ARRAY" | jq -c ". + [{\"project\": \"$p\", \"java\": \"$CURRENT_JAVA\", \"os\": \"ubuntu-latest\"}]")
-          done
-
-          echo "none-found=false" >> "$GITHUB_OUTPUT"
-          echo "matrix={\"include\":$JSON_ARRAY}" >> "$GITHUB_OUTPUT"
-  
 
   test-affected-spring-aot:
     name: "🧪 ${{ matrix.project }} @ spring-aot:main (GraalVM JDK ${{ matrix.java }})"
@@ -136,7 +73,7 @@ jobs:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
 
-      - name: "🔧 Setup Java (GraalVM 21 for harness)"
+      - name: "🔧 Setup Java for spring harness"
         uses: actions/setup-java@v4
         with:
           distribution: 'liberica'

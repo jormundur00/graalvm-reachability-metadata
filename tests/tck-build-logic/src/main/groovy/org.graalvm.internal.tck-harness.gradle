@@ -248,61 +248,6 @@ Provider<Task> generateChangedCoordinatesMatrix = tasks.register("generateChange
     }
 }
 
-/**
- * gradle generateAffectedSpringTestMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit> -PspringAotBranch=<branch>
- * Returns changed versionless GA coordinates and runner defaults for a single Spring AOT branch.
- */
-Provider<Task> generateAffectedSpringTestMatrix = tasks.register("generateAffectedSpringTestMatrix", DefaultTask) { task ->
-    task.setDescription("Returns changed versionless GA coordinates and runner defaults for a single Spring AOT branch")
-    task.setGroup(METADATA_GROUP)
-    task.doFirst {
-        if (!project.hasProperty("baseCommit")) {
-            throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
-        }
-
-        // Read branch→java mapping and default OS from ci.json
-        def springAotCfg = springAotMatrixConfig()
-        def javaBranchMapping = (springAotCfg["java-branch-mapping"] as Map<String, String>)
-        def osEntry = springAotCfg["os"]
-        def osList = (osEntry instanceof List) ? (osEntry as List) : [osEntry]
-
-        String branch = project.hasProperty("springAotBranch") ? project.findProperty("springAotBranch").toString() : null
-        if (branch == null || branch.trim().isEmpty()) {
-            throw new GradleException("Missing 'springAotBranch' property! Rerun Gradle with '-PspringAotBranch=<branch>'")
-        }
-        String javaVersion = javaBranchMapping.get(branch)
-        if (javaVersion == null) {
-            throw new GradleException("Unknown springAotBranch '${branch}' in ci.json mapping")
-        }
-
-        boolean noneFound = diffCoordinates.isEmpty()
-
-        List<String> versionless = []
-        if (!noneFound) {
-            versionless = diffCoordinates.collect { c ->
-                def parts = c.split(":", 3)
-                "${parts[0]}:${parts[1]}"
-            }.unique()
-            noneFound = versionless.isEmpty()
-        }
-
-        if (noneFound) {
-            println "No changed coordinates were found for Spring AOT branch '${branch}'!"
-        }
-
-        def matrix = [
-            "coordinates": versionless,
-            "os": osList,
-            "java": [javaVersion]
-        ]
-
-        writeGithubOutput("matrix", JsonOutput.toJson(matrix))
-        writeGithubOutput("coordinates_csv", versionless.join(','))
-        writeGithubOutput("java", javaVersion)
-        writeGithubOutput("none-found", noneFound.toString())
-    }
-} as Provider<Task>
-
 // gradle generateChangedIndexFileCoordinatesList -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
 tasks.register("generateChangedIndexFileCoordinatesList", DefaultTask) { task ->
     task.setDescription("Returns a list of changed coordinates for validation based on git diff")
@@ -505,84 +450,119 @@ tasks.register("extractLibraryTestParams", DefaultTask) { task ->
     }
 }
 
-// gradle generateAffectedSpringTestList -Pcoordinates=<ga,ga,...> -PspringAotPath=/path/to/spring-aot-smoke-tests
+// gradle generateAffectedSpringTestList -PbaseCommit=<base> -PnewCommit=<head> -PspringAotBranch=<branch> -PspringAotPath=/path/to/spring-aot-smoke-tests
 tasks.register("generateAffectedSpringTestList") { task ->
-   task.setDescription("Scans an external Spring AOT repo for tests impacted by changes in one or more versionless coordinates (comma-separated).")
+   task.setDescription("Computes GA changes from git diff, scans Spring AOT for impacted tests, and emits a ready-to-use GitHub Actions matrix.")
    task.setGroup(METADATA_GROUP)
 
    doLast {
-       if (!project.hasProperty("coordinates")) {
-           throw new GradleException("Missing 'coordinates' property! Rerun Gradle with -Pcoordinates=<group:artifact[,group:artifact,...]>")
+       if (!project.hasProperty("baseCommit")) {
+           throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with -PbaseCommit=<commit-hash>")
+       }
+       if (!project.hasProperty("springAotBranch")) {
+           throw new GradleException("Missing 'springAotBranch' property! Rerun Gradle with -PspringAotBranch=<branch>")
        }
        if (!project.hasProperty("springAotPath")) {
            throw new GradleException("Missing 'springAotPath' property! Rerun Gradle with -PspringAotPath=<spring-aot-smoke-tests-path>")
        }
 
-       def springPath = project.findProperty("springAotPath") ?: "../spring-aot-smoke-tests"
-       def coordsProp = project.findProperty("coordinates").toString()
-       List<String> targets = coordsProp
-               .split(",")
-               .collect { it.trim() }
-               .findAll { !it.isEmpty() }
-               .unique()
-
-       if (targets.isEmpty()) {
-           logger.lifecycle("No coordinates provided after parsing -Pcoordinates")
-           return
-       }
-
-       def springDir = project.file(springPath)
+       // Resolve Spring AOT dir
+       def springDir = project.file(project.findProperty("springAotPath").toString())
        if (!springDir.exists()) {
            throw new GradleException("Spring AOT path does not exist: ${springDir.absolutePath}")
        }
 
-       // Use a reusable init script instead of generating a temp file
+       // Resolve default Java and OS for this branch from ci.json
+       def springAotCfg = springAotMatrixConfig()
+       def javaBranchMapping = (springAotCfg["java-branch-mapping"] as Map<String, String>)
+       def branch = project.findProperty("springAotBranch").toString()
+       String defaultJavaStr = javaBranchMapping.get(branch)
+       if (defaultJavaStr == null || defaultJavaStr.trim().isEmpty()) {
+           throw new GradleException("Unknown springAotBranch '${branch}' in ci.json mapping")
+       }
+       Integer defaultJava = Integer.parseInt(defaultJavaStr)
+
+       // Compute versionless GA targets from diffCoordinates
+       boolean noneFound = diffCoordinates.isEmpty()
+       List<String> versionless = []
+       if (!noneFound) {
+           versionless = diffCoordinates.collect { c ->
+               def parts = c.split(":", 3)
+               "${parts[0]}:${parts[1]}"
+           }.unique()
+           noneFound = versionless.isEmpty()
+       }
+
+       if (noneFound) {
+           writeGithubOutput("impacted_tests", "")
+           writeGithubOutput("matrix", JsonOutput.toJson([include: []]))
+           writeGithubOutput("none-found", "true")
+           return
+       }
+
+       // Init script within this repo (corrected path)
        File initScript = project.file("tests/tck-build-logic/scripts/spring-aot-impact-scan.gradle")
        if (!initScript.exists()) {
            throw new GradleException("Missing init script: ${initScript.absolutePath}")
        }
 
-       logger.lifecycle("Scanning Spring AOT repo at: ${springDir.absolutePath}")
+       // Execute impact scan in Spring AOT repo
        ByteArrayOutputStream stdout = new ByteArrayOutputStream()
-
-       // Use ExecOperations service instead of project.exec
        def execOps = project.services.get(ExecOperations)
-
        execOps.exec {
            workingDir = springDir
            executable = "${springDir.absolutePath}/gradlew"
-
-           // Pass the init script and the impact coordinates LIST to the Spring AOT build
-           // Add flags to avoid potential daemon stalls and ensure both streams are consumed
            args = [
                "-I", initScript.absolutePath,
-               "-PimpactCoordinatesList=${targets.join(',')}",
+               "-PimpactCoordinatesList=${versionless.join(',')}",
                "__internalImpactScan",
                "-q",
                "--no-daemon",
                "--console=plain",
                "--warning-mode=none"
            ]
-
            standardOutput = stdout
            errorOutput = stdout
            ignoreExitValue = true
        }
 
-       def results = stdout.toString().split("\n")
+       // Parse impact results
+       List<String> results = stdout.toString().split("\n")
                .findAll { it.startsWith("IMPACT_MATCH:") }
                .collect { it.replace("IMPACT_MATCH:", "") }
                .unique()
 
-       logger.lifecycle("\n--- IMPACTED SPRING SMOKE TESTS ---")
-       if (results.isEmpty()) {
-           logger.lifecycle("No matching smoke tests found for: ${targets.join(', ')}")
-       } else {
-           results.sort().each { logger.lifecycle(it) }
+       // Write impacted tests (CSV)
+       writeGithubOutput("impacted_tests", results.join(','))
+
+       boolean noneFoundTests = results.isEmpty()
+
+       // Build matrix with per-project Java override detection
+       List<Map<String, String>> include = []
+       results.each { String p ->
+           String relPath = p.replaceFirst("^:", "").replace(":", "/")
+           File gradleFile = new File(springDir, "${relPath}/build.gradle")
+
+           Integer currentJava = defaultJava
+           if (gradleFile.isFile()) {
+               try {
+                   String text = gradleFile.getText("UTF-8")
+                   def m = (text =~ /(?m)^\s*(?:.*?\.)?javaVersion\s*=\s*['"](\d+)['"]/)
+                   if (m.find()) {
+                       Integer override = Integer.parseInt(m.group(1))
+                       if (override > currentJava) {
+                           currentJava = override
+                       }
+                   }
+               } catch (Exception ignore) {
+                   // ignore parse errors, fall back to defaultJava
+               }
+           }
+
+           include.add([project: p, java: currentJava.toString(), os: "ubuntu-latest"])
        }
 
-       if (!results.isEmpty()) {
-           writeGithubOutput("impacted_tests", results.join(','))
-       }
+       writeGithubOutput("matrix", JsonOutput.toJson([include: include]))
+       writeGithubOutput("none-found", noneFoundTests.toString())
    }
 }
