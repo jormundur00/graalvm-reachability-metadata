@@ -71,7 +71,8 @@ jobs:
       - name: "📦 Publish native-build-tools to mavenLocal"
         run: |
           cd native-build-tools
-          ./gradlew publishToMavenLocal --no-parallel -x test
+          # Run the task specifically for the gradle-plugin project
+          ./gradlew :native-gradle-plugin:publishToMavenLocal --no-parallel
 
       - name: "🔧 Download GraalVM for metadata testing"
         uses: graalvm/setup-graalvm@v1
