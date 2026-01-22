@@ -67,6 +67,17 @@ jobs:
           distribution: 'graalvm'
           java-version: '17.0.12'
 
+      - name: "📝 Create Gradle Init Script"
+        run: |
+          mkdir -p ~/.gradle
+          echo "settingsEvaluated { settings ->
+            settings.pluginManagement.repositories {
+              mavenLocal()
+              gradlePluginPortal()
+              mavenCentral()
+            }
+          }" > ~/.gradle/init.gradle
+
       - name: "📦 Checkout native-build-tools (snapshot)"
         uses: actions/checkout@v4
         with:
@@ -111,6 +122,10 @@ jobs:
       - name: "🔎 Check metadata files content"
         run: |
           ./gradlew checkMetadataFiles -Pcoordinates=${{ matrix.coordinates }}
+
+      - name: "🔍 Verify Native Build Tools Version"
+        run: |
+          ./gradlew buildEnvironment | grep "native-gradle-plugin"
 
       - name: "🧪 Run '${{ matrix.coordinates }}' tests for all tested versions"
         run: |
