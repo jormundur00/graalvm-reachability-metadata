@@ -71,7 +71,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: graalvm/native-build-tools
-          ref: main
+          ref: master
           path: native-build-tools
 
       - name: "🔎 Read native-build-tools version from catalog"
