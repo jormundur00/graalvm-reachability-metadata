@@ -65,7 +65,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'graalvm'
-          java-version: '21'
+          java-version: '17.0.12'
 
       - name: "📦 Checkout native-build-tools (snapshot)"
         uses: actions/checkout@v4
@@ -85,6 +85,12 @@ jobs:
         run: |
           cd native-build-tools
           ./gradlew publishToMavenLocal --no-parallel
+
+      - name: "🔧 Setup java"
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'graalvm'
+          java-version: '21'
 
       - name: "🔧 Download GraalVM for metadata testing"
         uses: graalvm/setup-graalvm@v1
