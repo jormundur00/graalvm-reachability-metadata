@@ -67,6 +67,25 @@ jobs:
           distribution: 'graalvm'
           java-version: '21'
 
+      - name: "📦 Checkout native-build-tools (snapshot)"
+        uses: actions/checkout@v4
+        with:
+          repository: graalvm/native-build-tools
+          ref: main
+          path: native-build-tools
+
+      - name: "🔎 Read native-build-tools version from catalog"
+        run: |
+          cd native-build-tools
+          NBT_VERSION=$(sed -n 's/^[[:space:]]*nativeBuildTools[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' gradle/libs.versions.toml | head -n1)
+          echo "Detected native-build-tools version: $NBT_VERSION"
+          echo "ORG_GRADLE_PROJECT_nativeBuildToolsVersion=$NBT_VERSION" >> "$GITHUB_ENV"
+
+      - name: "📦 Publish native-build-tools to mavenLocal"
+        run: |
+          cd native-build-tools
+          ./gradlew publishToMavenLocal --no-parallel -x test
+
       - name: "🔧 Download GraalVM for metadata testing"
         uses: graalvm/setup-graalvm@v1
         with:

@@ -14,6 +14,31 @@ repositories {
     mavenLocal()
 }
 
+//
+// CI override for Native Build Tools version (keeps local default from libs.versions.toml)
+// Usage: pass -PnativeBuildToolsVersion=<override-version> or export
+// ORG_GRADLE_PROJECT_nativeBuildToolsVersion=<override-version>
+//
+def nbtOverride = providers.gradleProperty("nativeBuildToolsVersion").orNull
+if (nbtOverride) {
+    logger.lifecycle("Using native-build-tools version override: ${nbtOverride}")
+    configurations.configureEach {
+        resolutionStrategy.eachDependency { details ->
+            if (details.requested.group == "org.graalvm.buildtools" &&
+                details.requested.name == "native-gradle-plugin") {
+                details.useVersion(nbtOverride)
+                details.because("CI override via -PnativeBuildToolsVersion")
+            }
+            // Also cover plugin marker just in case it's resolved in this project
+            if (details.requested.group == "org.graalvm.buildtools.native" &&
+                details.requested.name == "org.graalvm.buildtools.native.gradle.plugin") {
+                details.useVersion(nbtOverride)
+                details.because("CI override via -PnativeBuildToolsVersion (plugin marker)")
+            }
+        }
+    }
+}
+
 project.group = "org.graalvm"
 project.version = "1.0.0-SNAPSHOT"
 
