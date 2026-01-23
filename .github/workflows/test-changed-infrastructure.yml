@@ -63,6 +63,9 @@ jobs:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
 
+      - name: "🛠️ Prepare native-build-tools (snapshot)"
+        uses: ./.github/actions/prepare-native-build-tools
+
       - name: "🔧 Setup java"
         uses: actions/setup-java@v4
         with:
