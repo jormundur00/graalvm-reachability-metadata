@@ -31,6 +31,31 @@ jobs:
           file-patterns: |
             - 'metadata/**'
             - 'tests/src/**'
+            
+      - name: "🔧 Setup java"
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'graalvm'
+          java-version: '17.0.12'
+
+      - name: "📦 Checkout native-build-tools (snapshot)"
+        uses: actions/checkout@v4
+        with:
+          repository: graalvm/native-build-tools
+          ref: master
+          path: native-build-tools
+
+      - name: "🔎 Read native-build-tools version from catalog"
+        run: |
+          cd native-build-tools
+          NBT_VERSION=$(sed -n 's/^[[:space:]]*nativeBuildTools[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' gradle/libs.versions.toml | head -n1)
+          echo "Detected native-build-tools version: $NBT_VERSION"
+          echo "ORG_GRADLE_PROJECT_nativeBuildToolsVersion=$NBT_VERSION" >> "$GITHUB_ENV"
+
+      - name: "📦 Publish native-build-tools to mavenLocal"
+        run: |
+          cd native-build-tools
+          ./gradlew publishToMavenLocal --no-parallel
 
       - name: "🔧 Setup Java"
         if: steps.filter.outputs.changed == 'true'
