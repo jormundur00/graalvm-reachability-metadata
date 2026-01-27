@@ -76,8 +76,8 @@ jobs:
       - name: "🔧 Setup Java for spring harness"
         uses: actions/setup-java@v4
         with:
-          distribution: 'liberica'
-          java-version: '17'
+          distribution: 'graalvm'
+          java-version: '17.0.12'
 
       - name: "🔧 Install GraalVM for smoke tests"
         uses: graalvm/setup-graalvm@v1
