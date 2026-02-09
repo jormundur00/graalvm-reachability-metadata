@@ -6,6 +6,20 @@
  */
 import org.gradle.api.Project
 
+/**
+ * IMPACT SCANNER INIT SCRIPT
+ * * This script injects the '__internalImpactScan' task into all projects. It is used to
+ * perform a "reverse lookup" to find which smoke tests are affected by changes in
+ * specific library coordinates (Reachability Metadata).
+ *
+ * Logic Flow:
+ * 1. Filter: Only runs on projects with 'nativeTest' or 'nativeAppTest' tasks.
+ * 2. Inputs: Parses comma-separated coordinates from -PimpactCoordinatesList or -PimpactCoordinates.
+ * 3. Resolution: Resolves every 'canBeResolved' configuration to inspect the full dependency
+ * graph, ensuring transitive dependencies are caught (e.g., finding the MongoDB driver
+ * inside a Spring Boot Starter).
+ * 4. Output: Prints "IMPACT_MATCH:<project_path>" to stdout for every matching project.
+ */
 allprojects {
     tasks.register('__internalImpactScan') {
         doLast {
