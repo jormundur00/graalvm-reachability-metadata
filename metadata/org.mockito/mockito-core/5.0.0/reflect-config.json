@@ -229,5 +229,10 @@
   "condition":{"typeReachable":"org.mockito.internal.configuration.plugins.DefaultMockitoPlugins"},
   "name":"org.mockito.internal.util.reflection.ModuleMemberAccessor",
   "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "condition":{"typeReachable":"org.mockito.internal.configuration.plugins.DefaultMockitoPluginsXXX"},
+  "name":"org.mockito.internal.util.reflection.ModuleMemberAccessor",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 }
 ]

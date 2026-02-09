@@ -1,0 +1,68 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+import org.gradle.api.Project
+
+/**
+ * IMPACT SCANNER INIT SCRIPT
+ * * This script injects the '__internalImpactScan' task into all projects. It is used to
+ * perform a "reverse lookup" to find which smoke tests are affected by changes in
+ * specific library coordinates (Reachability Metadata).
+ *
+ * Logic Flow:
+ * 1. Filter: Only runs on projects with 'nativeTest' or 'nativeAppTest' tasks.
+ * 2. Inputs: Parses comma-separated coordinates from -PimpactCoordinatesList or -PimpactCoordinates.
+ * 3. Resolution: Resolves every 'canBeResolved' configuration to inspect the full dependency
+ * graph, ensuring transitive dependencies are caught (e.g., finding the MongoDB driver
+ * inside a Spring Boot Starter).
+ * 4. Output: Prints "IMPACT_MATCH:<project_path>" to stdout for every matching project.
+ */
+allprojects {
+    tasks.register('__internalImpactScan') {
+        doLast {
+            // Only consider projects that actually have native tests
+            def hasNativeTask = project.tasks.findByName('nativeTest') != null ||
+                    project.tasks.findByName('nativeAppTest') != null
+            if (!hasNativeTask) return
+
+            // Accept coordinates from either property name for compatibility
+            def listProp = gradle.startParameter.projectProperties.get('impactCoordinatesList')
+            def singleProp = gradle.startParameter.projectProperties.get('impactCoordinates')
+
+            Set<String> targets = new LinkedHashSet<>()
+            [listProp, singleProp].each { prop ->
+                if (prop != null) {
+                    prop.toString().split(',').each { s ->
+                        def v = s.trim()
+                        if (!v.isEmpty()) targets.add(v)
+                    }
+                }
+            }
+
+            if (targets.isEmpty()) return
+
+            boolean matchFound = false
+            configurations.findAll { it.canBeResolved }.each { conf ->
+                if (matchFound) return
+                try {
+                    conf.incoming.resolutionResult.allComponents.each { comp ->
+                        def m = comp.moduleVersion
+                        if (m != null) {
+                            // Convert GString to String to avoid set matching issues
+                            String ga = "${m.group}:${m.name}".toString()
+                            if (targets.contains(ga)) {
+                                matchFound = true
+                                println "IMPACT_MATCH:${project.path}"
+                            }
+                        }
+                    }
+                } catch (Throwable ignored) {
+                    // Skip configurations that cannot be resolved in this specific subproject
+                }
+            }
+        }
+    }
+}
