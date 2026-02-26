@@ -89,8 +89,8 @@ if [ -n "${NBT_VERSION:-}" ]; then
 fi
 
 set +e
-./gradlew --no-daemon --continue "${P}:nativeTest" "${P}:nativeAppTest"
-EXIT_CODE=$?
+./gradlew --no-daemon --continue -PfromMavenLocal=org.graalvm.buildtools "${P}:nativeTest" "${P}:nativeAppTest"
+EXIT_CODE=$? #test
 set -e
 
 if [ $EXIT_CODE -eq 0 ]; then
