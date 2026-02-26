@@ -19,6 +19,12 @@
   },
   {
     "condition": {
+      "typeReachable": "io.netty.channel.MultithreadEventLoopGroup"
+    },
+    "name": "ch.qos.logback.classic.encoder.PatternLayoutEncoder"
+  },
+  {
+    "condition": {
       "typeReachable": "io.netty.handler.codec.http.websocketx.extensions.compression.DeflateDecoder"
     },
     "name": "ch.qos.logback.classic.encoder.PatternLayoutEncoder",

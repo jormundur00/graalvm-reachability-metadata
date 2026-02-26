@@ -60,7 +60,7 @@ jobs:
 
   test-affected-spring-aot:
     name: "🧪 ${{ matrix.project }} @ spring-aot:4.1.x (GraalVM JDK ${{ matrix.java }})"
-    if: needs.discover-impacted-tests.outputs.relevant-files-changed == 'true' && needs.discover-impacted-tests.result == 'success' && needs.discover-impacted-tests.outputs.none-found != 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
+    if: needs.discover-impacted-tests.outputs.relevant-files-changed == 'true' && needs.discover-impacted-tests.result == 'success' && needs.discover-impacted-tests.outputs.none-found != 'true' && github.repository == 'jormundur00/graalvm-reachability-metadata'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 480
     needs: discover-impacted-tests
@@ -77,6 +77,9 @@ jobs:
         with:
           distribution: 'graalvm'
           java-version: '17.0.12'
+
+      - name: "🛠️ Setup latest native-build-tools snapshot"
+        uses: ./.github/actions/setup-native-build-tools
 
       - name: "🔧 Install GraalVM for smoke tests"
         uses: graalvm/setup-graalvm@v1
