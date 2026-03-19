@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.util.internal.VersionNumber;
 
 import java.io.IOException;
 import java.net.URI;
@@ -49,15 +50,12 @@ public class DepsDevGraphTask extends CoordinatesAwareTask {
 
     /**
      * Small value object describing a dependency version (Maven).
+     *
+     * @param scope    may be null
+     * @param optional may be absent in payload - default false
      */
-    private static final class Dep {
-        final String group;
-        final String artifact;
-        final String version;
-        final String scope;         // may be null
-        final boolean optional;     // may be absent in payload - default false
-
-        Dep(String group, String artifact, String version, String scope, boolean optional) {
+    private record Dep(String group, String artifact, String version, String scope, boolean optional) {
+        private Dep(String group, String artifact, String version, String scope, boolean optional) {
             this.group = Objects.requireNonNull(group, "group");
             this.artifact = Objects.requireNonNull(artifact, "artifact");
             this.version = Objects.requireNonNull(version, "version");
@@ -111,13 +109,15 @@ public class DepsDevGraphTask extends CoordinatesAwareTask {
 
     private void printSingleGraph(String coordinate) {
         // Header
-        System.out.println("[" + coordinate + "]");
+        // Suppressed verbose header print
 
         // BFS over dependency graph; fetch each node's direct deps via deps.dev and print edges "parent -> child"
         Deque<String> queue = new ArrayDeque<>();
         Set<String> fetched = new HashSet<>(); // nodes already fetched (avoid repeated HTTP calls)
         Map<String, List<String>> edges = new LinkedHashMap<>(); // preserve discovery order
+        Map<String, Integer> depth = new LinkedHashMap<>(); // BFS discovery depth (root=0)
 
+        depth.put(coordinate, 0);
         queue.add(coordinate);
 
         while (!queue.isEmpty()) {
@@ -137,18 +137,174 @@ public class DepsDevGraphTask extends CoordinatesAwareTask {
                 String child = d.gav();
                 edges.computeIfAbsent(parent, k -> new ArrayList<>()).add(child);
                 if (!fetched.contains(child)) {
+                    if (!depth.containsKey(child)) {
+                        depth.put(child, depth.getOrDefault(parent, 0) + 1);
+                    }
                     queue.addLast(child);
                 }
             }
         }
 
-        // Print edges in BFS discovery order
-        for (Map.Entry<String, List<String>> e : edges.entrySet()) {
-            String parent = e.getKey();
-            for (String child : e.getValue()) {
-                System.out.println(child + " <- " + parent);
+        // Suppressed verbose edge prints; workflow consumes only PLAN_JSON_GA and PLAN_ORDER_GA_CREATION
+
+        // Emit machine-readable issue plan for workflows:
+        // - PLAN_JSON: single-line JSON with root, nodes[id, blockedBy[], depth]
+        // - PLAN_NODE lines: easy-to-parse key=value tuples per node
+        try {
+            LinkedHashSet<String> nodes = new LinkedHashSet<>();
+            nodes.add(coordinate);
+            for (Map.Entry<String, List<String>> en : edges.entrySet()) {
+                nodes.add(en.getKey());
+                nodes.addAll(en.getValue());
             }
+
+            List<Map<String, Object>> planNodes = new ArrayList<>();
+            List<String> sorted = new ArrayList<>(nodes);
+            // Sort by depth asc, then by id for stability
+            sorted.sort(Comparator.comparingInt((String n) -> depth.getOrDefault(n, 0)).thenComparing(n -> n));
+
+            for (String n : sorted) {
+                List<String> blockedBy = edges.getOrDefault(n, Collections.emptyList());
+                Integer d = depth.getOrDefault(n, 0);
+                Map<String, Object> entry = new LinkedHashMap<>();
+                entry.put("id", n);
+                entry.put("blockedBy", blockedBy);
+                entry.put("depth", d);
+                planNodes.add(entry);
+            }
+            Map<String, Object> plan = new LinkedHashMap<>();
+            plan.put("root", coordinate);
+            plan.put("nodes", planNodes);
+
+            String json = MAPPER.writeValueAsString(plan);
+            // Suppressed PLAN_JSON print; not needed by workflow
+
+            // Suppressed PLAN_NODE per-line prints
+
+            // -------- Aggregated GA plan (groupId:artifactId collapsed to lowest version) --------
+            // Determine lowest version per GA encountered in the traversal
+            Map<String, String> gaMinVersion = new LinkedHashMap<>();
+            for (String n : nodes) {
+                String[] p = n.split(":", 3);
+                if (p.length != 3) continue;
+                String ga = p[0] + ":" + p[1];
+                String ver = p[2];
+                String cur = gaMinVersion.get(ga);
+                if (cur == null) {
+                    gaMinVersion.put(ga, ver);
+                } else {
+                    try {
+                        VersionNumber vNew = VersionNumber.parse(ver);
+                        VersionNumber vCur = VersionNumber.parse(cur);
+                        if (vNew.compareTo(vCur) < 0) {
+                            gaMinVersion.put(ga, ver);
+                        }
+                    } catch (Throwable t) {
+                        // Fallback to lexicographic compare if parsing fails
+                        if (ver.compareTo(cur) < 0) {
+                            gaMinVersion.put(ga, ver);
+                        }
+                    }
+                }
+            }
+
+            // Build GA-level edges: parentGA is blocked by its direct dependency childGA
+            Map<String, LinkedHashSet<String>> gaBlockedBy = new LinkedHashMap<>();
+            for (Map.Entry<String, List<String>> en : edges.entrySet()) {
+                String parent = en.getKey();
+                String[] pp = parent.split(":", 3);
+                if (pp.length != 3) continue;
+                String pga = pp[0] + ":" + pp[1];
+                for (String child : en.getValue()) {
+                    String[] cc = child.split(":", 3);
+                    if (cc.length != 3) continue;
+                    String cga = cc[0] + ":" + cc[1];
+                    if (pga.equals(cga)) continue; // skip self loops across versions
+                    gaBlockedBy.computeIfAbsent(pga, k -> new LinkedHashSet<>()).add(cga);
+                    gaBlockedBy.computeIfAbsent(cga, k -> new LinkedHashSet<>()); // ensure node presence
+                }
+            }
+            // Ensure isolated GA nodes are present
+            for (String ga : gaMinVersion.keySet()) {
+                gaBlockedBy.computeIfAbsent(ga, k -> new LinkedHashSet<>());
+            }
+
+            // Compute GA-level BFS depth from root GA
+            Map<String, Integer> depthGA = new LinkedHashMap<>();
+            Deque<String> q2 = new ArrayDeque<>();
+            String rootGA = coordinate.substring(0, coordinate.lastIndexOf(':'));
+            depthGA.put(rootGA, 0);
+            q2.add(rootGA);
+            while (!q2.isEmpty()) {
+                String p = q2.removeFirst();
+                int d = depthGA.getOrDefault(p, 0);
+                for (String cga : gaBlockedBy.getOrDefault(p, new LinkedHashSet<>())) {                    if (!depthGA.containsKey(cga)) {
+                        depthGA.put(cga, d + 1);
+                        q2.addLast(cga);
+                    }
+                }
+            }
+
+            // Build aggregated GA plan nodes
+            List<Map<String, Object>> planNodesGA = new ArrayList<>();
+            List<String> gaList = new ArrayList<>(gaMinVersion.keySet());
+            gaList.sort(Comparator
+                    .comparingInt((String g) -> depthGA.getOrDefault(g, Integer.MAX_VALUE))
+                    .thenComparing(g -> g));
+            for (String ga : gaList) {
+                Map<String, Object> m = new LinkedHashMap<>();
+                m.put("ga", ga);
+                m.put("version", gaMinVersion.get(ga)); // lowest discovered version for this GA
+                m.put("blockedBy", new ArrayList<>(gaBlockedBy.getOrDefault(ga, new LinkedHashSet<>())));
+                m.put("depth", depthGA.getOrDefault(ga, Integer.MAX_VALUE));
+                planNodesGA.add(m);
+            }
+            Map<String, Object> aggPlan = new LinkedHashMap<>();
+            aggPlan.put("root", rootGA);
+            aggPlan.put("nodes", planNodesGA);
+
+            String aggJson = MAPPER.writeValueAsString(aggPlan);
+            System.out.println("PLAN_JSON_GA:" + aggJson);
+
+            // Suppressed PLAN_NODE_GA per-line prints
+
+            // Compute leaves-first creation order at GA level (nodes with no dependencies first)
+            Map<String, Integer> depCount = new LinkedHashMap<>();
+            Map<String, LinkedHashSet<String>> parentsGA = new LinkedHashMap<>();
+            for (String ga : gaBlockedBy.keySet()) {
+                depCount.put(ga, gaBlockedBy.get(ga).size());
+                for (String dep : gaBlockedBy.get(ga)) {
+                    parentsGA.computeIfAbsent(dep, k -> new LinkedHashSet<>()).add(ga);
+                }
+            }
+            Deque<String> zq = new ArrayDeque<>();
+            for (Map.Entry<String, Integer> e2 : depCount.entrySet()) {
+                if (e2.getValue() == 0) {
+                    zq.add(e2.getKey());
+                }
+            }
+            List<String> creationOrder = new ArrayList<>();
+            while (!zq.isEmpty()) {
+                String leaf = zq.removeFirst();
+                creationOrder.add(leaf);
+                for (String parentGA : parentsGA.getOrDefault(leaf, new LinkedHashSet<>())) {
+                    int newCnt = depCount.computeIfPresent(parentGA, (k, v2) -> Math.max(0, v2 - 1));
+                    if (newCnt == 0) {
+                        zq.addLast(parentGA);
+                    }
+                }
+            }
+            List<String> creationOrderWithVersion = new ArrayList<>();
+            for (String ga : creationOrder) {
+                creationOrderWithVersion.add(ga + ":" + gaMinVersion.getOrDefault(ga, ""));
+            }
+            System.out.println("PLAN_ORDER_GA_CREATION:" + String.join(",", creationOrderWithVersion));
+            // -------- End aggregated GA plan --------
+
+        } catch (Exception ignore) {
+            // Do not fail the task on plan emission errors; graph output above remains available.
         }
+
         System.out.flush();
     }
 
@@ -198,7 +354,6 @@ public class DepsDevGraphTask extends CoordinatesAwareTask {
         for (String url : urls) {
             int attempts = 0;
             long backoffMillis = 750L;
-            boolean shouldTryNext = false;
 
             while (true) {
                 attempts++;
@@ -217,7 +372,6 @@ public class DepsDevGraphTask extends CoordinatesAwareTask {
                             cache.put(versionKey, deps);
                             return deps;
                         } else {
-                            shouldTryNext = true;
                             break;
                         }
                     } else if ((code == 429 || (code >= 500 && code < 600)) && attempts < maxAttempts) {
@@ -226,11 +380,9 @@ public class DepsDevGraphTask extends CoordinatesAwareTask {
                         backoffMillis = Math.min(8000L, backoffMillis * 2);
                     } else if (code == 404) {
                         // Try next candidate URL shape
-                        shouldTryNext = true;
                         break;
                     } else {
                         // Non-retryable failure for this URL; try next if available
-                        shouldTryNext = true;
                         break;
                     }
                 } catch (IOException | InterruptedException e) {
@@ -238,18 +390,9 @@ public class DepsDevGraphTask extends CoordinatesAwareTask {
                         sleepQuiet(backoffMillis);
                         backoffMillis = Math.min(8000L, backoffMillis * 2);
                     } else {
-                        shouldTryNext = true;
                         break;
                     }
                 }
-            }
-
-            if (shouldTryNext) {
-                // Move on to next candidate URL
-                continue;
-            } else {
-                // Shouldn't happen, but break defensively
-                break;
             }
         }
 

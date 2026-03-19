@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   triage:
-    if: ${{ github.event.issue.pull_request == null && (contains(github.event.issue.labels.*.name, 'library-new-request')) }}
+    if: ${{ github.event.issue.pull_request == null && contains(github.event.issue.labels.*.name, 'library-new-request') && !contains(github.event.issue.labels.*.name, 'auto-generated') }}
     runs-on: ubuntu-latest
 
     steps:
@@ -150,3 +150,216 @@ jobs:
             ].join("\n");
             await github.rest.issues.createComment({ owner, repo, issue_number, body });
             await github.rest.issues.update({ owner, repo, issue_number, state: "closed" });
+
+      # -------- Begin dependency graph expansion and issue creation --------
+      - name: "Setup Java (GraalVM) to run Gradle"
+        if: ${{ steps.validate.outputs.invalid != 'true' && steps.support.outputs.supported != 'true' && steps.listed.outputs.listed != 'true' }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'graalvm'
+          java-version: '21'
+
+      - name: "Run deps.dev graph and capture automation plan"
+        if: ${{ steps.validate.outputs.invalid != 'true' && steps.support.outputs.supported != 'true' && steps.listed.outputs.listed != 'true' }}
+        id: deps
+        run: |
+          set -Eeuo pipefail
+          ./gradlew depsDevGraph -Pcoordinates="${{ steps.extract.outputs.coords }}" --console=plain --no-daemon | tee deps_graph.out
+          PLAN_GA="$(grep -oP '^PLAN_JSON_GA:\K.*' deps_graph.out || true)"
+          ORDER_GA="$(grep -oP '^PLAN_ORDER_GA_CREATION:\K.*' deps_graph.out || true)"
+          echo "plan_ga=${PLAN_GA}" >> "$GITHUB_OUTPUT"
+          echo "order_ga=${ORDER_GA}" >> "$GITHUB_OUTPUT"
+
+      - name: "Prepare plan files and support checks"
+        if: ${{ steps.validate.outputs.invalid != 'true' && steps.support.outputs.supported != 'true' && steps.listed.outputs.listed != 'true' }}
+        id: prep
+        run: |
+          set -Eeuo pipefail
+          if [ -z "${{ steps.deps.outputs.plan_ga }}" ] || [ "${{ steps.deps.outputs.plan_ga }}" = "{}" ]; then
+            echo "No PLAN_JSON_GA emitted. Skipping dependency issue creation."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Persist plan
+          printf '%s\n' "${{ steps.deps.outputs.plan_ga }}" > plan_ga.json
+
+          # Build candidate and supported lists
+          : > to_create.tsv
+          : > supported_ga.txt
+
+          # Iterate GA nodes
+          while IFS=$'\t' read -r GA VER; do
+            if [ -z "$GA" ] || [ -z "$VER" ]; then
+              continue
+            fi
+            GAV="${GA}:$VER"
+
+            # Repo support check
+            set +e
+            SUPPORT_OUT="$(./check-library-support.sh "$GAV" 2>&1)"
+            RC=$?
+            set -e
+
+            SUPPORTED_REPO=false
+            if grep -qF "is supported" <<<"$SUPPORT_OUT"; then
+              SUPPORTED_REPO=true
+            fi
+
+            # library-and-framework-list.json listing check
+            SUPPORTED_LIST=false
+            if jq -e --arg ga "$GA" 'map(.artifact == $ga) | any' metadata/library-and-framework-list.json >/dev/null; then
+              SUPPORTED_LIST=true
+            fi
+
+            if $SUPPORTED_REPO || $SUPPORTED_LIST; then
+              echo "$GA" >> supported_ga.txt
+            else
+              printf '%s\t%s\n' "$GA" "$VER" >> to_create.tsv
+            fi
+          done < <(jq -r '.nodes[] | [.ga, .version] | @tsv' plan_ga.json)
+
+          # Outputs
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+          echo "supported_path=$(pwd)/supported_ga.txt" >> "$GITHUB_OUTPUT"
+          echo "create_path=$(pwd)/to_create.tsv" >> "$GITHUB_OUTPUT"
+          echo "plan_path=$(pwd)/plan_ga.json" >> "$GITHUB_OUTPUT"
+          echo "order_ga=${{ steps.deps.outputs.order_ga }}" >> "$GITHUB_OUTPUT"
+
+      - name: "Open dependency issues and link blockers"
+        if: ${{ steps.validate.outputs.invalid != 'true' && steps.support.outputs.supported != 'true' && steps.listed.outputs.listed != 'true' && steps.prep.outputs.skip != 'true' }}
+        uses: actions/github-script@v7
+        env:
+          PLAN_PATH: ${{ steps.prep.outputs.plan_path }}
+          CREATE_PATH: ${{ steps.prep.outputs.create_path }}
+          SUPPORTED_PATH: ${{ steps.prep.outputs.supported_path }}
+          ORDER_GA: ${{ steps.prep.outputs.order_ga }}
+        with:
+          script: |
+            const fs = require('fs');
+
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            // Load inputs
+            const plan = JSON.parse(fs.readFileSync(process.env.PLAN_PATH, 'utf8'));
+            const orderGA = (process.env.ORDER_GA || '').split(',').map(s => s.trim()).filter(Boolean);
+
+            const createTSV = fs.readFileSync(process.env.CREATE_PATH, 'utf8').trim();
+            const supportedGA = new Set(
+              fs.readFileSync(process.env.SUPPORTED_PATH, 'utf8').trim().split('\n').filter(Boolean)
+            );
+
+            // Build create map ga -> version
+            const toCreate = new Map();
+            if (createTSV.length > 0) {
+              for (const line of createTSV.split('\n')) {
+                const [ga, ver] = line.split('\t');
+                if (ga && ver) toCreate.set(ga, ver);
+              }
+            }
+
+            // Build GA blockedBy map
+            const blockedByGA = new Map();
+            for (const n of plan.nodes || []) {
+              blockedByGA.set(n.ga, Array.isArray(n.blockedBy) ? n.blockedBy.slice() : []);
+            }
+
+            // Helper: expand effective blockers by skipping supported nodes recursively
+            const memo = new Map();
+            function effectiveBlockers(ga) {
+              if (memo.has(ga)) return memo.get(ga);
+              const seen = new Set();
+              const out = [];
+
+              function dfs(x) {
+                if (seen.has(x)) return;
+                seen.add(x);
+                const deps = blockedByGA.get(x) || [];
+                for (const d of deps) {
+                  if (supportedGA.has(d)) {
+                    // Skip supported middle node: expand its own deps
+                    dfs(d);
+                  } else {
+                    out.push(d);
+                  }
+                }
+              }
+              dfs(ga);
+              // Deduplicate preserving order
+              const uniq = [...new Set(out)];
+              memo.set(ga, uniq);
+              return uniq;
+            }
+
+            // Create issues leaves-first (use ORDER_GA; if empty, fall back to plan order)
+            const creationOrder = orderGA.length > 0 ? orderGA : Array.from(new Set(
+              [plan.root, ...(plan.nodes || []).map(n => n.ga)]
+            ));
+
+            // Bookkeeping for GA -> issue number
+            const gaIssue = new Map();
+
+            // Create or reuse issues for candidates
+            for (const ga of creationOrder) {
+              if (!toCreate.has(ga)) continue; // skip supported/not needed
+              const version = toCreate.get(ga);
+              const title = `Support for ${ga}:${version}`;
+              const body = [
+                '### Full Maven coordinates',
+                '',
+                `${ga}:${version}`,
+                '',
+                '### Library source code URL',
+                '',
+                'N/A',
+                '',
+                '### Link to the existing test suite',
+                '',
+                'N/A',
+                '',
+                '_This issue was created by automation._'
+              ].join('\n');
+
+              // Search existing open issue with same title
+              const q = `repo:${owner}/${repo} is:issue is:open in:title "${title}"`;
+              let issueNumber = null;
+              try {
+                const search = await github.rest.search.issuesAndPullRequests({ q });
+                const found = (search.data.items || []).find(it => it.title === title);
+                if (found) {
+                  issueNumber = found.number;
+                }
+              } catch (e) {
+                // fallback: list recent issues and match
+                const list = await github.rest.issues.listForRepo({ owner, repo, state: 'open', per_page: 100 });
+                const found = (list.data || []).find(it => it.title === title);
+                if (found) issueNumber = found.number;
+              }
+
+              if (!issueNumber) {
+                const created = await github.rest.issues.create({
+                  owner, repo,
+                  title,
+                  body,
+                  labels: ['library-new-request', 'auto-generated']
+                });
+                issueNumber = created.data.number;
+              }
+
+              gaIssue.set(ga, issueNumber);
+            }
+
+            // Add "blocked by" comments using effective blockers that are also created (have issues)
+            for (const [ga, issueNumber] of gaIssue.entries()) {
+              const ebs = effectiveBlockers(ga)
+                .map(b => ({ ga: b, num: gaIssue.get(b) }))
+                .filter(x => !!x.num); // only reference created dependency issues
+
+              if (ebs.length === 0) continue;
+
+              const refs = ebs.map(x => `#${x.num}`).join(', ');
+              const comment = `Blocked by: ${refs}`;
+              await github.rest.issues.createComment({ owner, repo, issue_number: issueNumber, body: comment });
+            }
+      # -------- End dependency graph expansion and issue creation --------
