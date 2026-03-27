@@ -60,7 +60,7 @@ jobs:
     env:
       CURRENT_JOB_NAME: "🧪 ${{ matrix.item.name }}"
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      ISSUE_TITLE_PREFIX: "[Automation] "
+      ISSUE_TITLE_PREFIX: "[Automation] " # DO NOTHING
       ISSUE_TITLE_MIDDLE: " fails for "
       LOG_LINES: "300"
     strategy:
