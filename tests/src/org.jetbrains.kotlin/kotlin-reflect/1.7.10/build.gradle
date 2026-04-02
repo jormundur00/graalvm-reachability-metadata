@@ -28,6 +28,17 @@ graalvmNative {
     binaries {
         test {
             buildArgs.add('--no-fallback')
+            // GraalVM 25.1 dev aborts when `-H:Preserve` tries to register serialization support for
+            // non-concrete serializable types from kotlin-reflect.
+            if (providers.gradleProperty("tck.generateDynamicAccessReport").map(String::toBoolean).getOrElse(false)) {
+                buildArgs.add(
+                        '-H:IgnorePreserveForClasses=' +
+                                'java.io.Serializable,' +
+                                'kotlin.reflect.jvm.internal.impl.protobuf.GeneratedMessageLite,' +
+                                'kotlin.reflect.jvm.internal.impl.protobuf.GeneratedMessageLite$ExtendableMessage,' +
+                                'kotlin.reflect.jvm.internal.impl.renderer.RenderingFormat'
+                )
+            }
         }
     }
 }

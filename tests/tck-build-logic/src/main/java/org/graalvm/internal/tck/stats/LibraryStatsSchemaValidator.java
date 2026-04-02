@@ -331,21 +331,23 @@ public final class LibraryStatsSchemaValidator {
     ) {
         String locationPrefix = artifact + ":" + metadataVersion + ":" + versionStats.version();
 
-        LibraryStatsModels.DynamicAccessStats dynamicAccess = versionStats.dynamicAccess();
-        validateRatio(
-                locationPrefix + ":dynamicAccess.coverageRatio",
-                dynamicAccess.coverageRatio(),
-                dynamicAccess.coveredCalls(),
-                dynamicAccess.totalCalls(),
-                failures
-        );
-        dynamicAccess.breakdown().forEach((reportType, breakdown) -> validateRatio(
-                locationPrefix + ":dynamicAccess.breakdown." + reportType + ".coverageRatio",
-                breakdown.coverageRatio(),
-                breakdown.coveredCalls(),
-                breakdown.totalCalls(),
-                failures
-        ));
+        LibraryStatsModels.DynamicAccessStatsValue dynamicAccess = versionStats.dynamicAccess();
+        if (dynamicAccess != null && dynamicAccess.isAvailable()) {
+            validateRatio(
+                    locationPrefix + ":dynamicAccess.coverageRatio",
+                    dynamicAccess.coverageRatio(),
+                    dynamicAccess.coveredCalls(),
+                    dynamicAccess.totalCalls(),
+                    failures
+            );
+            dynamicAccess.breakdown().forEach((reportType, breakdown) -> validateRatio(
+                    locationPrefix + ":dynamicAccess.breakdown." + reportType + ".coverageRatio",
+                    breakdown.coverageRatio(),
+                    breakdown.coveredCalls(),
+                    breakdown.totalCalls(),
+                    failures
+            ));
+        }
 
         validateCoverageMetric(locationPrefix, "line", versionStats.libraryCoverage().line(), failures);
         validateCoverageMetric(locationPrefix, "instruction", versionStats.libraryCoverage().instruction(), failures);

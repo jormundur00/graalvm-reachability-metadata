@@ -1,5 +1,51 @@
 {
   "entries" : {
+    "org.eclipse.jgit:org.eclipse.jgit" : {
+      "metadataVersions" : {
+        "6.5.0.202303070854-r" : {
+          "versions" : [ {
+            "version" : "6.5.0.202303070854-r",
+            "dynamicAccess" : {
+              "breakdown" : {
+                "reflection" : {
+                  "coverageRatio" : 0.5,
+                  "coveredCalls" : 6,
+                  "totalCalls" : 12
+                },
+                "resources" : {
+                  "coverageRatio" : 1.0,
+                  "coveredCalls" : 2,
+                  "totalCalls" : 2
+                }
+              },
+              "coverageRatio" : 0.571429,
+              "coveredCalls" : 8,
+              "totalCalls" : 14
+            },
+            "libraryCoverage" : {
+              "instruction" : {
+                "covered" : 55079,
+                "missed" : 228576,
+                "ratio" : 0.194176,
+                "total" : 283655
+              },
+              "line" : {
+                "covered" : 11297,
+                "missed" : 53883,
+                "ratio" : 0.17332,
+                "total" : 65180
+              },
+              "method" : {
+                "covered" : 2309,
+                "missed" : 8732,
+                "ratio" : 0.20913,
+                "total" : 11041
+              }
+            }
+          } ]
+        }
+      }
+    },
     "org.example:library" : {
       "metadataVersions" : {
         "0.0.1" : {
@@ -8,17 +54,17 @@
             "dynamicAccess" : {
               "breakdown" : {
                 "reflection" : {
-                  "coverageRatio" : 0.500000,
+                  "coverageRatio" : 0.5,
                   "coveredCalls" : 4,
                   "totalCalls" : 8
                 },
                 "resources" : {
-                  "coverageRatio" : 0.500000,
+                  "coverageRatio" : 0.5,
                   "coveredCalls" : 1,
                   "totalCalls" : 2
                 }
               },
-              "coverageRatio" : 0.500000,
+              "coverageRatio" : 0.5,
               "coveredCalls" : 5,
               "totalCalls" : 10
             },
@@ -40,6 +86,36 @@
                 "missed" : 14,
                 "ratio" : 0.416667,
                 "total" : 24
+              }
+            }
+          } ]
+        }
+      }
+    },
+    "org.jetbrains.kotlin:kotlin-reflect" : {
+      "metadataVersions" : {
+        "1.7.10" : {
+          "versions" : [ {
+            "version" : "1.7.10",
+            "dynamicAccess" : "N/A",
+            "libraryCoverage" : {
+              "instruction" : {
+                "covered" : 50618,
+                "missed" : 147687,
+                "ratio" : 0.255253,
+                "total" : 198305
+              },
+              "line" : {
+                "covered" : 8191,
+                "missed" : 20233,
+                "ratio" : 0.288172,
+                "total" : 28424
+              },
+              "method" : {
+                "covered" : 2514,
+                "missed" : 6274,
+                "ratio" : 0.286072,
+                "total" : 8788
               }
             }
           } ]
