@@ -1,0 +1,72 @@
+name: "Generate library stats batches (temporary)"
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "workflow=${{ github.workflow }}, ref=${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  generate-library-stats-batch:
+    name: "📊 stats ${{ matrix.batch }}/16"
+    runs-on: "ubuntu-22.04"
+    timeout-minutes: 480
+
+    strategy:
+      fail-fast: false
+      matrix:
+        batch: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v4
+
+      - name: "🛠️ Setup latest native-build-tools snapshot"
+        uses: ./.github/actions/setup-native-build-tools
+
+      - name: "🔧 Setup Java"
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'graalvm'
+          java-version: '21'
+
+      - name: "🔧 Download GraalVM with Native Image"
+        uses: graalvm/setup-graalvm@v1
+        with:
+          distribution: 'graalvm'
+          java-version: '21'
+          set-java-home: 'false'
+          native-image-job-reports: 'true'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "🐳 Pull allowed Docker images"
+        run: |
+          ./gradlew pullAllowedDockerImages -Pcoordinates=${{ matrix.batch }}/16 --stacktrace
+
+      - name: "🔒 Disable Docker networking"
+        run: bash ./.github/workflows/scripts/disable-docker.sh
+
+      - name: "📈 Generate library stats for batch"
+        run: |
+          ./gradlew generateLibraryStats -Pcoordinates=${{ matrix.batch }}/16 --stacktrace
+
+      - name: "📝 Prepare batch artifact"
+        run: |
+          STATS_FILE="stats/stats.json"
+          ARTIFACT_DIR="library-stats-artifacts"
+          ARTIFACT_FILE="stats-${{ matrix.batch }}-of-16.json"
+
+          test -f "$STATS_FILE"
+          mkdir -p "$ARTIFACT_DIR"
+          cp "$STATS_FILE" "$ARTIFACT_DIR/$ARTIFACT_FILE"
+
+      - name: "📦 Upload batch stats artifact"
+        uses: actions/upload-artifact@v4
+        with:
+          name: library-stats-${{ matrix.batch }}-of-16
+          path: library-stats-artifacts/stats-${{ matrix.batch }}-of-16.json
+          if-no-files-found: error
