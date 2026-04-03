@@ -2,7 +2,7 @@
   {
     "latest": true,
     "allowed-packages": [
-      "com.ecwid"
+      "com.ecwid", "new-package"
     ],
     "metadata-version": "1.4.5",
     "tested-versions": [
