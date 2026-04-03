@@ -19,7 +19,7 @@ jobs:
           file-patterns: |
             - 'stats/stats.json'
             - 'stats/schemas/library-stats-schema*.json'
-            - `metadata/*/*/*/**`
+            - 'metadata/*/*/*/**'
 
       - name: "🔧 Setup Java"
         if: steps.filter.outputs.changed == 'true'
