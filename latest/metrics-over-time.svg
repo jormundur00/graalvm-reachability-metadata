@@ -43,17 +43,13 @@
     <text x="80" y="259" fill="#71859a" font-size="11" text-anchor="end">112</text>
     <line x1="90" y1="206" x2="576" y2="206" stroke="#eef3f8" stroke-width="1"/>
     <text x="80" y="210" fill="#71859a" font-size="11" text-anchor="end">114</text>
-    <line x1="90" y1="206" x2="90" y2="402" stroke="#f6f8fb" stroke-width="1"/>
-    <text x="102" y="442" fill="#6b7f95" font-size="11" text-anchor="start">Mar 2026</text>
-    <line x1="306" y1="206" x2="306" y2="402" stroke="#f6f8fb" stroke-width="1"/>
-    <text x="306" y="442" fill="#6b7f95" font-size="11" text-anchor="middle">Apr 2026</text>
-    <line x1="576" y1="206" x2="576" y2="402" stroke="#f6f8fb" stroke-width="1"/>
-    <text x="564" y="442" fill="#6b7f95" font-size="11" text-anchor="end">Apr 2026</text>
+    <line x1="333" y1="206" x2="333" y2="402" stroke="#f6f8fb" stroke-width="1"/>
+    <text x="345" y="442" fill="#6b7f95" font-size="11" text-anchor="start">Apr 2026</text>
     <rect x="90" y="206" width="486" height="242" rx="18" fill="none" stroke="#edf3f8"/>
-    <path d="M 90 353 L 144 353 L 198 353 L 252 353 L 306 353 L 360 353 L 414 353 L 468 353 L 522 353 L 576 353 L 576 402 L 90 402 Z" fill="url(#libraries-supported-area)"/>
-    <path d="M 90 353 L 144 353 L 198 353 L 252 353 L 306 353 L 360 353 L 414 353 L 468 353 L 522 353 L 576 353" fill="none" stroke="#0a7ec2" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="576" cy="353" r="6" fill="#ffffff" stroke="#0a7ec2" stroke-width="3.5"/>
-    <g transform="translate(508 313)">
+    <path d="M 333 353 L 333 402 L 333 402 Z" fill="url(#libraries-supported-area)"/>
+    <path d="M 333 353" fill="none" stroke="#0a7ec2" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="333" cy="353" r="6" fill="#ffffff" stroke="#0a7ec2" stroke-width="3.5"/>
+    <g transform="translate(294 313)">
       <rect width="78" height="28" rx="14" fill="#0f172a"/>
       <text x="39" y="18" fill="#ffffff" font-size="12" font-weight="700" text-anchor="middle">108</text>
     </g>
@@ -63,26 +59,22 @@
     <text x="654" y="154" fill="#0f172a" font-size="18" font-weight="700">Tested library versions</text>
     <text x="654" y="176" fill="#667b92" font-size="12">Tested library versions recorded across metadata indexes</text>
     <line x1="692" y1="402" x2="1178" y2="402" stroke="#eef3f8" stroke-width="1"/>
-    <text x="682" y="406" fill="#71859a" font-size="11" text-anchor="end">1,501</text>
+    <text x="682" y="406" fill="#71859a" font-size="11" text-anchor="end">1,505</text>
     <line x1="692" y1="353" x2="1178" y2="353" stroke="#eef3f8" stroke-width="1"/>
-    <text x="682" y="357" fill="#71859a" font-size="11" text-anchor="end">1,503</text>
+    <text x="682" y="357" fill="#71859a" font-size="11" text-anchor="end">1,507</text>
     <line x1="692" y1="304" x2="1178" y2="304" stroke="#eef3f8" stroke-width="1"/>
-    <text x="682" y="308" fill="#71859a" font-size="11" text-anchor="end">1,505</text>
+    <text x="682" y="308" fill="#71859a" font-size="11" text-anchor="end">1,509</text>
     <line x1="692" y1="255" x2="1178" y2="255" stroke="#eef3f8" stroke-width="1"/>
-    <text x="682" y="259" fill="#71859a" font-size="11" text-anchor="end">1,507</text>
+    <text x="682" y="259" fill="#71859a" font-size="11" text-anchor="end">1,511</text>
     <line x1="692" y1="206" x2="1178" y2="206" stroke="#eef3f8" stroke-width="1"/>
-    <text x="682" y="210" fill="#71859a" font-size="11" text-anchor="end">1,509</text>
-    <line x1="692" y1="206" x2="692" y2="402" stroke="#f6f8fb" stroke-width="1"/>
-    <text x="704" y="442" fill="#6b7f95" font-size="11" text-anchor="start">Mar 2026</text>
-    <line x1="908" y1="206" x2="908" y2="402" stroke="#f6f8fb" stroke-width="1"/>
-    <text x="908" y="442" fill="#6b7f95" font-size="11" text-anchor="middle">Apr 2026</text>
-    <line x1="1178" y1="206" x2="1178" y2="402" stroke="#f6f8fb" stroke-width="1"/>
-    <text x="1166" y="442" fill="#6b7f95" font-size="11" text-anchor="end">Apr 2026</text>
+    <text x="682" y="210" fill="#71859a" font-size="11" text-anchor="end">1,513</text>
+    <line x1="935" y1="206" x2="935" y2="402" stroke="#f6f8fb" stroke-width="1"/>
+    <text x="947" y="442" fill="#6b7f95" font-size="11" text-anchor="start">Apr 2026</text>
     <rect x="692" y="206" width="486" height="242" rx="18" fill="none" stroke="#edf3f8"/>
-    <path d="M 692 353 L 746 353 L 800 328.5 L 854 328.5 L 908 328.5 L 962 304 L 1016 304 L 1070 279.5 L 1124 279.5 L 1178 255 L 1178 402 L 692 402 Z" fill="url(#tested-versions-area)"/>
-    <path d="M 692 353 L 746 353 L 800 328.5 L 854 328.5 L 908 328.5 L 962 304 L 1016 304 L 1070 279.5 L 1124 279.5 L 1178 255" fill="none" stroke="#bf8700" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="1178" cy="255" r="6" fill="#ffffff" stroke="#bf8700" stroke-width="3.5"/>
-    <g transform="translate(1110 215)">
+    <path d="M 935 353 L 935 402 L 935 402 Z" fill="url(#tested-versions-area)"/>
+    <path d="M 935 353" fill="none" stroke="#bf8700" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="935" cy="353" r="6" fill="#ffffff" stroke="#bf8700" stroke-width="3.5"/>
+    <g transform="translate(896 313)">
       <rect width="78" height="28" rx="14" fill="#0f172a"/>
       <text x="39" y="18" fill="#ffffff" font-size="12" font-weight="700" text-anchor="middle">1,507</text>
     </g>
@@ -101,17 +93,13 @@
     <text x="80" y="625" fill="#71859a" font-size="11" text-anchor="end">37.5%</text>
     <line x1="90" y1="572" x2="576" y2="572" stroke="#eef3f8" stroke-width="1"/>
     <text x="80" y="576" fill="#71859a" font-size="11" text-anchor="end">40.0%</text>
-    <line x1="90" y1="572" x2="90" y2="768" stroke="#f6f8fb" stroke-width="1"/>
-    <text x="102" y="808" fill="#6b7f95" font-size="11" text-anchor="start">Mar 2026</text>
-    <line x1="306" y1="572" x2="306" y2="768" stroke="#f6f8fb" stroke-width="1"/>
-    <text x="306" y="808" fill="#6b7f95" font-size="11" text-anchor="middle">Apr 2026</text>
-    <line x1="576" y1="572" x2="576" y2="768" stroke="#f6f8fb" stroke-width="1"/>
-    <text x="564" y="808" fill="#6b7f95" font-size="11" text-anchor="end">Apr 2026</text>
+    <line x1="333" y1="572" x2="333" y2="768" stroke="#f6f8fb" stroke-width="1"/>
+    <text x="345" y="808" fill="#6b7f95" font-size="11" text-anchor="start">Apr 2026</text>
     <rect x="90" y="572" width="486" height="242" rx="18" fill="none" stroke="#edf3f8"/>
-    <path d="M 90 662.2 L 144 662.2 L 198 660.2 L 252 660.2 L 306 660.2 L 360 658.2 L 414 658.2 L 468 656.3 L 522 656.3 L 576 654.3 L 576 768 L 90 768 Z" fill="url(#dynamic-access-area)"/>
-    <path d="M 90 662.2 L 144 662.2 L 198 660.2 L 252 660.2 L 306 660.2 L 360 658.2 L 414 658.2 L 468 656.3 L 522 656.3 L 576 654.3" fill="none" stroke="#1f9d55" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="576" cy="654.3" r="6" fill="#ffffff" stroke="#1f9d55" stroke-width="3.5"/>
-    <g transform="translate(508 614.3)">
+    <path d="M 333 654.3 L 333 768 L 333 768 Z" fill="url(#dynamic-access-area)"/>
+    <path d="M 333 654.3" fill="none" stroke="#1f9d55" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="333" cy="654.3" r="6" fill="#ffffff" stroke="#1f9d55" stroke-width="3.5"/>
+    <g transform="translate(294 614.3)">
       <rect width="78" height="28" rx="14" fill="#0f172a"/>
       <text x="39" y="18" fill="#ffffff" font-size="12" font-weight="700" text-anchor="middle">35.8%</text>
     </g>
@@ -121,26 +109,22 @@
     <text x="654" y="520" fill="#0f172a" font-size="18" font-weight="700">Tested lines of code</text>
     <text x="654" y="542" fill="#667b92" font-size="12">Covered lines reported across library coverage stats</text>
     <line x1="692" y1="768" x2="1178" y2="768" stroke="#eef3f8" stroke-width="1"/>
-    <text x="682" y="772" fill="#71859a" font-size="11" text-anchor="end">815,809</text>
+    <text x="682" y="772" fill="#71859a" font-size="11" text-anchor="end">815,817</text>
     <line x1="692" y1="719" x2="1178" y2="719" stroke="#eef3f8" stroke-width="1"/>
-    <text x="682" y="723" fill="#71859a" font-size="11" text-anchor="end">815,812</text>
+    <text x="682" y="723" fill="#71859a" font-size="11" text-anchor="end">815,819</text>
     <line x1="692" y1="670" x2="1178" y2="670" stroke="#eef3f8" stroke-width="1"/>
-    <text x="682" y="674" fill="#71859a" font-size="11" text-anchor="end">815,815</text>
+    <text x="682" y="674" fill="#71859a" font-size="11" text-anchor="end">815,821</text>
     <line x1="692" y1="621" x2="1178" y2="621" stroke="#eef3f8" stroke-width="1"/>
-    <text x="682" y="625" fill="#71859a" font-size="11" text-anchor="end">815,818</text>
+    <text x="682" y="625" fill="#71859a" font-size="11" text-anchor="end">815,823</text>
     <line x1="692" y1="572" x2="1178" y2="572" stroke="#eef3f8" stroke-width="1"/>
-    <text x="682" y="576" fill="#71859a" font-size="11" text-anchor="end">815,821</text>
-    <line x1="692" y1="572" x2="692" y2="768" stroke="#f6f8fb" stroke-width="1"/>
-    <text x="704" y="808" fill="#6b7f95" font-size="11" text-anchor="start">Mar 2026</text>
-    <line x1="908" y1="572" x2="908" y2="768" stroke="#f6f8fb" stroke-width="1"/>
-    <text x="908" y="808" fill="#6b7f95" font-size="11" text-anchor="middle">Apr 2026</text>
-    <line x1="1178" y1="572" x2="1178" y2="768" stroke="#f6f8fb" stroke-width="1"/>
-    <text x="1166" y="808" fill="#6b7f95" font-size="11" text-anchor="end">Apr 2026</text>
+    <text x="682" y="576" fill="#71859a" font-size="11" text-anchor="end">815,825</text>
+    <line x1="935" y1="572" x2="935" y2="768" stroke="#f6f8fb" stroke-width="1"/>
+    <text x="947" y="808" fill="#6b7f95" font-size="11" text-anchor="start">Apr 2026</text>
     <rect x="692" y="572" width="486" height="242" rx="18" fill="none" stroke="#edf3f8"/>
-    <path d="M 692 735.3 L 746 735.3 L 800 702.7 L 854 702.7 L 908 702.7 L 962 670 L 1016 670 L 1070 637.3 L 1124 637.3 L 1178 604.7 L 1178 768 L 692 768 Z" fill="url(#tested-lines-of-code-area)"/>
-    <path d="M 692 735.3 L 746 735.3 L 800 702.7 L 854 702.7 L 908 702.7 L 962 670 L 1016 670 L 1070 637.3 L 1124 637.3 L 1178 604.7" fill="none" stroke="#c2410c" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="1178" cy="604.7" r="6" fill="#ffffff" stroke="#c2410c" stroke-width="3.5"/>
-    <g transform="translate(1110 564.7)">
+    <path d="M 935 719 L 935 768 L 935 768 Z" fill="url(#tested-lines-of-code-area)"/>
+    <path d="M 935 719" fill="none" stroke="#c2410c" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="935" cy="719" r="6" fill="#ffffff" stroke="#c2410c" stroke-width="3.5"/>
+    <g transform="translate(896 679)">
       <rect width="78" height="28" rx="14" fill="#0f172a"/>
       <text x="39" y="18" fill="#ffffff" font-size="12" font-weight="700" text-anchor="middle">815,819</text>
     </g>
