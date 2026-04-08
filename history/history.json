@@ -1,5 +1,65 @@
 {
   "history" : [ {
+    "date" : "2026-04-04",
+    "metrics" : {
+      "metadataIndexes" : {
+        "latestEntries" : 106,
+        "metadataBaselines" : 156,
+        "metadataIndexes" : 106,
+        "testedVersions" : 1488
+      },
+      "stats" : {
+        "avgDynamicAccessCoveragePercent" : 35.1,
+        "coverageStatsArtifacts" : 101,
+        "testedLinesOfCode" : 807412
+      }
+    }
+  }, {
+    "date" : "2026-04-05",
+    "metrics" : {
+      "metadataIndexes" : {
+        "latestEntries" : 106,
+        "metadataBaselines" : 156,
+        "metadataIndexes" : 106,
+        "testedVersions" : 1488
+      },
+      "stats" : {
+        "avgDynamicAccessCoveragePercent" : 35.1,
+        "coverageStatsArtifacts" : 101,
+        "testedLinesOfCode" : 807412
+      }
+    }
+  }, {
+    "date" : "2026-04-06",
+    "metrics" : {
+      "metadataIndexes" : {
+        "latestEntries" : 107,
+        "metadataBaselines" : 157,
+        "metadataIndexes" : 107,
+        "testedVersions" : 1494
+      },
+      "stats" : {
+        "avgDynamicAccessCoveragePercent" : 35.4,
+        "coverageStatsArtifacts" : 102,
+        "testedLinesOfCode" : 811005
+      }
+    }
+  }, {
+    "date" : "2026-04-07",
+    "metrics" : {
+      "metadataIndexes" : {
+        "latestEntries" : 107,
+        "metadataBaselines" : 158,
+        "metadataIndexes" : 107,
+        "testedVersions" : 1499
+      },
+      "stats" : {
+        "avgDynamicAccessCoveragePercent" : 35.3,
+        "coverageStatsArtifacts" : 102,
+        "testedLinesOfCode" : 812844
+      }
+    }
+  }, {
     "date" : "2026-04-08",
     "metrics" : {
       "metadataIndexes" : {
