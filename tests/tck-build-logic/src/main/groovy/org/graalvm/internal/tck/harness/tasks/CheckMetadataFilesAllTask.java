@@ -9,6 +9,7 @@ package org.graalvm.internal.tck.harness.tasks;
 import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
 import org.graalvm.internal.tck.MetadataFilesCheckerTask;
+import org.graalvm.internal.tck.utils.CoordinateUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,16 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public abstract class CheckMetadataFilesAllTask extends CoordinatesAwareTask {
+
+    @Override
+    protected List<String> computeMatchingCoordinates(String filter) {
+        if (CoordinateUtils.isFractionalBatch(filter)) {
+            int[] frac = CoordinateUtils.parseFraction(filter);
+            List<String> all = tckExtension.getMatchingCoordinatesStrict("all");
+            return CoordinateUtils.computeBatchedCoordinates(all, frac[0], frac[1]);
+        }
+        return tckExtension.getMatchingCoordinatesStrict(filter);
+    }
 
     @TaskAction
     public void runAll() {
