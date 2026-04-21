@@ -3098,12 +3098,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.testcontainers.containers.GenericContainer$$Lambda$421/0x0000000100311e88"
-      },
-      "type": "org.testcontainers.shaded.org.awaitility.core.ConditionFactory$1"
-    },
-    {
-      "condition": {
         "typeReached": "org.testcontainers.shaded.org.awaitility.core.ConditionFactory"
       },
       "type": "org.testcontainers.shaded.org.awaitility.core.ConditionFactory$1"

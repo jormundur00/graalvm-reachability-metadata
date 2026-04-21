@@ -30,12 +30,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.testcontainers.containers.GenericContainer$$Lambda$478/0x000000e80123bd50"
-      },
-      "type": "com.github.dockerjava.api.command.CreateContainerResponse"
-    },
-    {
-      "condition": {
         "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.command.CreateContainerCmdImpl"
       },
       "type": "com.github.dockerjava.api.command.CreateContainerResponse"
@@ -362,12 +356,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.testcontainers.containers.GenericContainer$$Lambda$478/0x000000e80123bd50"
-      },
-      "type": "com.github.dockerjava.api.command.InspectImageResponse"
-    },
-    {
-      "condition": {
         "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.command.InspectImageCmdImpl"
       },
       "type": "com.github.dockerjava.api.command.InspectImageResponse"
@@ -416,12 +404,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.testcontainers.containers.GenericContainer$$Lambda$478/0x000000e80123bd50"
-      },
-      "type": "com.github.dockerjava.api.command.RootFS"
-    },
-    {
-      "condition": {
         "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.command.InspectImageCmdImpl"
       },
       "type": "com.github.dockerjava.api.command.RootFS"
@@ -463,12 +445,6 @@
     {
       "condition": {
         "typeReached": "org.testcontainers.containers.GenericContainer"
-      },
-      "type": "com.github.dockerjava.api.model.AuthConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.testcontainers.containers.GenericContainer$$Lambda$478/0x000000e80123bd50"
       },
       "type": "com.github.dockerjava.api.model.AuthConfig"
     },
@@ -603,12 +579,6 @@
     {
       "condition": {
         "typeReached": "org.testcontainers.containers.GenericContainer"
-      },
-      "type": "com.github.dockerjava.api.model.Binds"
-    },
-    {
-      "condition": {
-        "typeReached": "org.testcontainers.containers.GenericContainer$$Lambda$478/0x000000e80123bd50"
       },
       "type": "com.github.dockerjava.api.model.Binds"
     },
@@ -953,12 +923,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.testcontainers.containers.GenericContainer$$Lambda$478/0x000000e80123bd50"
-      },
-      "type": "com.github.dockerjava.api.model.DockerObject"
-    },
-    {
-      "condition": {
         "typeReached": "org.testcontainers.dockerclient.DockerClientProviderStrategy"
       },
       "type": "com.github.dockerjava.api.model.DockerObject"
@@ -1174,12 +1138,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.testcontainers.containers.GenericContainer$$Lambda$478/0x000000e80123bd50"
-      },
-      "type": "com.github.dockerjava.api.model.ExposedPorts"
-    },
-    {
-      "condition": {
         "typeReached": "org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.BeanDeserializerBase"
       },
       "type": "com.github.dockerjava.api.model.ExposedPorts",
@@ -1259,12 +1217,6 @@
     {
       "condition": {
         "typeReached": "org.testcontainers.containers.GenericContainer"
-      },
-      "type": "com.github.dockerjava.api.model.HostConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.testcontainers.containers.GenericContainer$$Lambda$478/0x000000e80123bd50"
       },
       "type": "com.github.dockerjava.api.model.HostConfig"
     },
@@ -1692,12 +1644,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.testcontainers.containers.GenericContainer$$Lambda$478/0x000000e80123bd50"
-      },
-      "type": "com.github.dockerjava.api.model.Links"
-    },
-    {
-      "condition": {
         "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.command.CreateContainerCmdImpl"
       },
       "type": "com.github.dockerjava.api.model.Links"
@@ -1933,12 +1879,6 @@
     {
       "condition": {
         "typeReached": "org.testcontainers.containers.GenericContainer"
-      },
-      "type": "com.github.dockerjava.api.model.Ports"
-    },
-    {
-      "condition": {
-        "typeReached": "org.testcontainers.containers.GenericContainer$$Lambda$478/0x000000e80123bd50"
       },
       "type": "com.github.dockerjava.api.model.Ports"
     },
@@ -2627,12 +2567,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.testcontainers.containers.GenericContainer$$Lambda$478/0x000000e80123bd50"
-      },
-      "type": "com.github.dockerjava.api.model.Volumes"
-    },
-    {
-      "condition": {
         "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.command.CreateContainerCmdImpl"
       },
       "type": "com.github.dockerjava.api.model.Volumes"
@@ -2798,12 +2732,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.DefaultDockerClientConfig$Builder$$Lambda$432/0x000000e8011c3200"
-      },
-      "type": "org.testcontainers.shaded.com.github.dockerjava.core.DockerContextMetaFile"
-    },
-    {
-      "condition": {
         "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.DockerContextMetaFile"
       },
       "type": "org.testcontainers.shaded.com.github.dockerjava.core.DockerContextMetaFile",
@@ -2823,12 +2751,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.DefaultDockerClientConfig$Builder$$Lambda$432/0x000000e8011c3200"
-      },
-      "type": "org.testcontainers.shaded.com.github.dockerjava.core.DockerContextMetaFile$Endpoints"
-    },
-    {
-      "condition": {
         "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.DockerContextMetaFile"
       },
       "type": "org.testcontainers.shaded.com.github.dockerjava.core.DockerContextMetaFile$Endpoints",
@@ -2843,12 +2765,6 @@
     {
       "condition": {
         "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.DefaultDockerClientConfig$Builder"
-      },
-      "type": "org.testcontainers.shaded.com.github.dockerjava.core.DockerContextMetaFile$Endpoints$Docker"
-    },
-    {
-      "condition": {
-        "typeReached": "org.testcontainers.shaded.com.github.dockerjava.core.DefaultDockerClientConfig$Builder$$Lambda$432/0x000000e8011c3200"
       },
       "type": "org.testcontainers.shaded.com.github.dockerjava.core.DockerContextMetaFile$Endpoints$Docker"
     },
@@ -3392,12 +3308,6 @@
     {
       "condition": {
         "typeReached": "org.testcontainers.containers.GenericContainer"
-      },
-      "type": "org.testcontainers.shaded.org.awaitility.core.ConditionFactory$1"
-    },
-    {
-      "condition": {
-        "typeReached": "org.testcontainers.containers.GenericContainer$$Lambda$478/0x000000e80123bd50"
       },
       "type": "org.testcontainers.shaded.org.awaitility.core.ConditionFactory$1"
     },
