@@ -7,7 +7,6 @@
 package commons_io.commons_io;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -63,16 +62,17 @@ public class ClassLoaderObjectInputStreamTest {
     }
 
     @Test
-    void fallsBackToObjectInputStreamProxyResolutionWhenProxyClassCreationFails() throws Exception {
-        String[] duplicateInterfaces = new String[] {
-                NamedProxyContract.class.getName(),
-                NamedProxyContract.class.getName()
+    void fallsBackToObjectInputStreamProxyResolutionWhenTheProvidedLoaderCannotDefineTheProxy() throws Exception {
+        String[] interfaceNames = new String[] {NonPublicProxyContract.class.getName()};
+        ClassLoader childClassLoader = new ClassLoader(NonPublicProxyContract.class.getClassLoader()) {
         };
 
         try (ExposedClassLoaderObjectInputStream inputStream = new ExposedClassLoaderObjectInputStream(
-                NamedProxyContract.class.getClassLoader())) {
-            assertThatThrownBy(() -> inputStream.resolveProxyType(duplicateInterfaces))
-                    .isInstanceOf(ClassNotFoundException.class);
+                childClassLoader)) {
+            Class<?> resolvedClass = inputStream.resolveProxyType(interfaceNames);
+
+            assertThat(Proxy.isProxyClass(resolvedClass)).isTrue();
+            assertThat(resolvedClass.getInterfaces()).containsExactly(NonPublicProxyContract.class);
         }
     }
 
@@ -87,6 +87,10 @@ public class ClassLoaderObjectInputStreamTest {
     }
 
     private interface NamedProxyContract extends Serializable {
+        String value();
+    }
+
+    interface NonPublicProxyContract extends Serializable {
         String value();
     }
 
