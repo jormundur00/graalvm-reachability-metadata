@@ -4967,12 +4967,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.map.impl.MapServiceConstructor$$Lambda$1553/0x0000000800ecf330"
-      },
-      "type": "com.hazelcast.spi.impl.eventservice.impl.EventServiceSegment"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.map.impl.MapServiceContextImpl"
       },
       "type": "com.hazelcast.spi.impl.eventservice.impl.EventServiceSegment"
@@ -6664,12 +6658,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsRegistryImpl$$Lambda$1635/0x0000000800f8ad98"
-      },
-      "type": "java.lang.Object"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
       },
       "type": "java.lang.Object"
@@ -6738,12 +6726,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.map.impl.MapServiceConstructor"
-      },
-      "type": "java.lang.Object"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.map.impl.MapServiceConstructor$$Lambda$1553/0x0000000800ecf330"
       },
       "type": "java.lang.Object"
     },

@@ -170,18 +170,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1844/0x0000008001473918"
-      },
-      "type": "com.hazelcast.client.impl.connection.ClientConnection"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1846/0x0000007001479eb8"
-      },
-      "type": "com.hazelcast.client.impl.connection.ClientConnection"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.client.impl.statistics.ClusterConnectionMetricsProvider"
       },
       "type": "com.hazelcast.client.impl.connection.ClientConnection",
@@ -190,18 +178,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService"
-      },
-      "type": "com.hazelcast.client.impl.connection.tcp.TcpClientConnection"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1844/0x0000008001473918"
-      },
-      "type": "com.hazelcast.client.impl.connection.tcp.TcpClientConnection"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1846/0x0000007001479eb8"
       },
       "type": "com.hazelcast.client.impl.connection.tcp.TcpClientConnection"
     },
@@ -552,18 +528,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.collection.LocalCollectionStats"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
-      },
-      "type": "com.hazelcast.collection.LocalCollectionStats"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.collection.impl.list.ListService"
       },
       "type": "com.hazelcast.collection.LocalListStats",
@@ -572,18 +536,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "com.hazelcast.collection.LocalListStats"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.collection.LocalListStats"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "com.hazelcast.collection.LocalListStats"
     },
@@ -602,18 +554,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.collection.LocalQueueStats"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
-      },
-      "type": "com.hazelcast.collection.LocalQueueStats"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.collection.impl.set.SetService"
       },
       "type": "com.hazelcast.collection.LocalSetStats",
@@ -622,18 +562,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "com.hazelcast.collection.LocalSetStats"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.collection.LocalSetStats"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "com.hazelcast.collection.LocalSetStats"
     },
@@ -941,14 +869,7 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.executor.LocalExecutorStats",
-      "allDeclaredFields": true
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
       },
       "type": "com.hazelcast.executor.LocalExecutorStats",
       "allDeclaredFields": true
@@ -1067,13 +988,7 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.instance.LocalInstanceStats"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
       },
       "type": "com.hazelcast.instance.LocalInstanceStats"
     },
@@ -1386,18 +1301,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1844/0x0000008001473918"
-      },
-      "type": "com.hazelcast.internal.metrics.DynamicMetricsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1846/0x0000007001479eb8"
-      },
-      "type": "com.hazelcast.internal.metrics.DynamicMetricsProvider"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsCollectionCycle"
       },
       "type": "com.hazelcast.internal.metrics.DynamicMetricsProvider"
@@ -1411,18 +1314,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "com.hazelcast.internal.metrics.DynamicMetricsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.metrics.DynamicMetricsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "com.hazelcast.internal.metrics.DynamicMetricsProvider"
     },
@@ -1572,18 +1463,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.monitor.LocalFlakeIdGeneratorStats"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
-      },
-      "type": "com.hazelcast.internal.monitor.LocalFlakeIdGeneratorStats"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.internal.crdt.pncounter.PNCounterService"
       },
       "type": "com.hazelcast.internal.monitor.LocalPNCounterStats",
@@ -1592,18 +1471,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "com.hazelcast.internal.monitor.LocalPNCounterStats"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.monitor.LocalPNCounterStats"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "com.hazelcast.internal.monitor.LocalPNCounterStats"
     },
@@ -1629,18 +1496,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.monitor.impl.AbstractLocalCollectionStats"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
-      },
-      "type": "com.hazelcast.internal.monitor.impl.AbstractLocalCollectionStats"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.internal.monitor.impl.GlobalIndexesStats"
       },
       "type": "com.hazelcast.internal.monitor.impl.GlobalIndexesStats",
@@ -1655,14 +1510,7 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.monitor.impl.LocalExecutorStatsImpl",
-      "allDeclaredFields": true
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
       },
       "type": "com.hazelcast.internal.monitor.impl.LocalExecutorStatsImpl",
       "allDeclaredFields": true
@@ -1715,18 +1563,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.monitor.impl.LocalFlakeIdGeneratorStatsImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
-      },
-      "type": "com.hazelcast.internal.monitor.impl.LocalFlakeIdGeneratorStatsImpl"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.internal.monitor.impl.LocalFlakeIdGeneratorStatsImpl"
       },
       "type": "com.hazelcast.internal.monitor.impl.LocalFlakeIdGeneratorStatsImpl",
@@ -1754,18 +1590,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.monitor.impl.LocalListStatsImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
-      },
-      "type": "com.hazelcast.internal.monitor.impl.LocalListStatsImpl"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.internal.monitor.impl.LocalListStatsImpl"
       },
       "type": "com.hazelcast.internal.monitor.impl.LocalListStatsImpl",
@@ -1781,18 +1605,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "com.hazelcast.internal.monitor.impl.LocalMapStatsImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.monitor.impl.LocalMapStatsImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "com.hazelcast.internal.monitor.impl.LocalMapStatsImpl"
     },
@@ -1942,18 +1754,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.monitor.impl.LocalMultiMapStatsImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
-      },
-      "type": "com.hazelcast.internal.monitor.impl.LocalMultiMapStatsImpl"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.multimap.impl.MultiMapService"
       },
       "type": "com.hazelcast.internal.monitor.impl.LocalMultiMapStatsImpl",
@@ -1969,18 +1769,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "com.hazelcast.internal.monitor.impl.LocalPNCounterStatsImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.monitor.impl.LocalPNCounterStatsImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "com.hazelcast.internal.monitor.impl.LocalPNCounterStatsImpl"
     },
@@ -2018,18 +1806,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "com.hazelcast.internal.monitor.impl.LocalQueueStatsImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.monitor.impl.LocalQueueStatsImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "com.hazelcast.internal.monitor.impl.LocalQueueStatsImpl"
     },
@@ -2085,18 +1861,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "com.hazelcast.internal.monitor.impl.LocalReplicatedMapStatsImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.monitor.impl.LocalReplicatedMapStatsImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "com.hazelcast.internal.monitor.impl.LocalReplicatedMapStatsImpl"
     },
@@ -2225,18 +1989,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.monitor.impl.LocalSetStatsImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
-      },
-      "type": "com.hazelcast.internal.monitor.impl.LocalSetStatsImpl"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.internal.monitor.impl.LocalSetStatsImpl"
       },
       "type": "com.hazelcast.internal.monitor.impl.LocalSetStatsImpl",
@@ -2251,14 +2003,7 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.monitor.impl.LocalTopicStatsImpl",
-      "allDeclaredFields": true
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
       },
       "type": "com.hazelcast.internal.monitor.impl.LocalTopicStatsImpl",
       "allDeclaredFields": true
@@ -2299,31 +2044,13 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1844/0x0000008001473918"
-      },
-      "type": "com.hazelcast.internal.networking.InboundPipeline"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1846/0x0000007001479eb8"
+        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService"
       },
       "type": "com.hazelcast.internal.networking.InboundPipeline"
     },
     {
       "condition": {
         "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService"
-      },
-      "type": "com.hazelcast.internal.networking.Networking"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1844/0x0000008001473918"
-      },
-      "type": "com.hazelcast.internal.networking.Networking"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1846/0x0000007001479eb8"
       },
       "type": "com.hazelcast.internal.networking.Networking"
     },
@@ -2342,18 +2069,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "com.hazelcast.internal.networking.Networking"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.networking.Networking"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "com.hazelcast.internal.networking.Networking"
     },
@@ -2379,13 +2094,7 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1844/0x0000008001473918"
-      },
-      "type": "com.hazelcast.internal.networking.OutboundPipeline"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1846/0x0000007001479eb8"
+        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService"
       },
       "type": "com.hazelcast.internal.networking.OutboundPipeline"
     },
@@ -2415,13 +2124,7 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1844/0x0000008001473918"
-      },
-      "type": "com.hazelcast.internal.networking.nio.MigratablePipeline"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1846/0x0000007001479eb8"
+        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService"
       },
       "type": "com.hazelcast.internal.networking.nio.MigratablePipeline"
     },
@@ -2440,31 +2143,13 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1844/0x0000008001473918"
-      },
-      "type": "com.hazelcast.internal.networking.nio.NioInboundPipeline"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1846/0x0000007001479eb8"
+        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService"
       },
       "type": "com.hazelcast.internal.networking.nio.NioInboundPipeline"
     },
     {
       "condition": {
         "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService"
-      },
-      "type": "com.hazelcast.internal.networking.nio.NioNetworking"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1844/0x0000008001473918"
-      },
-      "type": "com.hazelcast.internal.networking.nio.NioNetworking"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1846/0x0000007001479eb8"
       },
       "type": "com.hazelcast.internal.networking.nio.NioNetworking"
     },
@@ -2483,18 +2168,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "com.hazelcast.internal.networking.nio.NioNetworking"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.networking.nio.NioNetworking"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "com.hazelcast.internal.networking.nio.NioNetworking"
     },
@@ -2532,13 +2205,7 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1844/0x0000008001473918"
-      },
-      "type": "com.hazelcast.internal.networking.nio.NioOutboundPipeline"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1846/0x0000007001479eb8"
+        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService"
       },
       "type": "com.hazelcast.internal.networking.nio.NioOutboundPipeline"
     },
@@ -2561,31 +2228,13 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1844/0x0000008001473918"
-      },
-      "type": "com.hazelcast.internal.networking.nio.NioPipeline"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1846/0x0000007001479eb8"
+        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService"
       },
       "type": "com.hazelcast.internal.networking.nio.NioPipeline"
     },
     {
       "condition": {
         "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService"
-      },
-      "type": "com.hazelcast.internal.networking.nio.NioThread"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1844/0x0000008001473918"
-      },
-      "type": "com.hazelcast.internal.networking.nio.NioThread"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1846/0x0000007001479eb8"
       },
       "type": "com.hazelcast.internal.networking.nio.NioThread"
     },
@@ -2604,18 +2253,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "com.hazelcast.internal.networking.nio.NioThread"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.networking.nio.NioThread"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "com.hazelcast.internal.networking.nio.NioThread"
     },
@@ -2640,18 +2277,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1844/0x0000008001473918"
-      },
-      "type": "com.hazelcast.internal.networking.nio.iobalancer.IOBalancer"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1846/0x0000007001479eb8"
-      },
-      "type": "com.hazelcast.internal.networking.nio.iobalancer.IOBalancer"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsCollectionCycle"
       },
       "type": "com.hazelcast.internal.networking.nio.iobalancer.IOBalancer"
@@ -2665,18 +2290,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "com.hazelcast.internal.networking.nio.iobalancer.IOBalancer"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.networking.nio.iobalancer.IOBalancer"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "com.hazelcast.internal.networking.nio.iobalancer.IOBalancer"
     },
@@ -2707,18 +2320,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1844/0x0000008001473918"
-      },
-      "type": "com.hazelcast.internal.nio.Connection"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1846/0x0000007001479eb8"
-      },
-      "type": "com.hazelcast.internal.nio.Connection"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.client.impl.statistics.ClusterConnectionMetricsProvider"
       },
       "type": "com.hazelcast.internal.nio.Connection",
@@ -2727,18 +2328,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "com.hazelcast.internal.nio.ConnectionListenable"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.nio.ConnectionListenable"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "com.hazelcast.internal.nio.ConnectionListenable"
     },
@@ -2906,18 +2495,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.server.ServerConnectionManager"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
-      },
-      "type": "com.hazelcast.internal.server.ServerConnectionManager"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.internal.server.tcp.TcpServer$MetricsProvider"
       },
       "type": "com.hazelcast.internal.server.ServerConnectionManager"
@@ -2937,18 +2514,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.server.tcp.TcpServer$MetricsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
-      },
-      "type": "com.hazelcast.internal.server.tcp.TcpServer$MetricsProvider"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.internal.server.tcp.TcpServer$MetricsProvider"
       },
       "type": "com.hazelcast.internal.server.tcp.TcpServer$MetricsProvider",
@@ -2957,18 +2522,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "com.hazelcast.internal.server.tcp.TcpServerAcceptor"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.server.tcp.TcpServerAcceptor"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "com.hazelcast.internal.server.tcp.TcpServerAcceptor"
     },
@@ -2999,18 +2552,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.server.tcp.TcpServerConnectionManager"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
-      },
-      "type": "com.hazelcast.internal.server.tcp.TcpServerConnectionManager"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.internal.server.tcp.TcpServer$MetricsProvider"
       },
       "type": "com.hazelcast.internal.server.tcp.TcpServerConnectionManager"
@@ -3035,18 +2576,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "com.hazelcast.internal.server.tcp.TcpServerConnectionManagerBase"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.server.tcp.TcpServerConnectionManagerBase"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "com.hazelcast.internal.server.tcp.TcpServerConnectionManagerBase"
     },
@@ -3201,18 +2730,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.util.executor.CachedExecutorServiceDelegate"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
-      },
-      "type": "com.hazelcast.internal.util.executor.CachedExecutorServiceDelegate"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.internal.util.executor.CachedExecutorServiceDelegate"
       },
       "type": "com.hazelcast.internal.util.executor.CachedExecutorServiceDelegate",
@@ -3248,18 +2765,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1844/0x0000008001473918"
-      },
-      "type": "com.hazelcast.internal.util.executor.HazelcastManagedThread"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1846/0x0000007001479eb8"
-      },
-      "type": "com.hazelcast.internal.util.executor.HazelcastManagedThread"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsCollectionCycle"
       },
       "type": "com.hazelcast.internal.util.executor.HazelcastManagedThread"
@@ -3273,18 +2778,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "com.hazelcast.internal.util.executor.HazelcastManagedThread"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.util.executor.HazelcastManagedThread"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "com.hazelcast.internal.util.executor.HazelcastManagedThread"
     },
@@ -3305,18 +2798,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "com.hazelcast.internal.util.executor.ManagedExecutorService"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.util.executor.ManagedExecutorService"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "com.hazelcast.internal.util.executor.ManagedExecutorService"
     },
@@ -3352,18 +2833,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "com.hazelcast.internal.util.executor.NamedThreadPoolExecutor"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.internal.util.executor.NamedThreadPoolExecutor"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "com.hazelcast.internal.util.executor.NamedThreadPoolExecutor"
     },
@@ -3722,18 +3191,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.map.LocalMapStats"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
-      },
-      "type": "com.hazelcast.map.LocalMapStats"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.map.impl.MapService"
       },
       "type": "com.hazelcast.map.LocalMapStats",
@@ -3772,18 +3229,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.multimap.LocalMultiMapStats"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
-      },
-      "type": "com.hazelcast.multimap.LocalMultiMapStats"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.multimap.impl.MultiMapService"
       },
       "type": "com.hazelcast.multimap.LocalMultiMapStats",
@@ -3804,18 +3249,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "com.hazelcast.replicatedmap.LocalReplicatedMapStats"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.replicatedmap.LocalReplicatedMapStats"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "com.hazelcast.replicatedmap.LocalReplicatedMapStats"
     },
@@ -3953,18 +3386,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.map.impl.MapServiceConstructor$$Lambda$1633/0x000000700136e400"
-      },
-      "type": "com.hazelcast.spi.impl.eventservice.impl.EventServiceSegment"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.map.impl.MapServiceConstructor$$Lambda$1633/0x0000008001369d78"
-      },
-      "type": "com.hazelcast.spi.impl.eventservice.impl.EventServiceSegment"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.map.impl.MapServiceContextImpl"
       },
       "type": "com.hazelcast.spi.impl.eventservice.impl.EventServiceSegment"
@@ -4003,18 +3424,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1844/0x0000008001473918"
-      },
-      "type": "com.hazelcast.spi.impl.operationexecutor.OperationHostileThread"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1846/0x0000007001479eb8"
-      },
-      "type": "com.hazelcast.spi.impl.operationexecutor.OperationHostileThread"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsCollectionCycle"
       },
       "type": "com.hazelcast.spi.impl.operationexecutor.OperationHostileThread"
@@ -4028,18 +3437,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "com.hazelcast.spi.impl.operationexecutor.OperationHostileThread"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.spi.impl.operationexecutor.OperationHostileThread"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "com.hazelcast.spi.impl.operationexecutor.OperationHostileThread"
     },
@@ -4330,14 +3727,7 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "com.hazelcast.topic.LocalTopicStats",
-      "allDeclaredFields": true
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
+        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
       },
       "type": "com.hazelcast.topic.LocalTopicStats",
       "allDeclaredFields": true
@@ -4989,18 +4379,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1844/0x0000008001473918"
-      },
-      "type": "java.lang.Object"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1846/0x0000007001479eb8"
-      },
-      "type": "java.lang.Object"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.client.impl.statistics.ClusterConnectionMetricsProvider"
       },
       "type": "java.lang.Object"
@@ -5055,31 +4433,7 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsRegistryImpl$$Lambda$1720/0x0000007001411230"
-      },
-      "type": "java.lang.Object"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsRegistryImpl$$Lambda$1720/0x0000008001414b18"
-      },
-      "type": "java.lang.Object"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "java.lang.Object"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "java.lang.Object"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "java.lang.Object"
     },
@@ -5141,18 +4495,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.map.impl.MapServiceConstructor"
-      },
-      "type": "java.lang.Object"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.map.impl.MapServiceConstructor$$Lambda$1633/0x000000700136e400"
-      },
-      "type": "java.lang.Object"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.map.impl.MapServiceConstructor$$Lambda$1633/0x0000008001369d78"
       },
       "type": "java.lang.Object"
     },
@@ -5290,18 +4632,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1844/0x0000008001473918"
-      },
-      "type": "java.lang.Runnable"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1846/0x0000007001479eb8"
-      },
-      "type": "java.lang.Runnable"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsCollectionCycle"
       },
       "type": "java.lang.Runnable"
@@ -5315,18 +4645,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "java.lang.Runnable"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "java.lang.Runnable"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "java.lang.Runnable"
     },
@@ -5460,18 +4778,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1844/0x0000008001473918"
-      },
-      "type": "java.lang.Thread"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1846/0x0000007001479eb8"
-      },
-      "type": "java.lang.Thread"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsCollectionCycle"
       },
       "type": "java.lang.Thread"
@@ -5485,18 +4791,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "java.lang.Thread"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "java.lang.Thread"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "java.lang.Thread"
     },
@@ -5728,18 +5022,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "java.util.concurrent.AbstractExecutorService"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
-      },
-      "type": "java.util.concurrent.AbstractExecutorService"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.spi.impl.executionservice.impl.ExecutionServiceImpl$MetricsProvider"
       },
       "type": "java.util.concurrent.AbstractExecutorService",
@@ -5760,18 +5042,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "java.util.concurrent.Executor"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
-      },
-      "type": "java.util.concurrent.Executor"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.spi.impl.executionservice.impl.ExecutionServiceImpl$MetricsProvider"
       },
       "type": "java.util.concurrent.Executor",
@@ -5780,18 +5050,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "java.util.concurrent.ExecutorService"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "java.util.concurrent.ExecutorService"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "java.util.concurrent.ExecutorService"
     },
@@ -5824,18 +5082,6 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "java.util.concurrent.ThreadPoolExecutor"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
-      },
-      "type": "java.util.concurrent.ThreadPoolExecutor"
-    },
-    {
-      "condition": {
         "typeReached": "com.hazelcast.spi.impl.executionservice.impl.ExecutionServiceImpl$MetricsProvider"
       },
       "type": "java.util.concurrent.ThreadPoolExecutor",
@@ -5844,18 +5090,6 @@
     {
       "condition": {
         "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
-      },
-      "type": "java.util.function.Consumer"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000070013bc240"
-      },
-      "type": "java.util.function.Consumer"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService$$Lambda$1691/0x00000080013b59f0"
       },
       "type": "java.util.function.Consumer"
     },
@@ -5902,13 +5136,7 @@
     },
     {
       "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1844/0x0000008001473918"
-      },
-      "type": "java.util.function.Supplier"
-    },
-    {
-      "condition": {
-        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService$$Lambda$1846/0x0000007001479eb8"
+        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService"
       },
       "type": "java.util.function.Supplier"
     },
