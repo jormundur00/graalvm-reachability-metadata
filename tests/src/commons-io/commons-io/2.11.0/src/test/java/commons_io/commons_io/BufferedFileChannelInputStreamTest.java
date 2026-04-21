@@ -48,7 +48,7 @@ public class BufferedFileChannelInputStreamTest {
         final Path file = writeFile(tempDirectory, "abcdefghij");
         final byte[] buffer = new byte[3];
 
-        try (BufferedFileChannelInputStream inputStream = new BufferedFileChannelInputStream(file, 2)) {
+        try (BufferedFileChannelInputStream inputStream = new BufferedFileChannelInputStream(file, 3)) {
             assertThat(inputStream.read()).isEqualTo((int) 'a');
             assertThat(inputStream.skip(3)).isEqualTo(3L);
             assertThat(inputStream.read(buffer, 0, buffer.length)).isEqualTo(3);
