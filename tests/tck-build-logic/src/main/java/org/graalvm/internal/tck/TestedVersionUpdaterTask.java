@@ -13,6 +13,8 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
+import org.graalvm.internal.tck.stats.LibraryStatsModels;
+import org.graalvm.internal.tck.stats.LibraryStatsSupport;
 
 import org.graalvm.internal.tck.utils.CoordinateUtils;
 import org.gradle.api.DefaultTask;
@@ -26,6 +28,7 @@ import org.gradle.util.internal.VersionNumber;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.nio.file.DirectoryNotEmptyException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -160,6 +163,7 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
                 if (Files.exists(oldDir)) Files.move(oldDir, newDir);
 
                 updateTests(baseDir, entry, oldMetadata, newVersion);
+                updateStats(baseDir, oldMetadata, newVersion);
                 updateDependentTestVersions(oldMetadata, newVersion, entries);
                 return new MetadataVersionsIndexEntry(
                         entry.latest(),
@@ -229,6 +233,38 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
                 lines.set(i, "metadata.dir = " + group + "/" + artifact + "/" + newVersion + "/");
         }
         Files.write(gradleProps, lines);
+    }
+
+    /**
+     * Updates exploded stats when a pre-release metadata version is replaced by its full release.
+     */
+    private void updateStats(Path metadataBaseDir, String oldVersion, String newVersion) throws IOException {
+        String artifact = metadataBaseDir.getFileName().toString();
+        String group = metadataBaseDir.getParent().getFileName().toString();
+        Path repositoryRoot = metadataBaseDir.getParent().getParent().getParent();
+        Path statsRoot = repositoryRoot.resolve("stats");
+        Path oldStatsFile = LibraryStatsSupport.repositoryStatsFile(statsRoot, group, artifact, oldVersion);
+        if (!Files.exists(oldStatsFile)) return;
+
+        LibraryStatsModels.MetadataVersionStats metadataVersionStats = LibraryStatsSupport.loadMetadataVersionStats(oldStatsFile);
+        LibraryStatsModels.MetadataVersionStats updatedStats = new LibraryStatsModels.MetadataVersionStats(
+                metadataVersionStats.versions().stream()
+                        .map(versionStats -> oldVersion.equals(versionStats.version())
+                                ? new LibraryStatsModels.VersionStats(newVersion, versionStats.dynamicAccess(), versionStats.libraryCoverage())
+                                : versionStats)
+                        .toList()
+        );
+
+        Path newStatsFile = LibraryStatsSupport.repositoryStatsFile(statsRoot, group, artifact, newVersion);
+        LibraryStatsSupport.writeMetadataVersionStats(newStatsFile, updatedStats);
+        if (!oldStatsFile.equals(newStatsFile)) {
+            Files.deleteIfExists(oldStatsFile);
+            try {
+                Files.deleteIfExists(oldStatsFile.getParent());
+            } catch (DirectoryNotEmptyException ignored) {
+                // Keep the old directory when other stats artifacts still exist in it.
+            }
+        }
     }
 
     /**
