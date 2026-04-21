@@ -56,18 +56,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "java.lang.Object"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "java.lang.Object"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.util.ObjectUtil"
       },
       "type": "java.lang.Object"
@@ -176,18 +164,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.AbstractExtensibleObject"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.AbstractExtensibleObject"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.util.ObjectUtil"
       },
       "type": "liquibase.AbstractExtensibleObject"
@@ -224,18 +200,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.ExtensibleObject"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.ExtensibleObject"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.util.ObjectUtil"
       },
       "type": "liquibase.ExtensibleObject"
@@ -255,18 +219,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.AbstractChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.AbstractChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.AbstractChange"
     },
@@ -317,18 +269,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.AbstractSQLChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.AbstractSQLChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.AbstractSQLChange"
     },
@@ -398,18 +338,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.AbstractTableChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.AbstractTableChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.util.ObjectUtil"
       },
       "type": "liquibase.change.AbstractTableChange"
@@ -465,18 +393,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.Change"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.Change"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.util.ObjectUtil"
       },
       "type": "liquibase.change.Change"
@@ -508,18 +424,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.ChangeWithColumns"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.ChangeWithColumns"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.ChangeWithColumns"
     },
@@ -568,18 +472,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.DbmsTargetedChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.DbmsTargetedChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.util.ObjectUtil"
       },
       "type": "liquibase.change.DbmsTargetedChange"
@@ -599,18 +491,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.core.AbstractModifyDataChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.AbstractModifyDataChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.core.AbstractModifyDataChange"
     },
@@ -657,18 +537,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.core.AddAutoIncrementChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.AddAutoIncrementChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.core.AddAutoIncrementChange"
     },
@@ -966,18 +834,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.AddColumnChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.core.AddColumnChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.changelog.ChangeSet"
       },
       "type": "liquibase.change.core.AddColumnChange",
@@ -1099,18 +955,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.core.AddDefaultValueChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.AddDefaultValueChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.core.AddDefaultValueChange"
     },
@@ -1450,18 +1294,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.AddForeignKeyConstraintChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.core.AddForeignKeyConstraintChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.changelog.ChangeSet"
       },
       "type": "liquibase.change.core.AddForeignKeyConstraintChange",
@@ -1712,18 +1544,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.AddLookupTableChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.core.AddLookupTableChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.configuration.LiquibaseConfiguration"
       },
       "type": "liquibase.change.core.AddLookupTableChange",
@@ -1782,18 +1602,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.core.AddNotNullConstraintChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.AddNotNullConstraintChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.core.AddNotNullConstraintChange"
     },
@@ -2086,18 +1894,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.core.AddPrimaryKeyChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.AddPrimaryKeyChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.core.AddPrimaryKeyChange"
     },
@@ -2444,18 +2240,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.core.AddUniqueConstraintChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.AddUniqueConstraintChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.core.AddUniqueConstraintChange"
     },
@@ -2857,18 +2641,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.AlterSequenceChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.core.AlterSequenceChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.changelog.ChangeSet"
       },
       "type": "liquibase.change.core.AlterSequenceChange",
@@ -3169,18 +2941,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.CreateIndexChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.core.CreateIndexChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.util.ObjectUtil"
       },
       "type": "liquibase.change.core.CreateIndexChange"
@@ -3224,18 +2984,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.core.CreateProcedureChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.CreateProcedureChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.core.CreateProcedureChange"
     },
@@ -3299,13 +3047,7 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.CreateSequenceChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
+        "typeReached": "liquibase.change.ChangeFactory"
       },
       "type": "liquibase.change.core.CreateSequenceChange"
     },
@@ -3653,18 +3395,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.CreateTableChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.core.CreateTableChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.change.core.CreateTableChange"
       },
       "type": "liquibase.change.core.CreateTableChange",
@@ -3771,18 +3501,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.core.CreateViewChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.CreateViewChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.core.CreateViewChange"
     },
@@ -3998,18 +3716,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.DeleteDataChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.core.DeleteDataChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.util.ObjectUtil"
       },
       "type": "liquibase.change.core.DeleteDataChange"
@@ -4047,18 +3753,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.core.DropAllForeignKeyConstraintsChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.DropAllForeignKeyConstraintsChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.core.DropAllForeignKeyConstraintsChange"
     },
@@ -4111,18 +3805,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.core.DropColumnChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.DropColumnChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.core.DropColumnChange"
     },
@@ -4287,18 +3969,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.core.DropDefaultValueChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.DropDefaultValueChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.core.DropDefaultValueChange"
     },
@@ -4530,18 +4200,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.DropForeignKeyConstraintChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.core.DropForeignKeyConstraintChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.changelog.ChangeSet"
       },
       "type": "liquibase.change.core.DropForeignKeyConstraintChange",
@@ -4766,18 +4424,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.DropIndexChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.core.DropIndexChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.changelog.ChangeSet"
       },
       "type": "liquibase.change.core.DropIndexChange",
@@ -4981,18 +4627,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.core.DropNotNullConstraintChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.DropNotNullConstraintChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.core.DropNotNullConstraintChange"
     },
@@ -5250,18 +4884,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.DropPrimaryKeyChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.core.DropPrimaryKeyChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.changelog.ChangeSet"
       },
       "type": "liquibase.change.core.DropPrimaryKeyChange",
@@ -5474,18 +5096,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.DropProcedureChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.core.DropProcedureChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.util.ObjectUtil"
       },
       "type": "liquibase.change.core.DropProcedureChange"
@@ -5529,18 +5139,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.core.DropSequenceChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.DropSequenceChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.core.DropSequenceChange"
     },
@@ -5735,18 +5333,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.core.DropTableChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.DropTableChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.core.DropTableChange"
     },
@@ -5959,18 +5545,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.core.DropUniqueConstraintChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.DropUniqueConstraintChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.core.DropUniqueConstraintChange"
     },
@@ -6202,18 +5776,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.DropViewChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.core.DropViewChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.changelog.ChangeSet"
       },
       "type": "liquibase.change.core.DropViewChange",
@@ -6416,18 +5978,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.EmptyChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.core.EmptyChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.util.ObjectUtil"
       },
       "type": "liquibase.change.core.EmptyChange"
@@ -6470,18 +6020,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.ExecuteShellCommandChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.core.ExecuteShellCommandChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.util.ObjectUtil"
       },
       "type": "liquibase.change.core.ExecuteShellCommandChange"
@@ -6519,18 +6057,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.core.InsertDataChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.InsertDataChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.core.InsertDataChange"
     },
@@ -6584,18 +6110,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.LoadDataChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.core.LoadDataChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.util.ObjectUtil"
       },
       "type": "liquibase.change.core.LoadDataChange"
@@ -6633,18 +6147,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.core.LoadUpdateDataChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.LoadUpdateDataChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.core.LoadUpdateDataChange"
     },
@@ -6705,18 +6207,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.core.MergeColumnChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.MergeColumnChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.core.MergeColumnChange"
     },
@@ -7030,18 +6520,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.ModifyDataTypeChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.core.ModifyDataTypeChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.changelog.ChangeSet"
       },
       "type": "liquibase.change.core.ModifyDataTypeChange",
@@ -7262,18 +6740,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.OutputChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.core.OutputChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.util.ObjectUtil"
       },
       "type": "liquibase.change.core.OutputChange"
@@ -7328,13 +6794,7 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.RawSQLChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
+        "typeReached": "liquibase.change.ChangeFactory"
       },
       "type": "liquibase.change.core.RawSQLChange"
     },
@@ -7403,18 +6863,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.core.RenameColumnChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.RenameColumnChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.core.RenameColumnChange"
     },
@@ -7684,18 +7132,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.RenameSequenceChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.core.RenameSequenceChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.util.ObjectUtil"
       },
       "type": "liquibase.change.core.RenameSequenceChange"
@@ -7743,18 +7179,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.core.RenameTableChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.RenameTableChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.core.RenameTableChange"
     },
@@ -7958,18 +7382,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.RenameViewChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.core.RenameViewChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.util.ObjectUtil"
       },
       "type": "liquibase.change.core.RenameViewChange"
@@ -8022,18 +7434,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.SQLFileChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.core.SQLFileChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.util.ObjectUtil"
       },
       "type": "liquibase.change.core.SQLFileChange"
@@ -8071,18 +7471,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.core.SetColumnRemarksChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.SetColumnRemarksChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.core.SetColumnRemarksChange"
     },
@@ -8130,18 +7518,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.SetTableRemarksChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.core.SetTableRemarksChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.util.ObjectUtil"
       },
       "type": "liquibase.change.core.SetTableRemarksChange"
@@ -8179,18 +7555,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.core.StopChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.StopChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.core.StopChange"
     },
@@ -8238,18 +7602,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.TagDatabaseChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.core.TagDatabaseChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.util.ObjectUtil"
       },
       "type": "liquibase.change.core.TagDatabaseChange"
@@ -8292,18 +7644,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.core.UpdateDataChange"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.change.core.UpdateDataChange"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.util.ObjectUtil"
       },
       "type": "liquibase.change.core.UpdateDataChange"
@@ -8341,18 +7681,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.change.custom.CustomChangeWrapper"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.change.custom.CustomChangeWrapper"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.change.custom.CustomChangeWrapper"
     },
@@ -9048,18 +8376,6 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.plugin.AbstractPlugin"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
-      },
-      "type": "liquibase.plugin.AbstractPlugin"
-    },
-    {
-      "condition": {
         "typeReached": "liquibase.util.ObjectUtil"
       },
       "type": "liquibase.plugin.AbstractPlugin"
@@ -9091,18 +8407,6 @@
     {
       "condition": {
         "typeReached": "liquibase.change.ChangeFactory"
-      },
-      "type": "liquibase.plugin.Plugin"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x00000070012425c8"
-      },
-      "type": "liquibase.plugin.Plugin"
-    },
-    {
-      "condition": {
-        "typeReached": "liquibase.change.ChangeFactory$$Lambda$510/0x0000007001243818"
       },
       "type": "liquibase.plugin.Plugin"
     },
@@ -9302,7 +8606,7 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.command.core.helpers.DatabaseChangelogCommandStep$$Lambda$506/0x0000007001211230"
+        "typeReached": "liquibase.command.core.helpers.DatabaseChangelogCommandStep"
       },
       "type": "liquibase.precondition.core.PreconditionContainer",
       "methods": [
@@ -9316,7 +8620,7 @@
     },
     {
       "condition": {
-        "typeReached": "liquibase.command.core.helpers.DatabaseChangelogCommandStep$$Lambda$506/0x0000007001214000"
+        "typeReached": "liquibase.command.core.helpers.DatabaseChangelogCommandStep"
       },
       "type": "liquibase.precondition.core.PreconditionContainer",
       "methods": [
