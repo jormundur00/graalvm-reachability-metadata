@@ -14,6 +14,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.graalvm.internal.tck.Coordinates;
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
+import org.gradle.api.GradleException;
+import org.gradle.api.Project;
+import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.dsl.DependencyHandler;
+import org.gradle.api.logging.LogLevel;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.process.ExecOperations;
 
@@ -24,13 +29,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
- * Static utility class for operations shared by ContributionTask and GenerateMetadataTask.
+ * Static utility class for operations shared by metadata-generation tasks.
  */
 public final class MetadataGenerationUtils {
 
@@ -40,6 +46,36 @@ public final class MetadataGenerationUtils {
     private static final ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
     private MetadataGenerationUtils() {
+    }
+
+    /**
+     * Resolves the binary JAR for the given coordinates and derives minimal package roots.
+     */
+    public static List<String> derivePackageRootsFromJar(Project project, Coordinates coordinates) throws IOException {
+        DependencyHandler dependencies = project.getDependencies();
+        Configuration configuration = project.getConfigurations().detachedConfiguration(
+                dependencies.create(coordinates.group() + ":" + coordinates.artifact() + ":" + coordinates.version())
+        );
+        configuration.setTransitive(false);
+
+        List<Path> jars = configuration.resolve().stream()
+                .map(file -> file.toPath().toAbsolutePath())
+                .toList();
+
+        if (jars.isEmpty()) {
+            throw new GradleException("Failed to resolve JAR for " + coordinates);
+        }
+
+        Set<String> classNames = JarUtils.loadClassNames(jars);
+        List<String> roots = JarUtils.derivePackageRoots(classNames);
+
+        if (roots.isEmpty()) {
+            project.getLogger().log(LogLevel.WARN, "No packages found in JAR for {}, falling back to group ID", coordinates);
+            return List.of(coordinates.group());
+        }
+
+        project.getLogger().log(LogLevel.INFO, "Derived package roots for {}: {}", coordinates, roots);
+        return roots;
     }
 
     /**

@@ -14,11 +14,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
 import org.graalvm.internal.tck.utils.CoordinateUtils;
-import org.graalvm.internal.tck.utils.JarUtils;
+import org.graalvm.internal.tck.utils.MetadataGenerationUtils;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.GradleException;
-import org.gradle.api.artifacts.Configuration;
-import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
@@ -33,7 +30,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -87,7 +83,7 @@ class ScaffoldTask extends DefaultTask {
     @TaskAction
     void run() throws IOException {
         Coordinates coordinates = Coordinates.parse(this.coordinates);
-        List<String> packageRoots = derivePackageRoots(coordinates);
+        List<String> packageRoots = MetadataGenerationUtils.derivePackageRootsFromJar(getProject(), coordinates);
 
         Path coordinatesMetadataRoot = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$", coordinates)).toPath();
         Path coordinatesMetadataVersionRoot = coordinatesMetadataRoot.resolve(coordinates.version());
@@ -280,34 +276,6 @@ class ScaffoldTask extends DefaultTask {
         for (int i = 0; i < entries.size(); i++) {
             setLatest(entries, i, i == latestIndex ? true : null);
         }
-    }
-
-    /// Resolves the binary JAR for the given coordinates and derives minimal package roots.
-    private List<String> derivePackageRoots(Coordinates coordinates) throws IOException {
-        DependencyHandler dependencies = getProject().getDependencies();
-        Configuration configuration = getProject().getConfigurations().detachedConfiguration(
-                dependencies.create(coordinates.group() + ":" + coordinates.artifact() + ":" + coordinates.version())
-        );
-        configuration.setTransitive(false);
-
-        List<Path> jars = configuration.resolve().stream()
-                .map(file -> file.toPath().toAbsolutePath())
-                .toList();
-
-        if (jars.isEmpty()) {
-            throw new GradleException("Failed to resolve JAR for " + coordinates);
-        }
-
-        Set<String> classNames = JarUtils.loadClassNames(jars);
-        List<String> roots = JarUtils.derivePackageRoots(classNames);
-
-        if (roots.isEmpty()) {
-            getLogger().log(LogLevel.WARN, "No packages found in JAR for {}, falling back to group ID", coordinates);
-            return List.of(coordinates.group());
-        }
-
-        getLogger().log(LogLevel.INFO, "Derived package roots for {}: {}", coordinates, roots);
-        return roots;
     }
 
     /// Builds user-code-filter.json content with an excludeClasses rule and one includeClasses per root.

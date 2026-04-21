@@ -188,14 +188,15 @@ This resolves the requested library, runs Native Image with `Preserve` and `Trac
 
 ### Generating Metadata
 
-Generates metadata for a single library coordinate. If `agentAllowedPackages` is provided, a new user-code-filter.json will be created or updated to include those packages.
+Generates metadata for a single library coordinate. If `agentAllowedPackages` is provided, a new user-code-filter.json will be created or updated from those packages or from package roots derived from the resolved library JAR.
 
 - `coordinates`: group:artifact:version (single coordinate only)
-- `agentAllowedPackages`: comma-separated package list; use `-` for none
+- `agentAllowedPackages`: comma-separated package list, `fromJar`, or `-` for none
 
 Examples:
    ```console
    ./gradlew generateMetadata -Pcoordinates=org.postgresql:postgresql:42.7.3
+   ./gradlew generateMetadata -Pcoordinates=org.postgresql:postgresql:42.7.3 --agentAllowedPackages=fromJar
    ./gradlew generateMetadata -Pcoordinates=org.postgresql:postgresql:42.7.3 --agentAllowedPackages=org.example.app,com.acme.service
    ```
 

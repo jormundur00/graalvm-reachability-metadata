@@ -45,10 +45,11 @@ If you already have the test project structure in this repository and need to ge
 ./gradlew generateMetadata --coordinates=com.example:my-library:1.0.0
 ```
 
-To change the user-code-filter used during collection, pass `--allowedPackages` with a comma-separated list of packages:
+To change the user-code-filter used during collection, pass `--agentAllowedPackages` with a comma-separated list of packages or `fromJar` to derive package roots from the resolved library JAR:
 
 ```shell
-./gradlew generateMetadata --coordinates=com.example:my-library:1.0.0 --allowedPackages=com.example.pkg,org.acme.lib
+./gradlew generateMetadata --coordinates=com.example:my-library:1.0.0 --agentAllowedPackages=fromJar
+./gradlew generateMetadata --coordinates=com.example:my-library:1.0.0 --agentAllowedPackages=com.example.pkg,org.acme.lib
 ```
 
 ### Checklist

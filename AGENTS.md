@@ -58,6 +58,8 @@ Metadata CI currently runs both `current-defaults` and `future-defaults-all`.
 ### Generating Metadata
 - Generate metadata for a certain library version:
    - ./gradlew generateMetadata -Pcoordinates=com.hazelcast:hazelcast:5.2.1
+- Generate metadata for a certain library version and derive `user-code-filter.json` from the resolved library JAR:
+   - ./gradlew generateMetadata -Pcoordinates=org.postgresql:postgresql:42.7.3 --agentAllowedPackages=fromJar
 - Generate metadata for a certain library version and create or update the user-code-filter.json:
    - ./gradlew generateMetadata -Pcoordinates=org.postgresql:postgresql:42.7.3 --agentAllowedPackages=org.example.app,com.acme.service
 

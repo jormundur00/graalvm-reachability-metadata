@@ -610,7 +610,7 @@ tasks.register("contribute", ContributionTask.class) { task ->
     task.setGroup(METADATA_GROUP)
 }
 
-// gradle generateMetadata -Pcoordinates=<maven-coordinates> [or --coordinates=<maven-coordinates>] --agentAllowedPackages=<comma-separated list of packages>
+// gradle generateMetadata -Pcoordinates=<maven-coordinates> [or --coordinates=<maven-coordinates>] --agentAllowedPackages=<comma-separated list of packages|fromJar|->
 tasks.register("generateMetadata", GenerateMetadataTask.class) { task ->
     task.setDescription("Generates metadata based on provided tests.")
     task.setGroup(METADATA_GROUP)

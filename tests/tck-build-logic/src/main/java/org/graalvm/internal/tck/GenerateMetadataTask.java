@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
  */
 public abstract class GenerateMetadataTask extends DefaultTask {
     private static final String GRADLEW = "gradlew";
+    private static final String FROM_JAR = "fromJar";
 
     private String coordinates;
     private String agentAllowedPackages;
@@ -55,7 +56,7 @@ public abstract class GenerateMetadataTask extends DefaultTask {
         return coordinates;
     }
 
-    @Option(option = "agentAllowedPackages", description = "Comma separated allowed packages (or - for none)")
+    @Option(option = "agentAllowedPackages", description = "Comma separated allowed packages, fromJar, or - for none")
     public void setAgentAllowedPackages(String agentAllowedPackages) {
         this.agentAllowedPackages = agentAllowedPackages;
     }
@@ -71,13 +72,7 @@ public abstract class GenerateMetadataTask extends DefaultTask {
         Path testsDirectory = GeneralUtils.computeTestsDirectory(getLayout(), coordinates);
         Path gradlewPath = GeneralUtils.getPathFromProject(getLayout(), GRADLEW);
         Coordinates coordinatesValue = Coordinates.parse(coordinates);
-
-        List<String> packageList = (agentAllowedPackages == null || agentAllowedPackages.isBlank() || agentAllowedPackages.equals("-"))
-                ? List.of()
-                : Arrays.stream(agentAllowedPackages.split(","))
-                        .map(String::trim)
-                        .filter(s -> !s.isEmpty())
-                        .collect(Collectors.toList());
+        List<String> packageList = resolveAllowedPackages(coordinatesValue);
 
         if (!packageList.isEmpty()) {
             MetadataGenerationUtils.addUserCodeFilterFile(testsDirectory, packageList);
@@ -88,5 +83,25 @@ public abstract class GenerateMetadataTask extends DefaultTask {
             MetadataGenerationUtils.addAgentConfigBlock(testsDirectory);
         }
         MetadataGenerationUtils.collectMetadata(getExecOperations(), testsDirectory, getLayout(), coordinates, gradlewPath);
+    }
+
+    private List<String> resolveAllowedPackages(Coordinates coordinatesValue) throws IOException {
+        if (agentAllowedPackages == null || agentAllowedPackages.isBlank() || agentAllowedPackages.equals("-")) {
+            return List.of();
+        }
+
+        String normalizedValue = agentAllowedPackages.trim();
+        if (normalizedValue.equals(FROM_JAR)) {
+            return MetadataGenerationUtils.derivePackageRootsFromJar(getProject(), coordinatesValue);
+        }
+
+        List<String> packageList = Arrays.stream(agentAllowedPackages.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
+        if (packageList.contains(FROM_JAR)) {
+            throw new IllegalArgumentException("--agentAllowedPackages=fromJar must be used on its own");
+        }
+        return packageList;
     }
 }
