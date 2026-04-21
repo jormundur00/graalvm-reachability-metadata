@@ -72,7 +72,7 @@ public class ClassLoaderObjectInputStreamTest {
         try (ExposedClassLoaderObjectInputStream inputStream = new ExposedClassLoaderObjectInputStream(
                 NamedProxyContract.class.getClassLoader())) {
             assertThatThrownBy(() -> inputStream.resolveProxyType(duplicateInterfaces))
-                    .isInstanceOf(IllegalArgumentException.class);
+                    .isInstanceOf(ClassNotFoundException.class);
         }
     }
 
