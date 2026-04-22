@@ -46,5 +46,13 @@
       },
       "glob" : "commons-io/test-resource.txt"
     }
+  ],
+  "serialization" : [
+    {
+      "condition" : {
+        "typeReached" : "org.apache.commons.io.input.ClassLoaderObjectInputStream"
+      },
+      "type" : "commons_io.commons_io.ClassLoaderObjectInputStreamTest$SerializablePayload"
+    }
   ]
 }
