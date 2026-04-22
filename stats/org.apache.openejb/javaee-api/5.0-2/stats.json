@@ -1,0 +1,26 @@
+{
+  "versions" : [ {
+    "version" : "5.0-2",
+    "dynamicAccess" : "N/A",
+    "libraryCoverage" : {
+      "instruction" : {
+        "covered" : 5618,
+        "missed" : 35634,
+        "ratio" : 0.136187,
+        "total" : 41252
+      },
+      "line" : {
+        "covered" : 1297,
+        "missed" : 8953,
+        "ratio" : 0.126537,
+        "total" : 10250
+      },
+      "method" : {
+        "covered" : 236,
+        "missed" : 2337,
+        "ratio" : 0.091722,
+        "total" : 2573
+      }
+    }
+  } ]
+}
