@@ -17,6 +17,7 @@ The PR number or URL can be passed as an optional argument (for example, `1234`,
 - Be more relaxed than `library-new-request`: do not reject only because a test resembles older coverage, stays in an existing package layout, or contains compatibility branches for multiple supported versions.
 - Do not accept changes that remove meaningful test coverage just to make `javac` pass.
 - Treat dynamic-access coverage preservation as the main quality gate. The new version should not report lower dynamic-access coverage than the previously tested version unless the PR gives a concrete, credible reason.
+- Compare metadata entry counts between the previous metadata version and the new metadata version. They do not need to match exactly, but a large unexplained drop is suspicious because it can mean the generated metadata no longer covers the same runtime surface.
 - Prefer small, targeted review comments. This label is for repair work, not a full redesign of historical tests.
 
 ## Workflow
@@ -52,7 +53,14 @@ The PR number or URL can be passed as an optional argument (for example, `1234`,
    - If `totalCalls` increases while `coveredCalls` stays flat or the ratio drops, ask for additional test coverage or metadata unless the uncovered calls are clearly outside the library behavior under test.
    - If stats are missing or stale, ask for `generateLibraryStats` or the relevant CI stats job before approving.
 
-5. Check CI before deciding.
+5. Compare metadata entry counts.
+   - Compare the number of entries in the previous `reachability-metadata.json` with the new version's `reachability-metadata.json`.
+   - Count entries across all present top-level metadata sections, such as `reflection`, `resources`, `bundles`, `serialization`, `jni`, and `proxies`.
+   - Do not require an exact match. Small differences are normal when upstream APIs move, generated metadata is cleaned up, or dynamic-access totals change.
+   - Treat a large drop as blocking or at least requiring explanation when the tests and dynamic-access stats still claim comparable coverage.
+   - Be especially suspicious when metadata entries drop sharply while the PR does not describe a major upstream API/package change.
+
+6. Check CI before deciding.
    - Expected minimum: `compileTestJava` or equivalent changed-metadata compile checks are green for the target coordinate.
    - Prefer seeing the full target `test` lane green because a compile fix can still reduce runtime or native coverage.
    - If current-defaults and future-defaults lanes both run, both should pass unless the PR clearly targets only one failing lane and the other failure is unrelated infrastructure noise.
@@ -65,12 +73,14 @@ Approve when all of these are true:
 - The PR is scoped to the target existing library and the compile failure it fixes.
 - Tests still exercise the same meaningful library behavior after the compile repair.
 - Dynamic-access coverage does not drop between the previous and new tested versions, or any apparent drop is convincingly explained by a changed upstream API surface.
+- Metadata entry counts are broadly comparable, or any large reduction is convincingly explained by a changed upstream API surface.
 - Required compile and metadata test checks are green.
 
 Request changes when any of these are true:
 
 - The fix makes compilation pass by deleting tests, removing assertions, skipping native-image execution, or bypassing the library behavior.
 - Dynamic-access coverage drops without a credible explanation and replacement coverage.
+- Metadata entry count drops substantially without a credible explanation.
 - The diff includes unrelated libraries, workflow/build changes, or broad refactors that are not needed for the compile fix.
 - CI failures indicate the compile problem is not actually fixed.
 
@@ -79,12 +89,14 @@ Ask for follow-up instead of rejecting when:
 - Stats needed for the old/new version comparison are missing or stale.
 - CI failed in a way that looks like infrastructure noise.
 - The API change is plausible but the PR does not explain why a coverage drop is expected.
+- Metadata entry counts differ substantially but the changed upstream API surface makes the reduction plausible.
 
 ## Output Style
 
 Keep comments short and factual:
 
 - For coverage drops: say that dynamic-access coverage must not regress between tested versions, cite the old and new values, and ask for either restored coverage or a concrete explanation.
+- For metadata entry drops: say that the new metadata has far fewer entries than the previous version, cite the old and new counts, and ask for either restored metadata or a concrete explanation of the API/runtime-surface change.
 - For deleted coverage: say that the PR fixes compilation by removing coverage and should instead adapt the test to the new API.
 - For unrelated changes: say the PR should stay scoped to the `fixes-javac-fail` repair and remove unrelated files.
 - For missing stats: ask for regenerated library stats or CI evidence before approval.

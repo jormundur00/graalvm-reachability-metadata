@@ -17,6 +17,7 @@ The PR number or URL can be passed as an optional argument (for example, `1234`,
 - Be more relaxed than `library-new-request`: do not reject only because a test is inherited from older support, uses compatibility branches, or keeps an existing package layout.
 - Do not accept fixes that hide the failing native path by skipping assertions, skipping native-image runtime execution, or weakening the test until the failure disappears.
 - Treat dynamic-access coverage preservation as the main quality gate. The new version should not report lower dynamic-access coverage than the previously tested version unless the PR gives a concrete, credible reason.
+- Compare metadata entry counts between the previous metadata version and the new metadata version. They do not need to match exactly, but a large unexplained drop is suspicious because it can mean the native-image fix no longer covers the same runtime surface.
 - Prefer concrete evidence from native run output, generated metadata, stats, and CI over style objections.
 
 ## Workflow
@@ -54,7 +55,14 @@ The PR number or URL can be passed as an optional argument (for example, `1234`,
    - If `totalCalls` increases while `coveredCalls` stays flat or the ratio drops, ask for additional test coverage or metadata unless the uncovered calls are clearly outside the library behavior under test.
    - If stats are missing or stale, ask for `generateLibraryStats` or the relevant CI stats job before approving.
 
-5. Check CI before deciding.
+5. Compare metadata entry counts.
+   - Compare the number of entries in the previous `reachability-metadata.json` with the new version's `reachability-metadata.json`.
+   - Count entries across all present top-level metadata sections, such as `reflection`, `resources`, `bundles`, `serialization`, `jni`, and `proxies`.
+   - Do not require an exact match. Small differences are normal when upstream APIs move, generated metadata is cleaned up, or dynamic-access totals change.
+   - Treat a large drop as blocking or at least requiring explanation when the tests and dynamic-access stats still claim comparable coverage.
+   - Be especially suspicious when metadata entries drop sharply while the PR does not describe a major upstream API/package change.
+
+6. Check CI before deciding.
    - Expected minimum: native-image compile and native test execution are green for the target coordinate.
    - Metadata validation and Java tests should also pass for the changed coordinate.
    - If current-defaults and future-defaults lanes both run, both should pass unless the PR clearly targets only one failing lane and the other failure is unrelated infrastructure noise.
@@ -67,12 +75,14 @@ Approve when all of these are true:
 - The PR is scoped to the target existing library and the native-image runtime failure it fixes.
 - The native-image runtime path still executes meaningful library behavior.
 - Dynamic-access coverage does not drop between the previous and new tested versions, or any apparent drop is convincingly explained by a changed upstream API surface.
+- Metadata entry counts are broadly comparable, or any large reduction is convincingly explained by a changed upstream API surface.
 - Required metadata, Java, native-image compile, and native-image run checks are green.
 
 Request changes when any of these are true:
 
 - The fix makes native execution pass by skipping the failing native path, disabling assertions, or removing coverage.
 - Dynamic-access coverage drops without a credible explanation and replacement coverage.
+- Metadata entry count drops substantially without a credible explanation.
 - Metadata additions are unrelated to the failure or affect other libraries without justification.
 - CI failures indicate the native-image runtime problem is not actually fixed.
 
@@ -81,12 +91,14 @@ Ask for follow-up instead of rejecting when:
 - Stats needed for the old/new version comparison are missing or stale.
 - CI failed in a way that looks like infrastructure noise.
 - The API or native runtime change is plausible but the PR does not explain why a coverage drop is expected.
+- Metadata entry counts differ substantially but the changed upstream API surface makes the reduction plausible.
 
 ## Output Style
 
 Keep comments short and factual:
 
 - For coverage drops: say that dynamic-access coverage must not regress between tested versions, cite the old and new values, and ask for either restored coverage or a concrete explanation.
+- For metadata entry drops: say that the new metadata has far fewer entries than the previous version, cite the old and new counts, and ask for either restored metadata or a concrete explanation of the API/runtime-surface change.
 - For native skips: say that the PR avoids the failing native path instead of fixing it, so it does not demonstrate native-image runtime coverage.
 - For unrelated changes: say the PR should stay scoped to the `fixes-native-image-run-fail` repair and remove unrelated files.
 - For missing stats: ask for regenerated library stats or CI evidence before approval.
