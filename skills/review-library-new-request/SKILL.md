@@ -33,6 +33,7 @@ Treat the following as hard review rules unless the PR provides a strong reason 
    - Expected files are usually limited to:
      - `metadata/<group>/<artifact>/<version>/reachability-metadata.json`
      - `metadata/<group>/<artifact>/index.json`
+     - `stats/<group>/<artifact>/<new-version>/stats.json`
      - `tests/src/<group>/<artifact>/<version>/**`
    - Be suspicious of changes to build logic, workflows, unrelated libraries, generated sources outside the target test directory, or wide refactors.
    - Treat extra `metadata/**` or `tests/src/**` trees for other coordinates as a blocking scope violation, not as a minor cleanup issue.

@@ -13,7 +13,7 @@ The PR number or URL can be passed as an optional argument (for example, `1234`,
 ## Review Principles
 
 - Confirm the PR has label `fixes-javac-fail`.
-- Expect compile-focused changes: test source updates, imports, renamed APIs, dependency adjustments, or metadata index changes needed to test the newer library version.
+- Expect compile-focused changes plus the normal generated support files for the newly tested version: test source updates, imports, renamed APIs, dependency adjustments, a new metadata-version directory, stats, and metadata index changes.
 - Be more relaxed than `library-new-request`: do not reject only because a test resembles older coverage, stays in an existing package layout, or contains compatibility branches for multiple supported versions.
 - Do not accept changes that remove meaningful test coverage just to make `javac` pass.
 - Treat dynamic-access coverage preservation as the main quality gate. The new version should not report lower dynamic-access coverage than the previously tested version unless the PR gives a concrete, credible reason.
@@ -28,11 +28,14 @@ The PR number or URL can be passed as an optional argument (for example, `1234`,
    - Gather files, reviews, inline comments, and CI checks.
 
 2. Validate the diff scope.
-   - Expected files are usually limited to:
+   - Expected files are usually limited to the target coordinate's generated new-version support:
+     - `metadata/<group>/<artifact>/<new-version>/reachability-metadata.json`
      - `metadata/<group>/<artifact>/index.json`
-     - `tests/src/<group>/<artifact>/<version>/**`
-     - metadata files for the same target coordinate when the compile fix also requires metadata maintenance
+     - `stats/<group>/<artifact>/<new-version>/stats.json`
+     - `tests/src/<group>/<artifact>/<new-version>/**`
    - Accept compatibility edits that keep one test source working across multiple tested versions.
+   - Treat a new `reachability-metadata.json` for the tested version as normal for this label, including `{}` when validation and stats are coherent.
+   - Treat generated test project files such as `.gitignore`, `build.gradle`, `gradle.properties`, `settings.gradle`, and `user-code-filter.json` as normal when they live under the target version's test directory.
    - Be suspicious of unrelated build logic, workflows, generated sources, other libraries, or broad refactors.
    - Reject or request changes if the PR removes tests, disables test classes, or drops assertions without replacing equivalent coverage.
 

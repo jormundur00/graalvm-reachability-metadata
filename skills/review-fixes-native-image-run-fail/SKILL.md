@@ -31,8 +31,10 @@ The PR number or URL can be passed as an optional argument (for example, `1234`,
    - Expected files are usually limited to:
      - `metadata/<group>/<artifact>/<version>/reachability-metadata.json`
      - `metadata/<group>/<artifact>/index.json`
+     - `stats/<group>/<artifact>/<version>/stats.json`
      - `tests/src/<group>/<artifact>/<version>/**`
      - allowed Docker image entries or test resources only when the native test requires them
+   - Treat generated test project files such as `.gitignore`, `build.gradle`, `gradle.properties`, `settings.gradle`, and `user-code-filter.json` as normal when they live under the target version's test directory.
    - Accept metadata additions that are necessary for the new upstream version.
    - Accept narrow test edits that keep the same behavior covered across old and new versions.
    - Be suspicious of unrelated build logic, workflows, generated sources, other libraries, or broad refactors.
