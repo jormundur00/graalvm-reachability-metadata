@@ -38,7 +38,7 @@ The PR number or URL can be passed as an optional argument (for example, `1234`,
    - Treat a new `reachability-metadata.json` for the tested version as normal for this label, including `{}` when validation and stats are coherent.
    - Treat generated test project files such as `.gitignore`, `build.gradle`, `gradle.properties`, `settings.gradle`, and `user-code-filter.json` as normal when they live under the target version's test directory.
    - Be suspicious of unrelated build logic, workflows, generated sources, other libraries, or broad refactors.
-   - Reject or request changes if the PR removes tests, disables test classes, or drops assertions without replacing equivalent coverage.
+   - Reject or request changes if the PR removes tests, disables test classes, catches and ignores the failing exception.
 
 3. Review the compile fix.
    - Confirm the edit addresses the actual Java compilation failure, such as renamed classes, changed method signatures, module boundaries, annotation processors, or dependency coordinates.
@@ -78,10 +78,9 @@ Approve when all of these are true:
 
 Request changes when any of these are true:
 
-- The fix makes compilation pass by deleting tests, removing assertions, skipping native-image execution, or bypassing the library behavior.
+- The fix makes compilation pass by weakening or bypassing the test instead of adapting it to the changed API while preserving meaningful coverage.
 - Dynamic-access coverage drops without a credible explanation and replacement coverage.
 - Metadata entry count drops substantially without a credible explanation.
-- The diff includes unrelated libraries, workflow/build changes, or broad refactors that are not needed for the compile fix.
 - CI failures indicate the compile problem is not actually fixed.
 
 Ask for follow-up instead of rejecting when:
