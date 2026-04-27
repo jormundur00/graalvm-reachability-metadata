@@ -46,7 +46,6 @@ Treat the following as hard review rules unless the PR provides a strong reason 
    - Reject tests that hardcode the exact library version in strings, assertions, or expected output unless the test is explicitly validating version-dependent behavior.
    - Keep test packages separate from library packages. Reject tests that live under the target library's package unless the PR clearly needs that package placement to exercise the library.
    - Separate packages matter because tests placed inside the library package can bypass visibility boundaries and produce false confidence about what user code can access.
-   - Reject tests that only instantiate the obvious type, mirror the generated skeleton, or fail to exercise the code path that would need metadata.
 
 4. Review the metadata files only for presence and scope.
    - Confirm the expected metadata files exist for the single target coordinate.
@@ -95,3 +94,55 @@ Match the concise review style already used in this repository:
 - For metadata/coverage mismatch: ask for investigation only when the PR makes concrete coverage claims that are not supported by the diff, or when reported dynamic-access coverage is below the 50% minimum for non-zero dynamic-access calls. Do not argue from metadata contents alone.
 
 Keep comments short, factual, and blocking. Focus on the concrete defect, not a long explanation.
+
+## Blocking Test Examples
+
+Use these examples as representative patterns, not exhaustive matchers:
+
+- Scaffold-only placeholder:
+
+```java
+class ExampleLibraryTest {
+    @Test
+    void test() throws Exception {
+        System.out.println("This is just a placeholder, implement your test");
+    }
+}
+```
+
+- Native-image skip:
+
+```java
+@Test
+void parsesConfiguration() {
+    assumeFalse("runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode")));
+
+    LibraryConfig config = LibraryConfig.parse("name=value");
+    assertThat(config.get("name")).isEqualTo("value");
+}
+```
+
+- Version-pinned assertion:
+
+```java
+@Test
+void reportsVersion() {
+    assertThat(LibraryVersion.current()).isEqualTo("1.2.3");
+}
+```
+
+- Test placed inside the library package without a demonstrated need:
+
+```java
+package org.example.library;
+
+class InternalAccessTest {
+    @Test
+    void bypassesPublicApiByCallingPackagePrivateConstructor() {
+        DefaultPluginRegistry registry = new DefaultPluginRegistry();
+        InternalPlugin plugin = registry.create("json");
+
+        assertThat(plugin.name()).isEqualTo("json");
+    }
+}
+```
