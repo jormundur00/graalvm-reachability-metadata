@@ -18,7 +18,9 @@ Treat the following as hard review rules unless the PR provides a strong reason 
 - Do not accept scaffold-only tests. Generated tests must be changed into library-specific tests that exercise the behavior that requires the metadata.
 - Do not accept tests that disable themselves under native image. If the added library behavior is guarded by checks such as `assumeFalse("runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode")))`, `if (!"runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode")))`, or a similar native-only skip, then the PR does not provide native runtime coverage.
 - Do not accept tests that reference the exact library version in test code or assertions unless the version check is itself the behavior under test. One test should remain valid across multiple supported library versions.
-- Treat dynamic-access coverage counts as incomplete evidence. They can miss metadata required through downstream libraries, so do not reject a PR only because the exploded stats files under `stats/<group>/<artifact>/<metadata-version>/stats.json` report `0/0` dynamic-access calls while the PR adds metadata.
+- Require at least 50% reported dynamic-access coverage when there are dynamic-access calls to cover. Use the exploded stats files under `stats/<group>/<artifact>/<metadata-version>/stats.json` when available, and block the PR when dynamic-access coverage is below 50% or the PR provides no credible dynamic-access coverage evidence for non-zero dynamic-access calls.
+- Treat dynamic-access coverage counts as a minimum gate, not complete metadata evidence. They can miss metadata required through downstream libraries, so do not use high coverage alone to prove that the submitted metadata is complete or necessary.
+- Treat `0/0` dynamic-access coverage as a valid no-calls case, not as failed coverage. Do not reject a PR only because the exploded stats report `0/0` dynamic-access calls while the PR adds metadata; those stats can miss metadata required through downstream libraries.
 
 ## Workflow
 
@@ -53,7 +55,10 @@ Treat the following as hard review rules unless the PR provides a strong reason 
 
 5. Compare the PR claims, test, and reported coverage as one unit.
    - If the PR claims specific coverage numbers that do not line up with the diff, ask for investigation.
+   - Confirm reported dynamic-access coverage is at least 50% when the stats include dynamic-access calls.
    - If the PR reports zero dynamic-access calls and `reachability-metadata.json` is `{}`, that is acceptable as long as the test is library-specific and the scope is otherwise correct.
+   - If the PR reports zero dynamic-access calls while adding metadata, do not reject it on that basis alone; dynamic-access stats can miss metadata required through downstream libraries.
+   - If the stats report less than 50% coverage for non-zero dynamic-access calls, or no usable coverage signal for claimed dynamic-access behavior, ask for stronger tests or refreshed coverage evidence.
    - Prefer concrete test quality issues over speculation about whether specific metadata entries are needed.
 
 6. Check validation status.
@@ -75,7 +80,7 @@ Treat the following as hard review rules unless the PR provides a strong reason 
   - Test logic disables or bypasses the library behavior under native image.
   - Test code hardcodes the target library version without a clear need.
   - Test sources are placed in the library package without a demonstrated need.
-  - Claimed coverage is not credible from the diff.
+  - Reported dynamic-access coverage is below 50% for non-zero dynamic-access calls, absent for claimed dynamic-access behavior, or not credible from the diff.
 
 ## Output Style
 
@@ -85,6 +90,7 @@ Match the concise review style already used in this repository:
 - For missing native runtime coverage: say that the added tests disable themselves under native image, so the library behavior never runs there and the PR does not provide native-image coverage.
 - For version-pinned tests: say that tests should not reference the exact library version because the same test should support multiple library versions.
 - For multiple-library PRs: say that `library-new-request` PRs must push only one library and ask for the unrelated library additions to be removed.
-- For metadata/coverage mismatch: ask for investigation only when the PR makes concrete coverage claims that are not supported by the diff. Do not argue from metadata contents alone.
+- For insufficient dynamic-access coverage: say that new-library PRs need at least 50% dynamic-access coverage when there are dynamic-access calls to cover, and ask for stronger tests or refreshed coverage evidence.
+- For metadata/coverage mismatch: ask for investigation only when the PR makes concrete coverage claims that are not supported by the diff, or when reported dynamic-access coverage is below the 50% minimum for non-zero dynamic-access calls. Do not argue from metadata contents alone.
 
 Keep comments short, factual, and blocking. Focus on the concrete defect, not a long explanation.
