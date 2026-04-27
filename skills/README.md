@@ -21,6 +21,16 @@ It encodes the historical approve/close/rerun logic for bulk tested-version upda
 Reviews pull requests with the `library-new-request` label.
 It covers new-library metadata PRs, including titles like `[GenAI] Add support for com.fasterxml:classmate:1.5.1 using gpt-5.4`, and encodes the review rules already used in this repository: reject scaffold-only tests, keep test packages separate from library packages so tests do not bypass visibility boundaries, and question metadata coverage claims that are not supported by the diff.
 
+### `review-fixes-javac-fail`
+
+Reviews pull requests with the `fixes-javac-fail` label.
+It covers compile-failure repair PRs for existing libraries and applies a lighter review than `library-new-request`: keep the diff scoped to the compile fix, preserve meaningful tests, and block regressions where dynamic-access coverage drops between the previously tested version and the new version.
+
+### `review-fixes-native-image-run-fail`
+
+Reviews pull requests with the `fixes-native-image-run-fail` label.
+It covers native-image runtime-failure repair PRs for existing libraries and applies a lighter review than `library-new-request`: verify the native path is fixed rather than skipped, keep metadata and test changes scoped, and block regressions where dynamic-access coverage drops between the previously tested version and the new version.
+
 ### `close-new-library-support-pr`
 
 Closes new-library support pull requests.
