@@ -4,13 +4,13 @@
       "condition": {
         "typeReached": "com.sun.tools.rngom.util.Localizer"
       },
-      "glob": "META-INF/services/java.util.spi.ResourceBundleControlProvider"
+      "glob": "com/sun/tools/rngom/binary/Messages.properties"
     },
     {
       "condition": {
         "typeReached": "com.sun.tools.rngom.util.Localizer"
       },
-      "glob": "com/sun/tools/rngom/binary/Messages.properties"
+      "glob": "META-INF/services/java.util.spi.ResourceBundleControlProvider"
     },
     {
       "condition": {

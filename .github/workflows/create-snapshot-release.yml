@@ -14,7 +14,7 @@ permissions:
 jobs:
   get-changed-metadata:
     name: "📋 Get a list of changed metadata"
-    if: github.repository == 'oracle/graalvm-reachability-metadata'
+    if: github.repository == 'oracle/graalvm-reachability-metadata' || github.repository == 'jormundur00/graalvm-reachability-metadata'
     runs-on: "ubuntu-22.04"
     timeout-minutes: 5
     outputs:
