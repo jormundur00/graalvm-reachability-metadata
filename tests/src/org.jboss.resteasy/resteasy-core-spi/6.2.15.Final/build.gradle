@@ -28,7 +28,7 @@ graalvmNative {
 
 tasks.withType(Test).configureEach {
     javaLauncher = javaToolchains.launcherFor {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
     jvmArgs += ["-Djava.security.manager=allow"]
 }

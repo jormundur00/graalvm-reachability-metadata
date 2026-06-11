@@ -37,12 +37,12 @@ jobs:
           file-patterns: |
             - 'metadata/**'
 
-      - name: "🔧 Setup Java (GraalVM 21 for harness)"
+      - name: "🔧 Setup Java (GraalVM 25 for harness)"
         if: steps.filter.outputs.changed == 'true'
         uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
         with:
           distribution: 'graalvm'
-          java-version: '21'
+          java-version: '25'
 
       - name: "☁️ Checkout spring-aot-smoke-tests (4.1.x)"
         if: steps.filter.outputs.changed == 'true'
@@ -66,7 +66,7 @@ jobs:
 
   test-affected-spring-aot:
     name: "🧪 ${{ matrix.project }} @ spring-aot:4.1.x (GraalVM JDK ${{ matrix.java }})"
-    if: needs.discover-impacted-tests.outputs.relevant-files-changed == 'true' && needs.discover-impacted-tests.result == 'success' && needs.discover-impacted-tests.outputs.none-found != 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
+    if: needs.discover-impacted-tests.outputs.relevant-files-changed == 'true' && needs.discover-impacted-tests.result == 'success' && needs.discover-impacted-tests.outputs.none-found != 'true' && github.repository == 'jormundur00/graalvm-reachability-metadata'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 480
     needs: discover-impacted-tests
@@ -82,7 +82,7 @@ jobs:
         uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
         with:
           distribution: 'graalvm'
-          java-version: '17.0.12'
+          java-version: ${{ matrix.java }}
 
       - name: "🛠️ Setup latest native-build-tools snapshot"
         uses: ./.github/actions/setup-native-build-tools

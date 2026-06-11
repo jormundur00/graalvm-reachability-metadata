@@ -17,7 +17,7 @@ dependencies {
 
 tasks.withType(Test).configureEach {
     javaLauncher = javaToolchains.launcherFor {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
     jvmArgs "--add-opens=java.base/java.lang=ALL-UNNAMED", "-Djava.security.manager=allow"
 }
