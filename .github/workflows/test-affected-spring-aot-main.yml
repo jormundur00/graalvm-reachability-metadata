@@ -78,12 +78,6 @@ jobs:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
-      - name: "🔧 Setup Java for spring harness"
-        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
-        with:
-          distribution: 'graalvm'
-          java-version: ${{ matrix.java }}
-
       - name: "🛠️ Setup latest native-build-tools snapshot"
         uses: ./.github/actions/setup-native-build-tools
 
@@ -92,7 +86,7 @@ jobs:
         with:
           distribution: 'graalvm'
           java-version: ${{ matrix.java }}
-          set-java-home: 'false'
+          set-java-home: 'true'
           native-image-job-reports: 'true'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
