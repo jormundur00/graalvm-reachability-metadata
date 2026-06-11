@@ -4,9 +4,7 @@
 name: "Test affected Spring AOT smoke tests (4.1.x)"
 
 on:
-  pull_request:
-    branches:
-      - master
+  workflow_dispatch:
 
 permissions:
   contents: read
